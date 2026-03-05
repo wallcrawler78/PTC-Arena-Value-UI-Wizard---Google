@@ -1,0 +1,738 @@
+<script>
+(function() {
+  'use strict';
+
+  // ── State ──────────────────────────────────────────────────────────────────
+  var WIZARD = {
+    currentStep: 1,
+    totalSteps: 8,
+    formData: {},
+    includeData: {},
+    config: null,
+    currentValues: {}
+  };
+
+  var STEP_META = [
+    { num: 1, title: 'Company Profile',         subtitle: 'Basic customer information to anchor all calculations.' },
+    { num: 2, title: 'Business Assumptions',    subtitle: 'Growth targets and product strategy assumptions.' },
+    { num: 3, title: 'Cost Structure',          subtitle: 'COGS, material, inventory, and cost recovery baselines.' },
+    { num: 4, title: 'Team Resources',          subtitle: 'Headcount and salary assumptions for each team.' },
+    { num: 5, title: 'Revenue & COGS Benefits', subtitle: 'Adjust improvement sliders. Toggle to include or exclude each benefit.' },
+    { num: 6, title: 'Productivity Benefits',   subtitle: 'Team efficiency improvements from better product data management.' },
+    { num: 7, title: 'Cost Recovery Benefits',  subtitle: 'Reduction in operational cost categories.' },
+    { num: 8, title: 'Review & Submit',         subtitle: 'Review all inputs before writing to the spreadsheet.' }
+  ];
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function() {
+    WIZARD.config = window.WIZ_CONFIG || { dataInputFields: [], benefitsFields: [] };
+    buildUI();
+    loadCurrentValues();
+  });
+
+  function buildUI() {
+    buildStepIndicator();
+    buildSteps();
+    bindNavigation();
+  }
+
+  // ── Step Indicator ─────────────────────────────────────────────────────────
+  function buildStepIndicator() {
+    var container = document.getElementById('stepIndicator');
+    clearEl(container);
+    STEP_META.forEach(function(meta, idx) {
+      var item = make('div', 'step-item');
+      item.dataset.step = meta.num;
+
+      var circle = make('div', 'step-circle');
+      circle.textContent = meta.num;
+
+      var label = make('div', 'step-label');
+      label.textContent = meta.title;
+
+      item.appendChild(circle);
+      item.appendChild(label);
+      container.appendChild(item);
+
+      if (idx < STEP_META.length - 1) {
+        container.appendChild(make('div', 'step-connector'));
+      }
+    });
+    updateStepIndicator();
+  }
+
+  function updateStepIndicator() {
+    document.querySelectorAll('.step-item').forEach(function(item) {
+      var num = parseInt(item.dataset.step);
+      item.classList.remove('active', 'done');
+      if (num === WIZARD.currentStep) item.classList.add('active');
+      else if (num < WIZARD.currentStep) item.classList.add('done');
+    });
+    document.querySelectorAll('.step-connector').forEach(function(conn, idx) {
+      conn.style.background = (idx < WIZARD.currentStep - 1)
+        ? 'var(--ptc-light-blue)' : 'var(--border)';
+    });
+    document.getElementById('progressText').textContent =
+      'Step ' + WIZARD.currentStep + ' of ' + WIZARD.totalSteps;
+  }
+
+  // ── Build All Steps ────────────────────────────────────────────────────────
+  function buildSteps() {
+    var body = document.getElementById('wizBody');
+    clearEl(body);
+    STEP_META.forEach(function(meta) {
+      var panel = make('div', 'step-panel');
+      panel.id = 'step-' + meta.num;
+      if (meta.num === 1) panel.classList.add('active');
+
+      var title = make('h2', 'step-title');
+      title.textContent = meta.title;
+      var subtitle = make('p', 'step-subtitle');
+      subtitle.textContent = meta.subtitle;
+      panel.appendChild(title);
+      panel.appendChild(subtitle);
+
+      switch (meta.num) {
+        case 1: renderStep1(panel); break;
+        case 2: renderStep2(panel); break;
+        case 3: renderStep3(panel); break;
+        case 4: renderStep4(panel); break;
+        case 5: renderStep5(panel); break;
+        case 6: renderStep6(panel); break;
+        case 7: renderStep7(panel); break;
+        case 8: renderStep8(panel); break;
+      }
+      body.appendChild(panel);
+    });
+  }
+
+  // ── Step 1: Company Profile ────────────────────────────────────────────────
+  function renderStep1(panel) {
+    var group = make('div', 'field-group single');
+    getFieldsByStep(1, 'dataInput').forEach(function(field) {
+      group.appendChild(buildInputField(field));
+    });
+    panel.appendChild(group);
+  }
+
+  // ── Step 2: Business Assumptions ──────────────────────────────────────────
+  function renderStep2(panel) {
+    getFieldsByStep(2, 'dataInput').forEach(function(field) {
+      panel.appendChild(buildSliderField(field));
+    });
+  }
+
+  // ── Step 3: Cost Structure ─────────────────────────────────────────────────
+  function renderStep3(panel) {
+    var fields = getFieldsByStep(3, 'dataInput');
+    var byId = indexById(fields);
+
+    appendDivider(panel, 'COGS & Materials');
+    ['cogsPercent','directMaterialPercent','cmMaterialPercent'].forEach(function(id) {
+      if (byId[id]) panel.appendChild(buildSliderField(byId[id]));
+    });
+
+    appendDivider(panel, 'Inventory');
+    ['inventoryValue','inventoryCarryingCost'].forEach(function(id) {
+      var f = byId[id];
+      if (!f) return;
+      panel.appendChild(f.type === 'slider' ? buildSliderField(f) : buildInputField(f));
+    });
+
+    appendDivider(panel, 'Cost Recovery Baselines');
+    var grid = make('div', 'field-group');
+    ['expeditingCosts','scrapRework','warrantyService','excessObsolete'].forEach(function(id) {
+      if (byId[id]) grid.appendChild(buildInputField(byId[id]));
+    });
+    panel.appendChild(grid);
+  }
+
+  // ── Step 4: Team Resources ─────────────────────────────────────────────────
+  function renderStep4(panel) {
+    var fields = getFieldsByStep(4, 'dataInput');
+    var byId = indexById(fields);
+
+    var table = make('table', 'team-table');
+
+    var thead = document.createElement('thead');
+    var headerRow = document.createElement('tr');
+    ['Role', '# of FTEs', 'Annual Salary ($)'].forEach(function(text) {
+      var th = document.createElement('th');
+      th.textContent = text;
+      headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    var roles = [
+      { label: 'Development Team',        fteId: 'devTeamFTEs',    salaryId: 'devSalary' },
+      { label: 'CAD Design',              fteId: 'cadFTEs',         salaryId: 'cadSalary' },
+      { label: 'Eng Services / Doc Mgmt', fteId: 'engServicesFTEs', salaryId: 'engServicesSalary' },
+      { label: 'Product Data Consumers',  fteId: 'pdcFTEs',         salaryId: 'pdcSalary', extra: 'pdcWorkweekPercent' },
+      { label: 'Quality / CAPA',          fteId: 'qualityFTEs',     salaryId: 'qualitySalary' },
+      { label: 'Compliance',              fteId: 'complianceFTEs',  salaryId: 'complianceSalary' },
+      { label: 'Sourcing',                fteId: 'sourcingFTEs',    salaryId: 'sourcingSalary' }
+    ];
+
+    roles.forEach(function(role) {
+      var fteField = byId[role.fteId];
+      var salField = byId[role.salaryId];
+
+      var tr = document.createElement('tr');
+      var tdLabel = document.createElement('td');
+      tdLabel.className = 'role-label';
+      tdLabel.textContent = role.label;
+
+      var tdFTE = document.createElement('td');
+      if (fteField) tdFTE.appendChild(buildTableInput(fteField));
+
+      var tdSalary = document.createElement('td');
+      if (salField) tdSalary.appendChild(buildTableInput(salField));
+
+      tr.appendChild(tdLabel);
+      tr.appendChild(tdFTE);
+      tr.appendChild(tdSalary);
+      tbody.appendChild(tr);
+
+      if (role.extra && byId[role.extra]) {
+        var extraField = byId[role.extra];
+        var trExtra = document.createElement('tr');
+        var tdE1 = document.createElement('td');
+        var tdE2 = document.createElement('td');
+        tdE2.style.cssText = 'font-size:11px;color:var(--text-light);padding:4px 14px;';
+        tdE2.textContent = '% Workweek Consuming Data';
+        var tdE3 = document.createElement('td');
+        tdE3.appendChild(buildTableInput(extraField));
+        trExtra.appendChild(tdE1);
+        trExtra.appendChild(tdE2);
+        trExtra.appendChild(tdE3);
+        tbody.appendChild(trExtra);
+      }
+    });
+
+    table.appendChild(tbody);
+    panel.appendChild(table);
+
+    var note = make('p', 'pdc-note');
+    note.textContent = 'FTE defaults are calculated from Total Employees if left blank. Salaries default to $120,000.';
+    panel.appendChild(note);
+  }
+
+  // ── Steps 5-7: Benefits ────────────────────────────────────────────────────
+  function renderStep5(panel) {
+    getFieldsByStep(5, 'benefits').forEach(function(f) {
+      panel.appendChild(buildBenefitSlider(f));
+    });
+  }
+  function renderStep6(panel) {
+    getFieldsByStep(6, 'benefits').forEach(function(f) {
+      panel.appendChild(buildBenefitSlider(f));
+    });
+  }
+  function renderStep7(panel) {
+    getFieldsByStep(7, 'benefits').forEach(function(f) {
+      panel.appendChild(buildBenefitSlider(f));
+    });
+  }
+
+  // ── Step 8: Review ─────────────────────────────────────────────────────────
+  function renderStep8(panel) {
+    var grid = make('div', 'review-grid');
+    grid.id = 'reviewGrid';
+    panel.appendChild(grid);
+  }
+
+  function populateReview() {
+    var grid = document.getElementById('reviewGrid');
+    if (!grid) return;
+    clearEl(grid);
+
+    var sections = [
+      { title: 'Company Profile',         fields: getFieldsByStep(1, 'dataInput') },
+      { title: 'Business Assumptions',    fields: getFieldsByStep(2, 'dataInput') },
+      { title: 'Cost Structure',          fields: getFieldsByStep(3, 'dataInput') },
+      { title: 'Team Resources',          fields: getFieldsByStep(4, 'dataInput') },
+      { title: 'Revenue & COGS Benefits', fields: getFieldsByStep(5, 'benefits'), isBenefit: true },
+      { title: 'Productivity Benefits',   fields: getFieldsByStep(6, 'benefits'), isBenefit: true },
+      { title: 'Cost Recovery Benefits',  fields: getFieldsByStep(7, 'benefits'), isBenefit: true }
+    ];
+
+    sections.forEach(function(sec) {
+      var section = make('div', 'review-section' + (sec.isBenefit ? ' review-full' : ''));
+
+      var secTitle = make('div', 'review-section-title');
+      secTitle.textContent = sec.title;
+      section.appendChild(secTitle);
+
+      sec.fields.forEach(function(field) {
+        var row = make('div', 'review-row');
+        var label = make('span', 'rv-label');
+        label.textContent = field.label;
+
+        var value = make('span', 'rv-value');
+        var rawVal = WIZARD.formData[field.id];
+
+        if (sec.isBenefit && WIZARD.includeData[field.id + '_include'] === false) {
+          value.className = 'rv-excluded';
+          value.textContent = 'Excluded';
+        } else if (rawVal === null || rawVal === undefined || rawVal === '') {
+          value.className = 'rv-skip';
+          value.textContent = '(using default)';
+        } else if (field.unit === '%') {
+          value.textContent = rawVal + '%';
+        } else if (field.storeAs === 'currency' || field.type === 'currency') {
+          value.textContent = formatCurrency(parseFloat(rawVal));
+        } else {
+          value.textContent = rawVal;
+        }
+
+        row.appendChild(label);
+        row.appendChild(value);
+        section.appendChild(row);
+      });
+      grid.appendChild(section);
+    });
+  }
+
+  // ── Field Builders ─────────────────────────────────────────────────────────
+
+  function buildInputField(field) {
+    var wrapper = make('div', 'field');
+
+    var label = document.createElement('label');
+    label.htmlFor = 'field_' + field.id;
+    label.textContent = field.label + (field.required ? ' *' : '');
+    wrapper.appendChild(label);
+
+    if (field.hint) {
+      var hint = make('p', 'hint');
+      hint.textContent = field.hint;
+      wrapper.appendChild(hint);
+    }
+
+    var input = document.createElement('input');
+    input.type = (field.type === 'text') ? 'text' : 'number';
+    input.id = 'field_' + field.id;
+    input.name = field.id;
+    if (field.placeholder) input.placeholder = field.placeholder;
+    if (field.min !== undefined) input.min = field.min;
+    if (field.max !== undefined) input.max = field.max;
+    if (field.type === 'currency') input.step = 'any';
+
+    input.addEventListener('input', function() {
+      WIZARD.formData[field.id] = input.value;
+      clearFieldError(field.id);
+    });
+
+    var errMsg = make('span', 'field-error');
+    errMsg.id = 'err_' + field.id;
+    errMsg.textContent = field.label + ' is required.';
+
+    wrapper.appendChild(input);
+    wrapper.appendChild(errMsg);
+    return wrapper;
+  }
+
+  function buildSliderField(field) {
+    var wrapper = make('div', 'slider-field');
+
+    var header = make('div', 'slider-header');
+    var labelEl = make('span', 'slider-label');
+    labelEl.textContent = field.label;
+
+    var badge = make('span', 'slider-value-badge');
+    badge.id = 'badge_' + field.id;
+    var defaultVal = (field.default !== null && field.default !== undefined) ? field.default : field.min;
+    badge.textContent = defaultVal + (field.unit || '');
+
+    header.appendChild(labelEl);
+    header.appendChild(badge);
+    wrapper.appendChild(header);
+
+    if (field.hint) {
+      var hint = make('p', 'hint');
+      hint.textContent = field.hint;
+      wrapper.appendChild(hint);
+    }
+
+    var input = makeSlider(field, defaultVal);
+    input.addEventListener('input', function() {
+      var val = parseFloat(input.value);
+      WIZARD.formData[field.id] = val;
+      badge.textContent = val + (field.unit || '');
+      updateSliderGradient(input);
+    });
+    WIZARD.formData[field.id] = defaultVal;
+
+    var trackWrap = make('div', 'slider-track-wrap');
+    trackWrap.appendChild(input);
+    wrapper.appendChild(trackWrap);
+
+    var anchors = make('div', 'slider-anchors');
+    var anchorLow = make('span', 'anchor-low');
+    anchorLow.textContent = field.min + (field.unit || '');
+    var anchorHigh = make('span', 'anchor-high');
+    anchorHigh.textContent = field.max + (field.unit || '');
+    anchors.appendChild(anchorLow);
+    anchors.appendChild(anchorHigh);
+    wrapper.appendChild(anchors);
+
+    return wrapper;
+  }
+
+  function buildBenefitSlider(field) {
+    var wrapper = make('div', 'slider-field');
+
+    var header = make('div', 'slider-header');
+    var labelEl = make('span', 'slider-label');
+    labelEl.textContent = field.label;
+    var toggle = buildIncludeToggle(field);
+
+    var badge = make('span', 'slider-value-badge');
+    badge.id = 'badge_' + field.id;
+    var defaultVal = (field.default !== null && field.default !== undefined) ? field.default : field.min;
+    badge.textContent = defaultVal + '%';
+
+    header.appendChild(labelEl);
+    header.appendChild(toggle);
+    header.appendChild(badge);
+    wrapper.appendChild(header);
+
+    if (field.lowAnchor || field.highAnchor) {
+      var anchorsDesc = make('div', 'slider-anchors');
+      if (field.lowAnchor) {
+        var lo = make('span', 'anchor-low');
+        lo.textContent = field.lowAnchor;
+        anchorsDesc.appendChild(lo);
+      }
+      if (field.highAnchor) {
+        var hi = make('span', 'anchor-high');
+        hi.textContent = field.highAnchor;
+        anchorsDesc.appendChild(hi);
+      }
+      wrapper.appendChild(anchorsDesc);
+    }
+
+    var input = makeSlider(field, defaultVal);
+    input.addEventListener('input', function() {
+      var val = parseFloat(input.value);
+      WIZARD.formData[field.id] = val;
+      badge.textContent = val + '%';
+      updateSliderGradient(input);
+    });
+    WIZARD.formData[field.id] = defaultVal;
+
+    var trackWrap = make('div', 'slider-track-wrap');
+    trackWrap.appendChild(input);
+    wrapper.appendChild(trackWrap);
+
+    var numAnchors = make('div', 'slider-anchors');
+    var numLow = make('span', 'anchor-low');
+    numLow.textContent = field.min + '%  Low';
+    var numHigh = make('span', 'anchor-high');
+    numHigh.textContent = 'High  ' + field.max + '%';
+    numAnchors.appendChild(numLow);
+    numAnchors.appendChild(numHigh);
+    wrapper.appendChild(numAnchors);
+
+    return wrapper;
+  }
+
+  function makeSlider(field, defaultVal) {
+    var input = document.createElement('input');
+    input.type = 'range';
+    input.id = 'field_' + field.id;
+    input.name = field.id;
+    input.min = field.min;
+    input.max = field.max;
+    input.step = (field.unit === 'wks') ? 1 : 0.5;
+    input.value = defaultVal;
+    updateSliderGradient(input);
+    return input;
+  }
+
+  function buildIncludeToggle(field) {
+    var defaultInc = field.defaultInclude !== false;
+    WIZARD.includeData[field.id + '_include'] = defaultInc;
+
+    var toggle = make('div', 'include-toggle ' + (defaultInc ? 'yes' : 'no'));
+    toggle.id = 'toggle_' + field.id;
+
+    var yes = make('span', 'tog-yes');
+    yes.textContent = 'Yes';
+    var no = make('span', 'tog-no');
+    no.textContent = 'No';
+
+    toggle.appendChild(yes);
+    toggle.appendChild(no);
+
+    yes.addEventListener('click', function() { setInclude(toggle, field.id, true); });
+    no.addEventListener('click', function() { setInclude(toggle, field.id, false); });
+
+    return toggle;
+  }
+
+  function setInclude(toggleEl, fieldId, included) {
+    WIZARD.includeData[fieldId + '_include'] = included;
+    toggleEl.classList.toggle('yes', included);
+    toggleEl.classList.toggle('no', !included);
+  }
+
+  function buildTableInput(field) {
+    var input = document.createElement('input');
+    input.type = 'number';
+    input.id = 'field_' + field.id;
+    input.name = field.id;
+    if (field.min !== undefined) input.min = field.min;
+    if (field.default !== null && field.default !== undefined) {
+      input.placeholder = field.default.toLocaleString();
+    } else if (field.placeholder) {
+      input.placeholder = field.placeholder;
+    }
+    input.step = (field.type === 'currency') ? 'any' : 1;
+    input.addEventListener('input', function() {
+      WIZARD.formData[field.id] = input.value === '' ? null : parseFloat(input.value);
+    });
+    return input;
+  }
+
+  // ── Slider gradient ────────────────────────────────────────────────────────
+  function updateSliderGradient(slider) {
+    var min = parseFloat(slider.min);
+    var max = parseFloat(slider.max);
+    var val = parseFloat(slider.value);
+    var pct = ((val - min) / (max - min)) * 100;
+    var midStop = Math.min(pct + 20, 100);
+    var highStop = Math.min(pct + 50, 100);
+    slider.style.background =
+      'linear-gradient(to right,' +
+      ' var(--slider-low) 0%,' +
+      ' var(--slider-mid) ' + midStop + '%,' +
+      ' var(--slider-high) ' + highStop + '%,' +
+      ' var(--slider-high) 100%)';
+  }
+
+  // ── Load existing sheet values ─────────────────────────────────────────────
+  function loadCurrentValues() {
+    showSpinner('Loading current values...');
+    google.script.run
+      .withSuccessHandler(function(values) {
+        WIZARD.currentValues = values || {};
+        applyCurrentValues();
+        hideSpinner();
+      })
+      .withFailureHandler(function(err) {
+        hideSpinner();
+        showToast('Could not load existing values: ' + err.message, 'error');
+      })
+      .getCurrentValues();
+  }
+
+  function applyCurrentValues() {
+    var vals = WIZARD.currentValues;
+    if (!vals) return;
+
+    WIZARD.config.dataInputFields.forEach(function(field) {
+      var val = vals[field.id];
+      if (val === null || val === undefined) return;
+      WIZARD.formData[field.id] = val;
+      var input = document.getElementById('field_' + field.id);
+      if (!input) return;
+      if (input.type === 'range') {
+        var numVal = clamp(parseFloat(val), parseFloat(input.min), parseFloat(input.max));
+        input.value = numVal;
+        WIZARD.formData[field.id] = numVal;
+        var badge = document.getElementById('badge_' + field.id);
+        if (badge) badge.textContent = numVal + (field.unit || '');
+        updateSliderGradient(input);
+      } else {
+        input.value = val;
+      }
+    });
+
+    WIZARD.config.benefitsFields.forEach(function(field) {
+      var val = vals[field.id];
+      var inc = vals[field.id + '_include'];
+
+      if (val !== null && val !== undefined) {
+        var input = document.getElementById('field_' + field.id);
+        if (input) {
+          var numVal = clamp(parseFloat(val), parseFloat(input.min), parseFloat(input.max));
+          input.value = numVal;
+          WIZARD.formData[field.id] = numVal;
+          var badge = document.getElementById('badge_' + field.id);
+          if (badge) badge.textContent = numVal + '%';
+          updateSliderGradient(input);
+        }
+      }
+
+      if (inc !== null && inc !== undefined) {
+        WIZARD.includeData[field.id + '_include'] = inc;
+        var toggleEl = document.getElementById('toggle_' + field.id);
+        if (toggleEl) setInclude(toggleEl, field.id, inc);
+      }
+    });
+  }
+
+  // ── Navigation ─────────────────────────────────────────────────────────────
+  function bindNavigation() {
+    document.getElementById('btnBack').addEventListener('click', goBack);
+    document.getElementById('btnNext').addEventListener('click', goNext);
+    document.getElementById('btnSubmit').addEventListener('click', submitWizard);
+  }
+
+  function goBack() {
+    if (WIZARD.currentStep > 1) showStep(WIZARD.currentStep - 1);
+  }
+
+  function goNext() {
+    if (validateCurrentStep() && WIZARD.currentStep < WIZARD.totalSteps) {
+      showStep(WIZARD.currentStep + 1);
+    }
+  }
+
+  function showStep(num) {
+    document.querySelectorAll('.step-panel').forEach(function(p) {
+      p.classList.remove('active');
+    });
+    var panel = document.getElementById('step-' + num);
+    if (panel) panel.classList.add('active');
+    WIZARD.currentStep = num;
+    updateStepIndicator();
+    updateNavButtons();
+    document.getElementById('wizBody').scrollTop = 0;
+    if (num === 8) populateReview();
+  }
+
+  function updateNavButtons() {
+    var isLast = WIZARD.currentStep === WIZARD.totalSteps;
+    document.getElementById('btnBack').disabled = (WIZARD.currentStep === 1);
+    document.getElementById('btnNext').style.display = isLast ? 'none' : 'inline-flex';
+    document.getElementById('btnSubmit').style.display = isLast ? 'inline-flex' : 'none';
+  }
+
+  // ── Client-side Validation ─────────────────────────────────────────────────
+  function validateCurrentStep() {
+    if (WIZARD.currentStep > 4) return true; // sliders always have valid defaults
+    var fields = getFieldsByStep(WIZARD.currentStep, 'dataInput');
+    var valid = true;
+    fields.forEach(function(field) {
+      if (field.required) {
+        var val = WIZARD.formData[field.id];
+        if (val === null || val === undefined || String(val).trim() === '') {
+          showFieldError(field.id, field.label + ' is required.');
+          valid = false;
+        }
+      }
+    });
+    return valid;
+  }
+
+  function showFieldError(fieldId, msg) {
+    var input = document.getElementById('field_' + fieldId);
+    if (input) input.classList.add('error');
+    var errEl = document.getElementById('err_' + fieldId);
+    if (errEl) { errEl.textContent = msg; errEl.classList.add('visible'); }
+  }
+
+  function clearFieldError(fieldId) {
+    var input = document.getElementById('field_' + fieldId);
+    if (input) input.classList.remove('error');
+    var errEl = document.getElementById('err_' + fieldId);
+    if (errEl) errEl.classList.remove('visible');
+  }
+
+  // ── Submit ─────────────────────────────────────────────────────────────────
+  function submitWizard() {
+    var payload = {};
+    Object.keys(WIZARD.formData).forEach(function(k) { payload[k] = WIZARD.formData[k]; });
+    Object.keys(WIZARD.includeData).forEach(function(k) { payload[k] = WIZARD.includeData[k]; });
+
+    showSpinner('Saving to spreadsheet...');
+    document.getElementById('btnSubmit').disabled = true;
+
+    google.script.run
+      .withSuccessHandler(function(result) {
+        hideSpinner();
+        document.getElementById('btnSubmit').disabled = false;
+        if (result.success) {
+          showToast('Values saved successfully!', 'success');
+          setTimeout(function() { google.script.host.close(); }, 1800);
+        } else {
+          showToast('Errors: ' + result.errors.join('; '), 'error');
+        }
+      })
+      .withFailureHandler(function(err) {
+        hideSpinner();
+        document.getElementById('btnSubmit').disabled = false;
+        showToast('Save failed: ' + err.message, 'error');
+      })
+      .saveWizardData(payload);
+  }
+
+  // ── Utilities ──────────────────────────────────────────────────────────────
+
+  function getFieldsByStep(stepNum, source) {
+    var list = source === 'dataInput'
+      ? (WIZARD.config.dataInputFields || [])
+      : (WIZARD.config.benefitsFields || []);
+    return list.filter(function(f) { return f.step === stepNum; });
+  }
+
+  function indexById(fields) {
+    var map = {};
+    fields.forEach(function(f) { map[f.id] = f; });
+    return map;
+  }
+
+  function appendDivider(parent, text) {
+    var div = make('div', 'section-divider');
+    div.textContent = text;
+    parent.appendChild(div);
+  }
+
+  function make(tag, className) {
+    var e = document.createElement(tag);
+    if (className) {
+      className.trim().split(/\s+/).forEach(function(c) { if (c) e.classList.add(c); });
+    }
+    return e;
+  }
+
+  function clearEl(el) {
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  function clamp(val, min, max) {
+    return Math.max(min, Math.min(max, val));
+  }
+
+  function formatCurrency(val) {
+    if (isNaN(val)) return '$-';
+    return '$' + val.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  }
+
+  function showSpinner(msg) {
+    var overlay = document.getElementById('spinnerOverlay');
+    var text = document.getElementById('spinnerText');
+    if (text) text.textContent = msg || 'Loading...';
+    if (overlay) overlay.classList.add('show');
+  }
+
+  function hideSpinner() {
+    var overlay = document.getElementById('spinnerOverlay');
+    if (overlay) overlay.classList.remove('show');
+  }
+
+  function showToast(msg, type) {
+    var toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.className = 'toast ' + (type || '');
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 3500);
+  }
+
+})();
+</script>

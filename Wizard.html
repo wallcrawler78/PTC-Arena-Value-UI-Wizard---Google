@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arena Value Assessment Wizard</title>
+  <?!= include('_styles'); ?>
+</head>
+<body>
+
+  <!-- Server config injected at render time — no async round-trip needed -->
+  <script>
+    window.WIZ_CONFIG = <?!= JSON.stringify(getWizardConfig()); ?>;
+  </script>
+
+  <!-- ── Header ── -->
+  <header class="wiz-header">
+    <div class="logo">PTC <span>Arena</span></div>
+    <div class="tagline">Value Assessment Wizard</div>
+  </header>
+
+  <!-- ── Step Indicator ── -->
+  <nav class="step-indicator" id="stepIndicator" aria-label="Wizard steps"></nav>
+
+  <!-- ── Body ── -->
+  <main class="wiz-body" id="wizBody" role="main"></main>
+
+  <!-- ── Footer / Navigation ── -->
+  <footer class="wiz-footer">
+    <span class="progress-text" id="progressText">Step 1 of 8</span>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-secondary" id="btnBack" disabled>&#8592; Back</button>
+      <button class="btn btn-primary"   id="btnNext">Next &#8594;</button>
+      <button class="btn btn-success"   id="btnSubmit" style="display:none;">Submit to Sheet</button>
+    </div>
+  </footer>
+
+  <!-- ── Spinner overlay ── -->
+  <div class="spinner-overlay" id="spinnerOverlay" role="status" aria-live="polite">
+    <div class="spinner"></div>
+    <span id="spinnerText">Loading...</span>
+  </div>
+
+  <!-- ── Toast notification ── -->
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+  <?!= include('_script'); ?>
+</body>
+</html>
