@@ -227,11 +227,122 @@
     });
 
     table.appendChild(tbody);
+
+    // ── Total row ──────────────────────────────────────────────────────────────
+    var tfoot = document.createElement('tfoot');
+    var trTotal = document.createElement('tr');
+    trTotal.className = 'fte-total-row';
+
+    var tdTotalLabel = document.createElement('td');
+    tdTotalLabel.className = 'role-label';
+    tdTotalLabel.textContent = 'Total Arena Users';
+
+    var tdTotalCount = document.createElement('td');
+    var countSpan = document.createElement('span');
+    countSpan.id = 'fte-total-count';
+    countSpan.className = 'fte-total-value';
+    countSpan.textContent = '—';
+    tdTotalCount.appendChild(countSpan);
+
+    var tdTotalPct = document.createElement('td');
+    var pctSpan = document.createElement('span');
+    pctSpan.id = 'fte-total-pct';
+    pctSpan.className = 'fte-total-pct';
+    pctSpan.textContent = '';
+    tdTotalPct.appendChild(pctSpan);
+
+    trTotal.appendChild(tdTotalLabel);
+    trTotal.appendChild(tdTotalCount);
+    trTotal.appendChild(tdTotalPct);
+    tfoot.appendChild(trTotal);
+    table.appendChild(tfoot);
+
     panel.appendChild(table);
+
+    // Licensing context note
+    var licenseNote = make('div', 'fte-license-note');
+    var noteIcon = document.createElement('span');
+    noteIcon.textContent = 'i';
+    noteIcon.className = 'fte-note-icon';
+    var noteText = document.createElement('span');
+    noteText.id = 'fte-license-text';
+    noteText.textContent = 'Total Arena Users estimates the Arena license count for this account.';
+    licenseNote.appendChild(noteIcon);
+    licenseNote.appendChild(noteText);
+    panel.appendChild(licenseNote);
 
     var note = make('p', 'pdc-note');
     note.textContent = 'FTE defaults are calculated from Total Employees if left blank. Salaries default to $120,000.';
     panel.appendChild(note);
+
+    // Wire live total update on each FTE input
+    var fteIds = ['devTeamFTEs','cadFTEs','engServicesFTEs','pdcFTEs','qualityFTEs','complianceFTEs','sourcingFTEs'];
+    fteIds.forEach(function(id) {
+      var inp = document.getElementById('field_' + id);
+      if (inp) inp.addEventListener('input', updateFTETotal);
+    });
+  }
+
+  var FTE_DEFAULTS = {
+    devTeamFTEs:    0.15,
+    cadFTEs:        0.02,
+    engServicesFTEs: 0.01,
+    pdcFTEs:        0.20,
+    qualityFTEs:    0.05,
+    complianceFTEs: 0.02,
+    sourcingFTEs:   0.01
+  };
+
+  /**
+   * Auto-fills FTE counts from Total Employees × role default % when fields are empty.
+   * Called every time Step 4 is shown; never overwrites user-entered values.
+   */
+  function autoFillStep4Defaults() {
+    var employees = parseFloat(WIZARD.formData['totalEmployees']);
+    if (!employees || isNaN(employees) || employees <= 0) {
+      updateFTETotal();
+      return;
+    }
+    Object.keys(FTE_DEFAULTS).forEach(function(id) {
+      var current = WIZARD.formData[id];
+      var isEmpty = (current === null || current === undefined || String(current).trim() === '');
+      if (!isEmpty) return;
+      var val = Math.max(1, Math.round(employees * FTE_DEFAULTS[id]));
+      WIZARD.formData[id] = val;
+      var input = document.getElementById('field_' + id);
+      if (input) input.value = val;
+    });
+    updateFTETotal();
+  }
+
+  /**
+   * Sums all FTE fields and updates the total row + licensing note.
+   */
+  function updateFTETotal() {
+    var total = 0;
+    Object.keys(FTE_DEFAULTS).forEach(function(id) {
+      var val = parseFloat(WIZARD.formData[id]);
+      if (!isNaN(val) && val > 0) total += val;
+    });
+
+    var countEl = document.getElementById('fte-total-count');
+    if (countEl) countEl.textContent = total > 0 ? total : '—';
+
+    var employees = parseFloat(WIZARD.formData['totalEmployees']) || 0;
+    var pctEl = document.getElementById('fte-total-pct');
+    if (pctEl) {
+      if (total > 0 && employees > 0) {
+        var pct = Math.round((total / employees) * 100);
+        pctEl.textContent = pct + '% of ' + employees.toLocaleString() + ' employees';
+      } else {
+        pctEl.textContent = '';
+      }
+    }
+
+    var noteEl = document.getElementById('fte-license-text');
+    if (noteEl && total > 0) {
+      noteEl.textContent = total + ' users estimated for Arena licensing — review with your Arena team.';
+    }
   }
 
   // ── Steps 5-7: Benefits ────────────────────────────────────────────────────
@@ -817,6 +928,7 @@
     updateNavButtons();
     document.getElementById('wizBody').scrollTop = 0;
     if (num === 3) autoFillStep3Defaults();
+    if (num === 4) autoFillStep4Defaults();
     if (num === 8) populateReview();
   }
 
