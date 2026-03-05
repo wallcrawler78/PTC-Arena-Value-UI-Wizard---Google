@@ -816,7 +816,41 @@
     updateStepIndicator();
     updateNavButtons();
     document.getElementById('wizBody').scrollTop = 0;
+    if (num === 3) autoFillStep3Defaults();
     if (num === 8) populateReview();
+  }
+
+  /**
+   * Auto-populates Cost Structure baselines from Annual Revenue when fields are empty.
+   * Called every time Step 3 is shown; never overwrites a value the user has entered.
+   *   inventoryValue      = Revenue × 10%
+   *   expeditingCosts     = Revenue × 0.2%
+   *   scrapRework         = Revenue × 0.2%
+   *   warrantyService     = Revenue × 0.2%
+   *   excessObsolete      = Revenue × 0.2%
+   */
+  function autoFillStep3Defaults() {
+    var revenue = parseFloat(WIZARD.formData['annualRevenue']);
+    if (!revenue || isNaN(revenue) || revenue <= 0) return;
+
+    var defaults = {
+      inventoryValue:   Math.round(revenue * 0.10),
+      expeditingCosts:  Math.round(revenue * 0.002),
+      scrapRework:      Math.round(revenue * 0.002),
+      warrantyService:  Math.round(revenue * 0.002),
+      excessObsolete:   Math.round(revenue * 0.002)
+    };
+
+    Object.keys(defaults).forEach(function(id) {
+      var current = WIZARD.formData[id];
+      var isEmpty = (current === null || current === undefined || String(current).trim() === '');
+      if (!isEmpty) return; // never overwrite user input
+
+      var val = defaults[id];
+      WIZARD.formData[id] = val;
+      var input = document.getElementById('field_' + id);
+      if (input) input.value = val;
+    });
   }
 
   function updateNavButtons() {
