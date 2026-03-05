@@ -78,7 +78,7 @@
     });
     document.querySelectorAll('.step-connector').forEach(function(conn, idx) {
       conn.style.background = (idx < WIZARD.currentStep - 1)
-        ? 'var(--ptc-light-blue)' : 'var(--border)';
+        ? 'var(--arena-light)' : 'var(--border)';
     });
     document.getElementById('progressText').textContent =
       'Step ' + WIZARD.currentStep + ' of ' + WIZARD.totalSteps;

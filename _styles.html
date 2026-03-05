@@ -3,23 +3,31 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --ptc-blue:       #005B9E;
-    --ptc-light-blue: #0093D0;
-    --ptc-orange:     #F47920;
-    --bg:             #F5F7FA;
-    --text-dark:      #1A1A2E;
-    --text-mid:       #4A5568;
-    --text-light:     #718096;
-    --border:         #E0E4EA;
-    --white:          #FFFFFF;
-    --success:        #2F855A;
-    --danger:         #C53030;
-    --slider-low:     #E53E3E;
-    --slider-mid:     #D69E2E;
-    --slider-high:    #38A169;
-    --radius:         8px;
-    --shadow:         0 2px 8px rgba(0,0,0,.10);
-    --transition:     0.18s ease;
+    /* ── Arena by PTC brand colors ── */
+    --arena-green:      #00890B;   /* Arena primary green (from arenasolutions.com) */
+    --arena-dark:       #004D07;   /* Header / dark anchor */
+    --arena-mid:        #007B0E;   /* Mid-green for gradients */
+    --arena-light:      #40AA1D;   /* Light accent green */
+    --arena-tint:       #EAF7EB;   /* Very light green tint for backgrounds */
+    --ptc-orange:       #F47920;   /* PTC orange — Submit CTA only */
+    --ptc-blue:         #005B9E;   /* Kept for backwards compat references */
+    --ptc-light-blue:   #0093D0;   /* Kept for backwards compat references */
+    /* ── Neutrals ── */
+    --bg:               #F5F7FA;
+    --text-dark:        #1A2A1A;
+    --text-mid:         #4A5568;
+    --text-light:       #718096;
+    --border:           #E0E4EA;
+    --white:            #FFFFFF;
+    --success:          #2F855A;
+    --danger:           #C53030;
+    /* ── Slider spectrum ── */
+    --slider-low:       #E53E3E;
+    --slider-mid:       #D69E2E;
+    --slider-high:      #38A169;
+    --radius:           8px;
+    --shadow:           0 2px 8px rgba(0,0,0,.10);
+    --transition:       0.18s ease;
   }
 
   body {
@@ -35,25 +43,37 @@
 
   /* ── Header ──────────────────────────────────────────────────────────────── */
   .wiz-header {
-    background: var(--ptc-blue);
+    background: linear-gradient(135deg, var(--arena-dark) 0%, var(--arena-mid) 100%);
     color: var(--white);
-    padding: 14px 24px;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  }
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0;
     flex-shrink: 0;
   }
-  .wiz-header .logo {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: var(--white);
+  .logo-svg {
+    width: 140px;
+    height: 36px;
+    display: block;
   }
-  .wiz-header .logo span { color: var(--ptc-orange); }
+  .header-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,.25);
+    flex-shrink: 0;
+  }
   .wiz-header .tagline {
-    font-size: 12px;
-    opacity: .8;
-    margin-left: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,.85);
+    letter-spacing: .3px;
   }
 
   /* ── Step Indicator ──────────────────────────────────────────────────────── */
@@ -102,18 +122,18 @@
     transition: var(--transition);
   }
   .step-item.done .step-circle {
-    background: var(--ptc-light-blue);
-    border-color: var(--ptc-light-blue);
+    background: var(--arena-light);
+    border-color: var(--arena-light);
     color: var(--white);
   }
-  .step-item.done + .step-connector { background: var(--ptc-light-blue); }
+  .step-item.done + .step-connector { background: var(--arena-light); }
   .step-item.active .step-circle {
-    background: var(--ptc-blue);
-    border-color: var(--ptc-blue);
+    background: var(--arena-green);
+    border-color: var(--arena-green);
     color: var(--white);
-    box-shadow: 0 0 0 3px rgba(0,91,158,.25);
+    box-shadow: 0 0 0 3px rgba(0,137,11,.22);
   }
-  .step-item.active .step-label { color: var(--ptc-blue); font-weight: 600; }
+  .step-item.active .step-label { color: var(--arena-green); font-weight: 600; }
 
   /* ── Content Area ────────────────────────────────────────────────────────── */
   .wiz-body {
@@ -128,7 +148,7 @@
   .step-title {
     font-size: 18px;
     font-weight: 700;
-    color: var(--ptc-blue);
+    color: var(--arena-dark);
     margin-bottom: 4px;
   }
   .step-subtitle {
@@ -186,8 +206,8 @@
   }
   .field input:focus {
     outline: none;
-    border-color: var(--ptc-light-blue);
-    box-shadow: 0 0 0 3px rgba(0,147,208,.15);
+    border-color: var(--arena-green);
+    box-shadow: 0 0 0 3px rgba(0,137,11,.15);
   }
   .field input.error { border-color: var(--danger); }
   .field-error {
@@ -222,7 +242,7 @@
     flex: 1;
   }
   .slider-value-badge {
-    background: var(--ptc-blue);
+    background: var(--arena-green);
     color: var(--white);
     font-size: 13px;
     font-weight: 700;
@@ -289,7 +309,7 @@
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: var(--ptc-blue);
+    background: var(--arena-green);
     border: 2px solid var(--white);
     box-shadow: 0 1px 4px rgba(0,0,0,.25);
     cursor: pointer;
@@ -302,7 +322,7 @@
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: var(--ptc-blue);
+    background: var(--arena-green);
     border: 2px solid var(--white);
     box-shadow: 0 1px 4px rgba(0,0,0,.25);
     cursor: pointer;
@@ -363,7 +383,7 @@
     font-size: 13px;
   }
   .team-table th {
-    background: var(--ptc-blue);
+    background: var(--arena-green);
     color: var(--white);
     padding: 10px 14px;
     text-align: left;
@@ -387,17 +407,17 @@
   }
   .team-table input[type="number"]:focus {
     outline: none;
-    border-color: var(--ptc-light-blue);
-    box-shadow: 0 0 0 2px rgba(0,147,208,.15);
+    border-color: var(--arena-green);
+    box-shadow: 0 0 0 2px rgba(0,137,11,.15);
   }
   .pdc-note {
     font-size: 11px;
     color: var(--text-light);
     margin-top: 8px;
     padding: 8px 12px;
-    background: rgba(0,147,208,.07);
+    background: var(--arena-tint);
     border-radius: 6px;
-    border-left: 3px solid var(--ptc-light-blue);
+    border-left: 3px solid var(--arena-light);
   }
 
   /* ── Review Step ─────────────────────────────────────────────────────────── */
@@ -414,7 +434,7 @@
     box-shadow: var(--shadow);
   }
   .review-section-title {
-    background: var(--ptc-light-blue);
+    background: var(--arena-green);
     color: var(--white);
     font-size: 12px;
     font-weight: 700;
@@ -472,10 +492,10 @@
   }
   .btn-secondary:hover:not(:disabled) { background: var(--bg); border-color: var(--text-light); }
   .btn-primary {
-    background: var(--ptc-blue);
+    background: var(--arena-green);
     color: var(--white);
   }
-  .btn-primary:hover:not(:disabled) { background: #004a82; }
+  .btn-primary:hover:not(:disabled) { background: var(--arena-dark); }
   .btn-success {
     background: var(--success);
     color: var(--white);
@@ -524,14 +544,14 @@
     flex-direction: column;
     gap: 12px;
     font-size: 14px;
-    color: var(--ptc-blue);
+    color: var(--arena-green);
   }
   .spinner-overlay.show { display: flex; }
   .spinner {
     width: 40px;
     height: 40px;
     border: 4px solid var(--border);
-    border-top-color: var(--ptc-blue);
+    border-top-color: var(--arena-green);
     border-radius: 50%;
     animation: spin .7s linear infinite;
   }
@@ -543,7 +563,7 @@
     align-items: center;
     gap: 10px;
     margin: 16px 0 12px;
-    color: var(--ptc-light-blue);
+    color: var(--arena-green);
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
