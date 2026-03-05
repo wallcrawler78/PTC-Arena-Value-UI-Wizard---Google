@@ -156,7 +156,8 @@
     font-weight: 600;
     color: var(--text-dark);
   }
-  .field .hint {
+  .field .hint,
+  .slider-field .hint {
     font-size: 11px;
     color: var(--text-light);
     margin-top: -4px;
@@ -303,8 +304,42 @@
     margin-top: 4px;
     gap: 8px;
   }
-  .slider-anchors .anchor-low { color: #C53030; text-align: left; flex: 1; }
-  .slider-anchors .anchor-high { color: #2F855A; text-align: right; flex: 1; }
+  .slider-anchors .anchor-low { color: var(--danger); text-align: left; flex: 1; }
+  .slider-anchors .anchor-high { color: var(--success); text-align: right; flex: 1; }
+
+  /* Excluded benefit slider — dimmed, range thumb disabled */
+  .slider-field.excluded { opacity: 0.42; }
+  .slider-field.excluded input[type="range"] { pointer-events: none; }
+
+  /* Currency input with $ prefix */
+  .currency-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .currency-wrap .currency-sym {
+    position: absolute;
+    left: 10px;
+    color: var(--text-mid);
+    font-size: 14px;
+    pointer-events: none;
+    user-select: none;
+  }
+  .currency-wrap input {
+    padding-left: 22px !important;
+  }
+
+  /* Bulk include/exclude bar (benefit steps) */
+  .bulk-toggle-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .btn-sm {
+    padding: 5px 14px;
+    font-size: 12px;
+  }
 
   /* ── Team Resources Table (Step 4) ───────────────────────────────────────── */
   .team-table {

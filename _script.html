@@ -64,9 +64,17 @@
   function updateStepIndicator() {
     document.querySelectorAll('.step-item').forEach(function(item) {
       var num = parseInt(item.dataset.step);
+      var circle = item.querySelector('.step-circle');
       item.classList.remove('active', 'done');
-      if (num === WIZARD.currentStep) item.classList.add('active');
-      else if (num < WIZARD.currentStep) item.classList.add('done');
+      if (num === WIZARD.currentStep) {
+        item.classList.add('active');
+        if (circle) circle.textContent = num;
+      } else if (num < WIZARD.currentStep) {
+        item.classList.add('done');
+        if (circle) circle.textContent = '\u2713'; // ✓ checkmark
+      } else {
+        if (circle) circle.textContent = num;
+      }
     });
     document.querySelectorAll('.step-connector').forEach(function(conn, idx) {
       conn.style.background = (idx < WIZARD.currentStep - 1)
@@ -227,21 +235,37 @@
   }
 
   // ── Steps 5-7: Benefits ────────────────────────────────────────────────────
-  function renderStep5(panel) {
-    getFieldsByStep(5, 'benefits').forEach(function(f) {
-      panel.appendChild(buildBenefitSlider(f));
+  function renderBenefitStep(panel, stepNum) {
+    var fields = getFieldsByStep(stepNum, 'benefits');
+
+    // Bulk include / exclude bar
+    var bar = make('div', 'bulk-toggle-bar');
+    var inclBtn = make('button', 'btn btn-secondary btn-sm');
+    inclBtn.textContent = 'Include All';
+    inclBtn.addEventListener('click', function() {
+      fields.forEach(function(f) {
+        var t = document.getElementById('toggle_' + f.id);
+        if (t) setInclude(t, f.id, true);
+      });
     });
-  }
-  function renderStep6(panel) {
-    getFieldsByStep(6, 'benefits').forEach(function(f) {
-      panel.appendChild(buildBenefitSlider(f));
+    var exclBtn = make('button', 'btn btn-secondary btn-sm');
+    exclBtn.textContent = 'Exclude All';
+    exclBtn.addEventListener('click', function() {
+      fields.forEach(function(f) {
+        var t = document.getElementById('toggle_' + f.id);
+        if (t) setInclude(t, f.id, false);
+      });
     });
+    bar.appendChild(inclBtn);
+    bar.appendChild(exclBtn);
+    panel.appendChild(bar);
+
+    fields.forEach(function(f) { panel.appendChild(buildBenefitSlider(f)); });
   }
-  function renderStep7(panel) {
-    getFieldsByStep(7, 'benefits').forEach(function(f) {
-      panel.appendChild(buildBenefitSlider(f));
-    });
-  }
+
+  function renderStep5(panel) { renderBenefitStep(panel, 5); }
+  function renderStep6(panel) { renderBenefitStep(panel, 6); }
+  function renderStep7(panel) { renderBenefitStep(panel, 7); }
 
   // ── Step 8: Review ─────────────────────────────────────────────────────────
   function renderStep8(panel) {
@@ -318,25 +342,52 @@
       wrapper.appendChild(hint);
     }
 
+    var isCurrency = (field.type === 'currency');
     var input = document.createElement('input');
-    input.type = (field.type === 'text') ? 'text' : 'number';
+    input.type = isCurrency ? 'text' : (field.type === 'text' ? 'text' : 'number');
     input.id = 'field_' + field.id;
     input.name = field.id;
+    input.setAttribute('aria-describedby', 'err_' + field.id);
     if (field.placeholder) input.placeholder = field.placeholder;
-    if (field.min !== undefined) input.min = field.min;
-    if (field.max !== undefined) input.max = field.max;
-    if (field.type === 'currency') input.step = 'any';
+    if (!isCurrency && field.min !== undefined) input.min = field.min;
+    if (!isCurrency && field.max !== undefined) input.max = field.max;
+    if (field.type === 'number') input.step = '1';
 
     input.addEventListener('input', function() {
-      WIZARD.formData[field.id] = input.value;
+      WIZARD.formData[field.id] = isCurrency
+        ? (input.value === '' ? '' : parseFloat(input.value.replace(/[^0-9.]/g, '')))
+        : input.value;
       clearFieldError(field.id);
     });
+
+    if (isCurrency) {
+      // Format with commas on blur; restore raw number on focus
+      input.addEventListener('blur', function() {
+        var raw = WIZARD.formData[field.id];
+        if (raw !== null && raw !== undefined && raw !== '' && !isNaN(raw)) {
+          input.value = parseFloat(raw).toLocaleString('en-US', { maximumFractionDigits: 0 });
+        }
+      });
+      input.addEventListener('focus', function() {
+        var raw = WIZARD.formData[field.id];
+        input.value = (raw !== null && raw !== undefined && raw !== '') ? String(raw) : '';
+      });
+    }
 
     var errMsg = make('span', 'field-error');
     errMsg.id = 'err_' + field.id;
     errMsg.textContent = field.label + ' is required.';
 
-    wrapper.appendChild(input);
+    if (isCurrency) {
+      var wrap = make('div', 'currency-wrap');
+      var sym = make('span', 'currency-sym');
+      sym.textContent = '$';
+      wrap.appendChild(sym);
+      wrap.appendChild(input);
+      wrapper.appendChild(wrap);
+    } else {
+      wrapper.appendChild(input);
+    }
     wrapper.appendChild(errMsg);
     return wrapper;
   }
@@ -451,6 +502,7 @@
     input.type = 'range';
     input.id = 'field_' + field.id;
     input.name = field.id;
+    input.setAttribute('aria-label', field.label);
     input.min = field.min;
     input.max = field.max;
     input.step = (field.unit === 'wks') ? 1 : 0.5;
@@ -465,17 +517,32 @@
 
     var toggle = make('div', 'include-toggle ' + (defaultInc ? 'yes' : 'no'));
     toggle.id = 'toggle_' + field.id;
+    toggle.setAttribute('role', 'group');
+    toggle.setAttribute('aria-label', 'Include ' + field.label);
 
     var yes = make('span', 'tog-yes');
     yes.textContent = 'Yes';
+    yes.setAttribute('tabindex', '0');
+    yes.setAttribute('role', 'button');
+    yes.setAttribute('aria-label', 'Include');
+
     var no = make('span', 'tog-no');
     no.textContent = 'No';
+    no.setAttribute('tabindex', '0');
+    no.setAttribute('role', 'button');
+    no.setAttribute('aria-label', 'Exclude');
 
     toggle.appendChild(yes);
     toggle.appendChild(no);
 
     yes.addEventListener('click', function() { setInclude(toggle, field.id, true); });
     no.addEventListener('click', function() { setInclude(toggle, field.id, false); });
+    yes.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setInclude(toggle, field.id, true); }
+    });
+    no.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setInclude(toggle, field.id, false); }
+    });
 
     return toggle;
   }
@@ -484,6 +551,12 @@
     WIZARD.includeData[fieldId + '_include'] = included;
     toggleEl.classList.toggle('yes', included);
     toggleEl.classList.toggle('no', !included);
+    // Dim the slider card when excluded so users see it's inactive
+    var sliderCard = toggleEl.closest ? toggleEl.closest('.slider-field') : null;
+    if (!sliderCard && toggleEl.parentNode) sliderCard = toggleEl.parentNode.parentNode; // fallback
+    if (sliderCard && sliderCard.classList.contains('slider-field')) {
+      sliderCard.classList.toggle('excluded', !included);
+    }
   }
 
   function buildTableInput(field) {
@@ -509,18 +582,17 @@
   }
 
   // ── Slider gradient ────────────────────────────────────────────────────────
+  // Fixed red→yellow→green spectrum across the full range.
+  // The thumb position shows where the current value sits on the quality scale.
+  // This ensures green is always visible at high values (critical bug fix).
   function updateSliderGradient(slider) {
     var min = parseFloat(slider.min);
     var max = parseFloat(slider.max);
-    var val = parseFloat(slider.value);
-    var pct = ((val - min) / (max - min)) * 100;
-    var midStop = Math.min(pct + 20, 100);
-    var highStop = Math.min(pct + 50, 100);
+    if (max === min) { slider.style.background = 'var(--slider-low)'; return; }
     slider.style.background =
       'linear-gradient(to right,' +
       ' var(--slider-low) 0%,' +
-      ' var(--slider-mid) ' + midStop + '%,' +
-      ' var(--slider-high) ' + highStop + '%,' +
+      ' var(--slider-mid) 50%,' +
       ' var(--slider-high) 100%)';
   }
 
@@ -535,7 +607,7 @@
       })
       .withFailureHandler(function(err) {
         hideSpinner();
-        showToast('Could not load existing values: ' + err.message, 'error');
+        showToast('Could not load existing values: ' + (err.message || String(err)), 'error');
       })
       .getCurrentValues();
   }
@@ -591,6 +663,14 @@
     document.getElementById('btnBack').addEventListener('click', goBack);
     document.getElementById('btnNext').addEventListener('click', goNext);
     document.getElementById('btnSubmit').addEventListener('click', submitWizard);
+
+    // Enter key advances to next step (unless focus is on a button or textarea)
+    document.addEventListener('keydown', function(e) {
+      if (e.key !== 'Enter') return;
+      var tag = document.activeElement && document.activeElement.tagName;
+      if (tag === 'BUTTON' || tag === 'TEXTAREA') return;
+      if (WIZARD.currentStep < WIZARD.totalSteps) goNext();
+    });
   }
 
   function goBack() {
@@ -671,13 +751,14 @@
           showToast('Values saved successfully!', 'success');
           setTimeout(function() { google.script.host.close(); }, 1800);
         } else {
-          showToast('Errors: ' + result.errors.join('; '), 'error');
+          var msgs = Array.isArray(result.errors) ? result.errors.join('; ') : 'Unknown error';
+          showToast('Errors: ' + msgs, 'error');
         }
       })
       .withFailureHandler(function(err) {
         hideSpinner();
         document.getElementById('btnSubmit').disabled = false;
-        showToast('Save failed: ' + err.message, 'error');
+        showToast('Save failed: ' + (err.message || String(err)), 'error');
       })
       .saveWizardData(payload);
   }

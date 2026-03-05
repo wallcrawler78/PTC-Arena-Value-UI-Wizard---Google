@@ -117,11 +117,17 @@ function saveWizardData(formData) {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var config = getSheetConfig();
 
-    // Write Data Input tab
+    // Verify both tabs exist BEFORE writing anything (ensures atomic behaviour)
     var diSheet = ss.getSheetByName(config.tabs.DATA_INPUT);
     if (!diSheet) {
-      return { success: false, errors: ['Could not find "Data Input" tab.'] };
+      return { success: false, errors: ['Could not find "Data Input" tab. Check tab name in Config.gs.'] };
     }
+    var bcSheet = ss.getSheetByName(config.tabs.BENEFITS_CALC);
+    if (!bcSheet) {
+      return { success: false, errors: ['Could not find "Benefits Calc" tab. Check tab name in Config.gs.'] };
+    }
+
+    // Write Data Input tab
     config.dataInput.fields.forEach(function(field) {
       var value = formData[field.id];
       if (value === null || value === undefined || value === '') return;
@@ -130,10 +136,6 @@ function saveWizardData(formData) {
     });
 
     // Write Benefits Calc tab
-    var bcSheet = ss.getSheetByName(config.tabs.BENEFITS_CALC);
-    if (!bcSheet) {
-      return { success: false, errors: ['Could not find "Benefits Calc" tab.'] };
-    }
     config.benefitsCalc.fields.forEach(function(field) {
       var impValue = formData[field.id];
       var incValue = formData[field.id + '_include'];
