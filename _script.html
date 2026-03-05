@@ -5,7 +5,7 @@
   // ── State ──────────────────────────────────────────────────────────────────
   var WIZARD = {
     currentStep: 1,
-    totalSteps: 8,
+    totalSteps: 9,
     formData: {},
     includeData: {},
     config: null,
@@ -20,12 +20,13 @@
     { num: 5, title: 'Revenue & COGS Benefits', subtitle: 'Adjust improvement sliders. Toggle to include or exclude each benefit.' },
     { num: 6, title: 'Productivity Benefits',   subtitle: 'Team efficiency improvements from better product data management.' },
     { num: 7, title: 'Cost Recovery Benefits',  subtitle: 'Reduction in operational cost categories.' },
-    { num: 8, title: 'Review & Submit',         subtitle: 'Review all inputs before writing to the spreadsheet.' }
+    { num: 8, title: 'Legacy System Costs',     subtitle: 'Current PLM/PDM system costs and Arena investment for TCO comparison.' },
+    { num: 9, title: 'Review & Submit',         subtitle: 'Review all inputs before writing to the spreadsheet.' }
   ];
 
   // ── Init ───────────────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function() {
-    WIZARD.config = window.WIZ_CONFIG || { dataInputFields: [], benefitsFields: [] };
+    WIZARD.config = window.WIZ_CONFIG || { dataInputFields: [], benefitsFields: [], legacyTcoFields: [] };
     buildUI();
     loadCurrentValues();
   });
@@ -109,6 +110,7 @@
         case 6: renderStep6(panel); break;
         case 7: renderStep7(panel); break;
         case 8: renderStep8(panel); break;
+        case 9: renderStep9(panel); break;
       }
       body.appendChild(panel);
     });
@@ -378,8 +380,79 @@
   function renderStep6(panel) { renderBenefitStep(panel, 6); }
   function renderStep7(panel) { renderBenefitStep(panel, 7); }
 
-  // ── Step 8: Review ─────────────────────────────────────────────────────────
+  // ── Step 8: Legacy System Costs ────────────────────────────────────────────
   function renderStep8(panel) {
+    var fields = getFieldsByStep(8, 'legacyTco');
+    var byId = indexById(fields);
+
+    appendDivider(panel, 'Current Legacy System Costs');
+    var legacyGrid = make('div', 'field-group');
+    ['legacyLicenseCost','legacyITCost','legacyTrainingMaintCost','legacyIntegrationCost'].forEach(function(id) {
+      if (byId[id]) legacyGrid.appendChild(buildInputField(byId[id]));
+    });
+    panel.appendChild(legacyGrid);
+
+    // Live total for legacy costs
+    var legacyTotalNote = make('div', 'fte-license-note');
+    var legacyIcon = document.createElement('span');
+    legacyIcon.textContent = '\u03A3';
+    legacyIcon.className = 'fte-note-icon';
+    var legacyText = document.createElement('span');
+    legacyText.id = 'legacy-annual-total';
+    legacyText.textContent = 'Estimated Legacy Annual TCO: \u2014';
+    legacyTotalNote.appendChild(legacyIcon);
+    legacyTotalNote.appendChild(legacyText);
+    panel.appendChild(legacyTotalNote);
+
+    appendDivider(panel, 'Arena Investment');
+    var arenaGrid = make('div', 'field-group');
+    ['arenaSubscriptionCost','arenaImplementationCost','arenaTrainingCost'].forEach(function(id) {
+      if (byId[id]) arenaGrid.appendChild(buildInputField(byId[id]));
+    });
+    panel.appendChild(arenaGrid);
+
+    appendDivider(panel, 'TCO Comparison Period');
+    var periodGroup = make('div', 'field-group single');
+    if (byId['tcoYears']) periodGroup.appendChild(buildInputField(byId['tcoYears']));
+    panel.appendChild(periodGroup);
+
+    // Pre-populate defaults for fields that have them
+    fields.forEach(function(f) {
+      if (f.default !== null && f.default !== undefined) {
+        var current = WIZARD.formData[f.id];
+        var isEmpty = (current === null || current === undefined || String(current).trim() === '');
+        if (isEmpty) {
+          WIZARD.formData[f.id] = f.default;
+          var inp = document.getElementById('field_' + f.id);
+          if (inp) inp.value = f.default;
+        }
+      }
+    });
+
+    // Wire live total update
+    var legacyCostIds = ['legacyLicenseCost','legacyITCost','legacyTrainingMaintCost','legacyIntegrationCost'];
+    legacyCostIds.forEach(function(id) {
+      var inp = document.getElementById('field_' + id);
+      if (inp) inp.addEventListener('input', updateLegacyTCOTotal);
+    });
+  }
+
+  function updateLegacyTCOTotal() {
+    var total = 0;
+    ['legacyLicenseCost','legacyITCost','legacyTrainingMaintCost','legacyIntegrationCost'].forEach(function(id) {
+      var val = parseFloat(WIZARD.formData[id]);
+      if (!isNaN(val) && val > 0) total += val;
+    });
+    var el = document.getElementById('legacy-annual-total');
+    if (el) {
+      el.textContent = total > 0
+        ? 'Estimated Legacy Annual TCO: ' + formatCurrency(total)
+        : 'Estimated Legacy Annual TCO: \u2014';
+    }
+  }
+
+  // ── Step 9: Review ────────────────────────────────────────────────────────
+  function renderStep9(panel) {
     var grid = make('div', 'review-grid');
     grid.id = 'reviewGrid';
     panel.appendChild(grid);
@@ -397,7 +470,8 @@
       { title: 'Team Resources',          fields: getFieldsByStep(4, 'dataInput') },
       { title: 'Revenue & COGS Benefits', fields: getFieldsByStep(5, 'benefits'), isBenefit: true },
       { title: 'Productivity Benefits',   fields: getFieldsByStep(6, 'benefits'), isBenefit: true },
-      { title: 'Cost Recovery Benefits',  fields: getFieldsByStep(7, 'benefits'), isBenefit: true }
+      { title: 'Cost Recovery Benefits',  fields: getFieldsByStep(7, 'benefits'), isBenefit: true },
+      { title: 'Legacy System Costs',   fields: getFieldsByStep(8, 'legacyTco') }
     ];
 
     sections.forEach(function(sec) {
@@ -863,6 +937,16 @@
       }
     });
 
+    // Apply Legacy TCO fields
+    (WIZARD.config.legacyTcoFields || []).forEach(function(field) {
+      var val = vals[field.id];
+      if (val === null || val === undefined) return;
+      WIZARD.formData[field.id] = val;
+      var input = document.getElementById('field_' + field.id);
+      if (!input) return;
+      input.value = val;
+    });
+
     WIZARD.config.benefitsFields.forEach(function(field) {
       var val = vals[field.id];
       var inc = vals[field.id + '_include'];
@@ -929,7 +1013,8 @@
     document.getElementById('wizBody').scrollTop = 0;
     if (num === 3) autoFillStep3Defaults();
     if (num === 4) autoFillStep4Defaults();
-    if (num === 8) populateReview();
+    if (num === 8) updateLegacyTCOTotal();
+    if (num === 9) populateReview();
   }
 
   /**
@@ -1051,9 +1136,14 @@
   // ── Utilities ──────────────────────────────────────────────────────────────
 
   function getFieldsByStep(stepNum, source) {
-    var list = source === 'dataInput'
-      ? (WIZARD.config.dataInputFields || [])
-      : (WIZARD.config.benefitsFields || []);
+    var list;
+    if (source === 'dataInput') {
+      list = WIZARD.config.dataInputFields || [];
+    } else if (source === 'legacyTco') {
+      list = WIZARD.config.legacyTcoFields || [];
+    } else {
+      list = WIZARD.config.benefitsFields || [];
+    }
     return list.filter(function(f) { return f.step === stepNum; });
   }
 

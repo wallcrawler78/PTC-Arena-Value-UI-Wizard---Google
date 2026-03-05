@@ -87,6 +87,35 @@ function runSheetAudit() {
   }
 
   report.push('');
+  report.push('--- LEGACY TCO TAB (' + config.tabs.LEGACY_TCO + ') ---');
+  var tcoSheet = ss.getSheetByName(config.tabs.LEGACY_TCO);
+  if (!tcoSheet) {
+    report.push('ERROR: Tab not found: ' + config.tabs.LEGACY_TCO);
+  } else {
+    config.legacyTco.fields.forEach(function(field) {
+      var cellRef = config.legacyTco.writeCol + field.row;
+      var range = tcoSheet.getRange(cellRef);
+      var value = range.getValue();
+      var formula = range.getFormula();
+      var hasFormula = formula && formula.trim() !== '';
+
+      var status = 'OK';
+      var note = '';
+
+      if (hasFormula) {
+        status = 'WARNING';
+        note = 'Cell has formula: ' + formula + ' (wizard should only write to input/yellow cells)';
+        warnings.push(field.id + ' (' + cellRef + '): ' + note);
+      }
+
+      report.push('[' + status + '] ' + field.id + ' → ' + cellRef +
+                  ' | value: ' + JSON.stringify(value) +
+                  ' | storeAs: ' + field.storeAs +
+                  (note ? ' | NOTE: ' + note : ''));
+    });
+  }
+
+  report.push('');
   report.push('--- SUMMARY ---');
   report.push('Warnings: ' + warnings.length);
   warnings.forEach(function(w) { report.push('  ⚠ ' + w); });

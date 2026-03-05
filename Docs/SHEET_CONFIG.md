@@ -10,6 +10,7 @@ All cell mappings live in **`Config.gs`** → `getSheetConfig()`. This file is t
 |----------|----------|
 | `SPREADSHEET_TABS.DATA_INPUT` | `Data Input` |
 | `SPREADSHEET_TABS.BENEFITS_CALC` | `Benefits Calc` |
+| `SPREADSHEET_TABS.LEGACY_TCO` | `Legacy TCO` |
 
 ---
 
@@ -83,6 +84,23 @@ All cell mappings live in **`Config.gs`** → `getSheetConfig()`. This file is t
 | `reduceEOL` | 19 | Reduce End of Life Costs | 6–25% | 6% |
 
 Column F values: `"Yes"` or `"No"` (string, matching existing sheet format).
+
+---
+
+## Legacy TCO Tab — writes to column D
+
+> **Row numbers are ESTIMATES — verify against the live sheet before production use.**
+
+| Field ID | Row | Label | Store As | Default |
+|----------|-----|-------|----------|---------|
+| `legacyLicenseCost` | D4 | Current PLM/PDM Annual License Cost | currency | — |
+| `legacyITCost` | D5 | Annual IT Infrastructure & Support | currency | — |
+| `legacyTrainingMaintCost` | D6 | Annual Training & Maintenance | currency | — |
+| `legacyIntegrationCost` | D7 | Annual Integration & Customization | currency | — |
+| `arenaSubscriptionCost` | D11 | Arena Annual Subscription Cost | currency | — |
+| `arenaImplementationCost` | D12 | Arena Implementation Cost | currency | — |
+| `arenaTrainingCost` | D13 | Arena Training & Onboarding | currency | — |
+| `tcoYears` | D17 | TCO Comparison Period (years) | number | 3 |
 
 ---
 

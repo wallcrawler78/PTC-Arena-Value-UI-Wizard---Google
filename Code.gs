@@ -91,6 +91,16 @@ function getCurrentValues() {
     });
   }
 
+  // Read Legacy TCO tab
+  var tcoSheet = ss.getSheetByName(config.tabs.LEGACY_TCO);
+  if (tcoSheet) {
+    config.legacyTco.fields.forEach(function(field) {
+      var cell = tcoSheet.getRange(config.legacyTco.writeCol + field.row);
+      var raw = cell.getValue();
+      result[field.id] = convertFromSheet(raw, field.storeAs);
+    });
+  }
+
   return result;
 }
 
@@ -129,7 +139,7 @@ function saveWizardData(formData) {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var config = getSheetConfig();
 
-    // Verify both tabs exist BEFORE writing anything (ensures atomic behaviour)
+    // Verify all tabs exist BEFORE writing anything (ensures atomic behaviour)
     var diSheet = ss.getSheetByName(config.tabs.DATA_INPUT);
     if (!diSheet) {
       return { success: false, errors: ['Could not find "Data Input" tab. Check tab name in Config.gs.'] };
@@ -137,6 +147,10 @@ function saveWizardData(formData) {
     var bcSheet = ss.getSheetByName(config.tabs.BENEFITS_CALC);
     if (!bcSheet) {
       return { success: false, errors: ['Could not find "Benefits Calc" tab. Check tab name in Config.gs.'] };
+    }
+    var tcoSheet = ss.getSheetByName(config.tabs.LEGACY_TCO);
+    if (!tcoSheet) {
+      return { success: false, errors: ['Could not find "Legacy TCO" tab. Check tab name in Config.gs.'] };
     }
 
     // Write Data Input tab
@@ -159,6 +173,14 @@ function saveWizardData(formData) {
 
       var incCell = config.benefitsCalc.includeCol + field.row;
       bcSheet.getRange(incCell).setValue(incValue === false ? 'No' : 'Yes');
+    });
+
+    // Write Legacy TCO tab
+    config.legacyTco.fields.forEach(function(field) {
+      var value = formData[field.id];
+      if (value === null || value === undefined || value === '') return;
+      var cellRef = config.legacyTco.writeCol + field.row;
+      tcoSheet.getRange(cellRef).setValue(toSheetValue(value, field.storeAs));
     });
 
     // Force recalculation
@@ -231,6 +253,21 @@ function validateFormData(formData) {
     }
   });
 
+  config.legacyTco.fields.forEach(function(field) {
+    var value = formData[field.id];
+    var isEmpty = (value === null || value === undefined || String(value).trim() === '');
+    if (!isEmpty && field.type !== 'text') {
+      var num = parseFloat(String(value).replace(/[^0-9.-]/g, ''));
+      if (isNaN(num)) {
+        errors.push(field.label + ' must be a number.');
+      } else if (field.min !== undefined && num < field.min) {
+        errors.push(field.label + ' must be at least ' + field.min + '.');
+      } else if (field.max !== undefined && num > field.max) {
+        errors.push(field.label + ' must be at most ' + field.max + '.');
+      }
+    }
+  });
+
   return errors;
 }
 
@@ -243,7 +280,7 @@ function clearAllInputs() {
   var ui = SpreadsheetApp.getUi();
   var response = ui.alert(
     'Clear All Inputs',
-    'This will clear all input values from the Data Input and Benefits Calc tabs. Are you sure?',
+    'This will clear all input values from the Data Input, Benefits Calc, and Legacy TCO tabs. Are you sure?',
     ui.ButtonSet.YES_NO
   );
 
@@ -266,6 +303,14 @@ function clearAllInputs() {
     config.benefitsCalc.fields.forEach(function(field) {
       bcSheet.getRange(config.benefitsCalc.improvementCol + field.row).clearContent();
       bcSheet.getRange(config.benefitsCalc.includeCol + field.row).clearContent();
+    });
+  }
+
+  // Clear Legacy TCO
+  var tcoSheet = ss.getSheetByName(config.tabs.LEGACY_TCO);
+  if (tcoSheet) {
+    config.legacyTco.fields.forEach(function(field) {
+      tcoSheet.getRange(config.legacyTco.writeCol + field.row).clearContent();
     });
   }
 
