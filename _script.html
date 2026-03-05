@@ -508,8 +508,10 @@
     if (field.maturityLevels && field.maturityLevels.length) {
       stateBox = make('div', 'maturity-state');
       stateBox.id = 'mstate_' + field.id;
-      stateBox.appendChild(make('div', 'state-label'));
-      stateBox.appendChild(make('div', 'state-desc'));
+      var stateInner = make('div', 'maturity-state-inner');
+      stateInner.appendChild(make('div', 'state-label'));
+      stateInner.appendChild(make('p', 'state-desc'));
+      stateBox.appendChild(stateInner);
       wrapper.appendChild(stateBox);
       updateMaturityUI(field, defaultVal, stateBox, dotsEl);
     }
@@ -682,6 +684,13 @@
     stateEl.style.borderLeftColor = color;
     var labelEl = stateEl.querySelector('.state-label');
     var descEl  = stateEl.querySelector('.state-desc');
+    // Animate when crossing into a new maturity zone
+    var inner = stateEl.querySelector('.maturity-state-inner');
+    if (inner && labelEl && labelEl.textContent !== level.label) {
+      inner.classList.remove('state-enter');
+      void inner.offsetWidth; // force reflow to restart animation
+      inner.classList.add('state-enter');
+    }
     if (labelEl) { labelEl.textContent = level.label; labelEl.style.color = color; }
     if (descEl)  descEl.textContent = level.description;
 

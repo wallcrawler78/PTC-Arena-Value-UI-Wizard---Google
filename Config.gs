@@ -411,10 +411,26 @@ function getSheetConfig() {
           defaultInclude: true,
           suggestedPct: 15,
           maturityLevels: [
-            { pct: 10, label: 'Fragmented Process',    description: 'Change orders tracked in spreadsheets; approval routing via email means design iterations take weeks longer than necessary.' },
-            { pct: 17, label: 'Process Forming',       description: 'Core BOM and change workflows are managed in Arena, but supplier collaboration and cross-site visibility remain limited.' },
-            { pct: 23, label: 'Digitally Connected',   description: 'Arena manages end-to-end change workflows with full stakeholder visibility, compressing cycle time across every function.' },
-            { pct: 30, label: 'Digital Thread Leader', description: 'Full digital thread from concept to release. Suppliers collaborate directly in Arena; real-time change propagation drives market-leading launch speed.' }
+            {
+              pct: 10,
+              label: 'Manual & Fragmented',
+              description: 'Your NPD process relies on shared drives, email threads, and spreadsheet-based BOMs. Engineers spend significant time hunting for the latest revision, and most change orders stall waiting for offline approvals — adding weeks to every product launch.'
+            },
+            {
+              pct: 17,
+              label: 'Early PLM Adoption',
+              description: 'Your team has moved core BOMs and documents into Arena, but many handoffs between engineering, procurement, and manufacturing are still manual. ECO cycle times have improved, though cross-functional reviews still bottleneck at stage gates.'
+            },
+            {
+              pct: 23,
+              label: 'Streamlined Workflows',
+              description: 'Most product data flows through Arena with automated change routing and parallel reviews. Your NPI teams can launch design reviews faster, and suppliers receive change notifications directly — cutting weeks out of each development cycle.'
+            },
+            {
+              pct: 30,
+              label: 'Full Digital Thread',
+              description: 'Your entire product lifecycle — from concept through manufacturing release — runs on a seamless digital thread in Arena. Real-time BOM visibility, automated phase-gate transitions, and integrated supplier collaboration enable your fastest possible time to market.'
+            }
           ]
         },
         {
@@ -430,12 +446,28 @@ function getSheetConfig() {
           lowAnchor: 'Modest margin recovery from slight schedule improvement',
           highAnchor: 'Significant first-mover advantage on premium products',
           defaultInclude: true,
-          suggestedPct: 1.5,
+          suggestedPct: 1,
           maturityLevels: [
-            { pct: 1,   label: 'Reactive',      description: 'Delayed launches due to change management gaps result in missed first-mover windows and compressed initial margins.' },
-            { pct: 1.5, label: 'Improving',     description: 'Better schedule visibility from Arena change workflows reduces slippage; some early-launch margin is now captured.' },
-            { pct: 2.5, label: 'Proactive',     description: 'Parallel engineering enabled by Arena\'s shared BOM environment consistently shortens time to market and improves margin capture.' },
-            { pct: 3,   label: 'Market Leader', description: 'Systematic early market entry, driven by Arena\'s real-time release workflows, consistently captures premium pricing and margin.' }
+            {
+              pct: 1,
+              label: 'Marginal Recovery',
+              description: 'Your products consistently launch behind schedule, eroding premium pricing windows. By the time you reach market, competitors have already established pricing pressure, leaving only modest margin recovery from slight cycle time gains.'
+            },
+            {
+              pct: 1.5,
+              label: 'Noticeable Advantage',
+              description: 'Faster Arena-driven ECO cycles let you hit market windows more reliably. Your sales team can capture early-adopter pricing on roughly half of new launches, translating shorter development time into measurable margin improvement.'
+            },
+            {
+              pct: 2.5,
+              label: 'Consistent First-Mover',
+              description: 'Your streamlined NPI process in Arena consistently beats competitor launch timelines. Product managers can plan premium pricing strategies with confidence, knowing engineering can deliver on aggressive schedules.'
+            },
+            {
+              pct: 3,
+              label: 'Market Leader Pricing',
+              description: 'Your fully optimized Arena workflow enables you to be first to market on virtually every new product, commanding premium pricing and establishing market position before competitors can respond. Early launch margins are a reliable part of your revenue model.'
+            }
           ]
         },
         {
@@ -451,12 +483,28 @@ function getSheetConfig() {
           lowAnchor: 'Better supplier visibility, reduced duplicate parts',
           highAnchor: 'Strategic sourcing optimization with full part reuse analytics',
           defaultInclude: true,
-          suggestedPct: 1.5,
+          suggestedPct: 1,
           maturityLevels: [
-            { pct: 1,   label: 'Fragmented Sourcing',  description: 'Duplicate parts proliferate across product lines; supplier data managed in spreadsheets disconnected from design.' },
-            { pct: 1.5, label: 'Improving Visibility', description: 'Arena provides part master with AML/AVL linkage; occasional reuse reviews begin reducing duplicate part specifications.' },
-            { pct: 2.5, label: 'Managed',              description: 'Procurement uses Arena BOM data for strategic sourcing negotiations; part reuse tracking actively reduces redundant spend.' },
-            { pct: 3,   label: 'Optimized',            description: 'Full part reuse analytics, AVL cost benchmarking, and automated duplicate detection maximize direct material savings.' }
+            {
+              pct: 1,
+              label: 'Duplicate-Heavy',
+              description: 'Your engineers regularly create new part numbers for components that already exist because there is no easy way to search and discover reusable parts. Supplier negotiations happen in silos, and approved vendor lists live in disconnected spreadsheets.'
+            },
+            {
+              pct: 1.5,
+              label: 'Part Reuse Emerging',
+              description: 'Arena\'s component library is giving engineers visibility into existing parts, reducing some duplicate creation. Your sourcing team is starting to leverage consolidated spend data to negotiate better pricing with key suppliers.'
+            },
+            {
+              pct: 2.5,
+              label: 'Active Spend Optimization',
+              description: 'Your team actively uses Arena\'s part reuse analytics and AVL data to standardize components across product lines. Preferred parts lists drive design decisions, and commodity managers have real spend visibility for volume negotiations.'
+            },
+            {
+              pct: 3,
+              label: 'Strategic Sourcing',
+              description: 'Full part reuse analytics in Arena drive every new design, virtually eliminating unnecessary new part creation. Cross-product standardization and data-driven supplier consolidation deliver maximum material cost savings across your entire portfolio.'
+            }
           ]
         },
         {
@@ -472,12 +520,28 @@ function getSheetConfig() {
           lowAnchor: 'Improved BOM accuracy reduces buffer stock slightly',
           highAnchor: 'Real-time inventory intelligence, proactive obsolescence management',
           defaultInclude: true,
-          suggestedPct: 8,
+          suggestedPct: 7,
           maturityLevels: [
-            { pct: 5,  label: 'BOM-Driven',  description: 'Arena BOM accuracy reduces buffer stock slightly; obsolescence management remains largely reactive and behind the curve.' },
-            { pct: 8,  label: 'Improving',   description: 'Change effectivity dates in Arena enable better inventory planning against pending design changes and upcoming EOL components.' },
-            { pct: 12, label: 'Proactive',   description: 'Arena change management integrates with supply chain visibility, enabling proactive inventory reduction before EOL events occur.' },
-            { pct: 15, label: 'Optimized',   description: 'Real-time Arena intelligence drives dynamic safety stock adjustments and proactive EOL management across all SKUs.' }
+            {
+              pct: 5,
+              label: 'Buffer-Heavy',
+              description: 'Your warehouse carries excessive safety stock because BOM inaccuracies and last-minute ECOs make demand unpredictable. Purchasing over-orders "just in case," and no one has clear visibility into which parts are approaching obsolescence.'
+            },
+            {
+              pct: 8,
+              label: 'Improving Accuracy',
+              description: 'With Arena managing your BOMs, purchasing receives more accurate component lists, reducing over-ordering. However, change propagation delays still cause occasional mismatches between what engineering releases and what procurement buys.'
+            },
+            {
+              pct: 12,
+              label: 'Demand-Aligned',
+              description: 'Real-time BOM accuracy from Arena means procurement orders align closely with actual build requirements. Your team proactively identifies slow-moving inventory tied to upcoming design changes, significantly reducing carrying costs.'
+            },
+            {
+              pct: 15,
+              label: 'Optimized Inventory',
+              description: 'Arena\'s lifecycle visibility gives you proactive obsolescence alerts and automated change propagation to purchasing. Buffer stock is minimized, excess is near zero, and every inventory dollar is tied to a confirmed production requirement.'
+            }
           ]
         },
         {
@@ -495,10 +559,26 @@ function getSheetConfig() {
           defaultInclude: true,
           suggestedPct: 5,
           maturityLevels: [
-            { pct: 3,   label: 'Ad-Hoc Collaboration', description: 'BOMs transmitted to contract manufacturers via email or spreadsheet; version errors and costly re-orders are common.' },
-            { pct: 5,   label: 'Structured Handoffs',  description: 'Standardized BOM packages sent to CM reduce errors, but change propagation is still delayed and manual.' },
-            { pct: 6.5, label: 'Collaborative',        description: 'CM has direct visibility into Arena item records; change notifications significantly reduce expedited orders and material waste.' },
-            { pct: 8,   label: 'Integrated',           description: 'CM operates within the Arena workspace; real-time BOM and change updates eliminate material waste from stale or misaligned data.' }
+            {
+              pct: 3,
+              label: 'Disconnected CMs',
+              description: 'Your contract manufacturers work from emailed BOM exports and PDF drawings that are often out of date. Revision mismatches cause CMs to order wrong components, leading to costly re-orders, excess inventory at the CM, and production delays.'
+            },
+            {
+              pct: 5,
+              label: 'Shared Access',
+              description: 'CMs now have read access to current BOMs in Arena, reducing the worst revision mismatch issues. However, change notification delivery and CM acknowledgment tracking are still inconsistent, causing occasional material waste.'
+            },
+            {
+              pct: 6.5,
+              label: 'Active Collaboration',
+              description: 'Your CMs receive automated change notifications from Arena and can flag material concerns before builds start. Shared AVL data ensures CMs source from approved suppliers, and component substitution requests flow through a controlled process.'
+            },
+            {
+              pct: 8,
+              label: 'Fully Integrated CMs',
+              description: 'Your contract manufacturers operate from the same real-time BOM data in Arena that your engineering team uses. Change propagation is instant, material procurement is perfectly synchronized with design releases, and CM material waste is virtually eliminated.'
+            }
           ]
         },
 
@@ -518,10 +598,26 @@ function getSheetConfig() {
           defaultInclude: true,
           suggestedPct: 2,
           maturityLevels: [
-            { pct: 1,   label: 'Search & Rework',    description: 'Engineers spend significant time hunting for correct BOM versions; stale data leads to rework and duplicated effort across the team.' },
-            { pct: 2,   label: 'Improving Access',   description: 'Arena provides a single source of truth; search time decreases meaningfully but some manual coordination steps remain.' },
-            { pct: 3.5, label: 'Connected Teams',    description: 'Automated change notifications eliminate most duplicate effort; engineers focus on design rather than data management.' },
-            { pct: 5,   label: 'Peak Efficiency',    description: 'Real-time product record access and automated change alerts eliminate wasted engineering time entirely; teams operate at full capacity.' }
+            {
+              pct: 1,
+              label: 'Search & Wait',
+              description: 'Your development engineers spend hours each week hunting for the correct BOM revision, chasing email chains for approval status, and manually reconciling document versions. Tribal knowledge determines who has the "real" latest file.'
+            },
+            {
+              pct: 2,
+              label: 'Centralized Data',
+              description: 'Engineers now go to Arena as the single source of truth for BOMs and specifications. Time spent searching for documents has dropped significantly, though some teams still maintain shadow copies on local drives out of habit.'
+            },
+            {
+              pct: 3.5,
+              label: 'Automated Workflows',
+              description: 'Arena\'s automated change notifications ensure every engineer knows immediately when a relevant BOM or spec changes. Cross-functional design reviews run through structured workflows, eliminating meeting-heavy review cycles and email bottlenecks.'
+            },
+            {
+              pct: 5,
+              label: 'Zero Friction',
+              description: 'Your development team operates at peak efficiency with fully automated change routing, real-time collaboration across disciplines, and zero duplicate work. Engineers spend virtually all their time on value-add design work rather than administrative overhead.'
+            }
           ]
         },
         {
@@ -537,12 +633,28 @@ function getSheetConfig() {
           lowAnchor: 'Basic document management improvements',
           highAnchor: 'Fully automated release workflows, e-signatures, zero manual routing',
           defaultInclude: true,
-          suggestedPct: 30,
+          suggestedPct: 25,
           maturityLevels: [
-            { pct: 15, label: 'Manual Routing',    description: 'Approval workflows managed by email; release packages assembled by hand with frequent missing items or wrong document revisions.' },
-            { pct: 28, label: 'Basic Workflow',    description: 'Arena manages some approval workflows, but e-signatures and automated routing are not fully configured or consistently used.' },
-            { pct: 50, label: 'Streamlined',       description: 'Most release workflows are automated within Arena; e-signatures replace wet signatures in nearly all cases.' },
-            { pct: 65, label: 'Fully Automated',   description: 'Zero manual document routing; complete automated release workflows, e-signatures, and audit-ready archives throughout Arena.' }
+            {
+              pct: 15,
+              label: 'Paper-Burdened',
+              description: 'Your engineering services team spends most of their time manually routing documents for signatures, maintaining folder structures on shared drives, and chasing down approvers. Release packages are assembled by hand, and version control depends on file naming conventions.'
+            },
+            {
+              pct: 28,
+              label: 'Digital Foundation',
+              description: 'Arena handles document storage and basic revision control, freeing your team from shared-drive chaos. Release workflows are partially automated, but some approval routing and document packaging still requires manual intervention and follow-up emails.'
+            },
+            {
+              pct: 50,
+              label: 'Mostly Automated',
+              description: 'Most release workflows in Arena run end-to-end with automated routing, e-signatures, and built-in audit trails. Your doc management team focuses on process improvement rather than manual routing, and release cycle times have dropped dramatically.'
+            },
+            {
+              pct: 65,
+              label: 'Fully Self-Service',
+              description: 'Document release workflows are fully automated in Arena with e-signatures, auto-generated release packages, and zero manual routing. Your engineering services team has been redeployed to higher-value process optimization work because the system manages itself.'
+            }
           ]
         },
         {
@@ -558,12 +670,28 @@ function getSheetConfig() {
           lowAnchor: 'Single source of truth reduces search time',
           highAnchor: 'Full self-service access, no manual data requests',
           defaultInclude: true,
-          suggestedPct: 40,
+          suggestedPct: 30,
           maturityLevels: [
-            { pct: 18, label: 'Data Gating',         description: 'Manufacturing, service, and procurement teams rely entirely on engineering to pull and deliver product data — high wait times, frequent interruptions.' },
-            { pct: 38, label: 'Partial Self-Service', description: 'Arena provides some direct access, but permission gaps and training barriers limit adoption among downstream teams.' },
-            { pct: 65, label: 'Broad Access',         description: 'Most data consumers access current product records in Arena directly, dramatically reducing engineering interrupt rate.' },
-            { pct: 90, label: 'Full Self-Service',    description: 'All product data consumers are autonomous Arena users; zero manual data requests to engineering; teams operate independently.' }
+            {
+              pct: 18,
+              label: 'Request & Wait',
+              description: 'Your manufacturing, purchasing, and quality teams constantly interrupt engineers to get the latest BOM, drawing, or spec. Data requests go through email or hallway conversations, and consumers never quite trust that what they have is current.'
+            },
+            {
+              pct: 38,
+              label: 'Basic Self-Service',
+              description: 'Product data consumers can now look up BOMs and documents in Arena themselves, eliminating most ad-hoc requests to engineering. Search time has dropped significantly, though some users still struggle with finding exactly what they need without help.'
+            },
+            {
+              pct: 65,
+              label: 'Confident Access',
+              description: 'Your cross-functional teams confidently pull product data from Arena whenever they need it. Role-based views show each consumer exactly the data relevant to their function, and automated notifications alert them when changes affect their work.'
+            },
+            {
+              pct: 90,
+              label: 'Full Self-Service',
+              description: 'Every product data consumer across your organization has instant, role-appropriate access to exactly the data they need in Arena. Zero manual data requests, zero stale information, and zero engineering interruptions — manufacturing, quality, and procurement operate from a single trusted source.'
+            }
           ]
         },
         {
@@ -579,12 +707,28 @@ function getSheetConfig() {
           lowAnchor: 'Better part library access, fewer redesigns',
           highAnchor: 'Full CAD-PLM integration, automated BOM population',
           defaultInclude: true,
-          suggestedPct: 1.5,
+          suggestedPct: 1,
           maturityLevels: [
-            { pct: 1,   label: 'Disconnected CAD',    description: 'CAD data and PLM are siloed; BOMs are built manually from CAD exports, creating version drift, errors, and redundant part creation.' },
-            { pct: 1.5, label: 'Partial Integration', description: 'Some CAD-PLM linkage exists but BOM population remains semi-manual and prone to synchronization errors.' },
-            { pct: 2.5, label: 'Integrated Workflow', description: 'CAD integration pushes accurate BOMs to Arena automatically; part library reuse is tracked and enforced to prevent duplication.' },
-            { pct: 3,   label: 'Fully Optimized',     description: 'Seamless CAD-Arena integration with automatic BOM creation, reuse analytics, and zero redundant part generation.' }
+            {
+              pct: 1,
+              label: 'Disconnected CAD',
+              description: 'Your CAD designers work in isolation from PLM data, manually re-entering BOM information and searching local drives for reusable models. Redesigns are common because designers unknowingly duplicate existing components or work from outdated reference models.'
+            },
+            {
+              pct: 1.5,
+              label: 'Linked Libraries',
+              description: 'Arena\'s component library is accessible from the CAD environment, helping designers find and reuse existing parts. BOM data still requires some manual synchronization, but fewer redesigns occur thanks to better visibility into what already exists.'
+            },
+            {
+              pct: 2.5,
+              label: 'Bi-Directional Sync',
+              description: 'Your CAD tools sync bi-directionally with Arena, automatically populating BOM structures from design assemblies. Designers spend less time on data entry and more time on creative design work, with confidence that their BOMs are always accurate.'
+            },
+            {
+              pct: 3,
+              label: 'Full CAD-PLM Fusion',
+              description: 'Your CAD-to-Arena integration is seamless — BOM population is automatic, part reuse is guided by real-time analytics, and designers never leave their CAD environment to interact with PLM data. Design efficiency is maximized with zero manual BOM management overhead.'
+            }
           ]
         },
         {
@@ -600,12 +744,28 @@ function getSheetConfig() {
           lowAnchor: 'Faster access to quality records and history',
           highAnchor: 'Automated CAPA workflows, closed-loop quality management',
           defaultInclude: true,
-          suggestedPct: 8,
+          suggestedPct: 7,
           maturityLevels: [
-            { pct: 4,  label: 'Reactive Quality', description: 'CAPAs tracked in spreadsheets or standalone tools; traceability between design changes and quality events is entirely manual.' },
-            { pct: 9,  label: 'Connected Records', description: 'Arena links quality records to product items and changes; some CAPA workflows automated but not consistently adopted.' },
-            { pct: 14, label: 'Closed-Loop',       description: 'Automated CAPA workflows tied to Arena change events; resolution time decreases as teams work within a unified quality system.' },
-            { pct: 20, label: 'Proactive Quality', description: 'Fully automated, closed-loop quality management in Arena eliminates reactive firefighting and significantly reduces repeat failure rates.' }
+            {
+              pct: 4,
+              label: 'Reactive & Manual',
+              description: 'Your quality team tracks CAPAs in spreadsheets or standalone databases disconnected from product data. Root cause investigations require manually pulling records from multiple systems, and linking a quality event back to a specific BOM revision is time-consuming detective work.'
+            },
+            {
+              pct: 9,
+              label: 'Connected Records',
+              description: 'Quality events are now linked to specific items and revisions in Arena, making root cause investigation faster. CAPA initiation is streamlined, though some workflow steps like review assignments and escalations still require manual coordination.'
+            },
+            {
+              pct: 14,
+              label: 'Automated CAPA',
+              description: 'CAPA workflows run through Arena with automated assignments, escalation rules, and deadline tracking. Your quality team can trace any field issue back through the complete change history to pinpoint exactly when and why the problem was introduced.'
+            },
+            {
+              pct: 20,
+              label: 'Closed-Loop Quality',
+              description: 'Your quality management system is fully integrated with Arena\'s product record. CAPAs automatically trigger change requests, corrective actions link directly to updated BOMs, and quality metrics provide real-time visibility into systemic issues — a true closed-loop system.'
+            }
           ]
         },
         {
@@ -621,12 +781,28 @@ function getSheetConfig() {
           lowAnchor: 'Easier audit trail access and report generation',
           highAnchor: 'Fully automated compliance reporting, real-time substance alerts',
           defaultInclude: true,
-          suggestedPct: 8,
+          suggestedPct: 5,
           maturityLevels: [
-            { pct: 2,  label: 'Manual Compliance',    description: 'Compliance documentation prepared manually for each audit; RoHS/REACH substance data tracked in disconnected spreadsheets by individual contributors.' },
-            { pct: 7,  label: 'Structured Records',   description: 'Compliance declarations linked to Arena items; report preparation is faster but still requires manual assembly and review.' },
-            { pct: 14, label: 'Automated Reporting',  description: 'Compliance reports generated directly from Arena with complete roll-up substance data; audit readiness is maintained continuously.' },
-            { pct: 20, label: 'Full Automation',      description: 'Real-time compliance alerts, automated regulatory filings, and proactive substance change management eliminate compliance exposure and audit prep burden.' }
+            {
+              pct: 2,
+              label: 'Audit Scramble',
+              description: 'Your compliance team dreads audits because assembling the required documentation means pulling records from multiple systems, shared drives, and email archives. Proving that correct approvals happened in the right sequence takes days of manual evidence gathering.'
+            },
+            {
+              pct: 7,
+              label: 'Centralized Trails',
+              description: 'Arena provides a complete audit trail for product changes, significantly reducing audit preparation time. Your compliance team can generate basic reports, though substance compliance tracking (RoHS, REACH, Conflict Minerals) still relies on supplier spreadsheets.'
+            },
+            {
+              pct: 14,
+              label: 'Proactive Monitoring',
+              description: 'Your team uses Arena to proactively monitor regulatory compliance across your product portfolio. Substance data is tracked at the component level, and automated alerts flag potential issues before they become violations — shifting from reactive to preventive compliance.'
+            },
+            {
+              pct: 20,
+              label: 'Automated Compliance',
+              description: 'Compliance reporting is fully automated in Arena with real-time substance tracking, automated regulatory alerts, and audit-ready documentation generated on demand. Your compliance team focuses on strategy and emerging regulations rather than manual report assembly.'
+            }
           ]
         },
         {
@@ -642,12 +818,28 @@ function getSheetConfig() {
           lowAnchor: 'Better supplier data visibility, reduced manual work',
           highAnchor: 'Integrated sourcing workflows, automated AVL management',
           defaultInclude: true,
-          suggestedPct: 5,
+          suggestedPct: 4,
           maturityLevels: [
-            { pct: 3,   label: 'Manual Sourcing',      description: 'AVL managed in spreadsheets disconnected from Arena BOMs; supplier changes communicated by email, causing data inconsistency and re-sourcing effort.' },
-            { pct: 5,   label: 'Improving Visibility', description: 'AML/AVL linked to Arena items; procurement has read access but change-driven sourcing workflows are not yet integrated.' },
-            { pct: 7.5, label: 'Collaborative',        description: 'Supplier qualification workflows managed in Arena; BOM-linked AVL enables accurate RFQ data and reduces sourcing cycle time.' },
-            { pct: 10,  label: 'Optimized',            description: 'Fully integrated sourcing workflows with Arena-driven AVL management, automated supplier notifications, and real-time compliance tracking.' }
+            {
+              pct: 3,
+              label: 'Spreadsheet Sourcing',
+              description: 'Your sourcing team maintains approved vendor lists in spreadsheets that quickly go stale. Qualifying a new supplier means emailing forms back and forth, and there is no reliable way to see which products depend on a supplier who just raised prices or reported a quality issue.'
+            },
+            {
+              pct: 5,
+              label: 'Centralized AVLs',
+              description: 'Approved vendor lists now live in Arena alongside part data, giving sourcing teams a single place to check supplier status. New supplier qualification workflows are partially automated, though some steps still require manual follow-up.'
+            },
+            {
+              pct: 7.5,
+              label: 'Integrated Workflows',
+              description: 'Sourcing workflows in Arena integrate with engineering change processes, so your team is automatically involved when component changes affect supplier selection. Impact analysis for supplier disruptions takes minutes instead of days.'
+            },
+            {
+              pct: 10,
+              label: 'Strategic Sourcing',
+              description: 'Your sourcing function runs on fully integrated Arena workflows with automated AVL management, real-time supplier performance data, and instant impact analysis. Every sourcing decision is informed by live product data, enabling truly strategic supplier management.'
+            }
           ]
         },
 
@@ -665,12 +857,28 @@ function getSheetConfig() {
           lowAnchor: 'Fewer surprises from better BOM accuracy',
           highAnchor: 'Proactive change management eliminates most expediting',
           defaultInclude: true,
-          suggestedPct: 12,
+          suggestedPct: 10,
           maturityLevels: [
-            { pct: 6,  label: 'Reactive',   description: 'Expediting driven by BOM errors and delayed change communication to manufacturing; high premium freight costs are a regular occurrence.' },
-            { pct: 12, label: 'Improving',  description: 'Arena BOM accuracy and change notifications reduce most BOM-driven surprises; expediting declining but not yet eliminated.' },
-            { pct: 19, label: 'Managed',    description: 'Proactive Arena change management and real-time supplier visibility significantly reduce unplanned shortages and last-minute procurement.' },
-            { pct: 25, label: 'Proactive',  description: 'Real-time change propagation through Arena to manufacturing and supply chain virtually eliminates data-error-driven expediting.' }
+            {
+              pct: 6,
+              label: 'Constant Fire Drills',
+              description: 'Your operations team is perpetually expediting because late-breaking BOM changes and revision mismatches cause material shortages on the production line. Premium freight charges and supplier rush fees are a regular line item that everyone accepts as "normal."'
+            },
+            {
+              pct: 12,
+              label: 'Fewer Surprises',
+              description: 'Better BOM accuracy through Arena means fewer unexpected shortages and build stoppages. Expediting still happens, but it is now driven by genuine demand changes rather than internal data errors and revision confusion.'
+            },
+            {
+              pct: 19,
+              label: 'Proactive Planning',
+              description: 'Arena\'s change management process gives procurement early visibility into upcoming BOM changes, enabling proactive material planning. Your team orders ahead of changes rather than scrambling after them, and expediting costs have dropped dramatically.'
+            },
+            {
+              pct: 25,
+              label: 'Near-Zero Expediting',
+              description: 'Your fully integrated Arena change process ensures procurement, manufacturing, and suppliers all see changes simultaneously as they are approved. Material planning is perfectly synchronized with design releases, virtually eliminating surprise expediting events.'
+            }
           ]
         },
         {
@@ -686,12 +894,28 @@ function getSheetConfig() {
           lowAnchor: 'Better documentation reduces build errors',
           highAnchor: 'Real-time ECO propagation, zero rework from stale BOMs',
           defaultInclude: true,
-          suggestedPct: 8,
+          suggestedPct: 7,
           maturityLevels: [
-            { pct: 5,  label: 'Stale BOMs',  description: 'Manufacturing occasionally builds to outdated BOM revisions; scrap and rework driven by ECO communication gaps are a recurring cost.' },
-            { pct: 8,  label: 'Improving',   description: 'Arena change management reduces most BOM-driven rework; legacy process gaps account for remaining scrap and rework occurrences.' },
-            { pct: 12, label: 'Connected',   description: 'ECOs managed in Arena with clear effectivity dates; manufacturing consistently executes to the correct current product revision.' },
-            { pct: 15, label: 'Zero Rework', description: 'Real-time ECO propagation and Arena-managed work instructions eliminate scrap and rework from stale product data entirely.' }
+            {
+              pct: 5,
+              label: 'Build-to-Wrong-Rev',
+              description: 'Your manufacturing floor regularly builds to outdated BOMs or drawings because change notifications arrive late or get lost in email. Scrap bins fill with components that were correct last month but are now superseded, and rework is a weekly occurrence.'
+            },
+            {
+              pct: 8,
+              label: 'Fewer Rev Errors',
+              description: 'Arena ensures the production floor always has access to the latest released BOM and work instructions. Build-to-wrong-revision errors have dropped significantly, though some rework still occurs from changes that were in-flight when builds started.'
+            },
+            {
+              pct: 12,
+              label: 'Change-Aware Builds',
+              description: 'Manufacturing receives advance notice of pending changes through Arena, enabling them to plan material usage and build schedules around upcoming ECOs. Rework from stale data is rare, and scrap is primarily limited to normal process variation.'
+            },
+            {
+              pct: 15,
+              label: 'Zero Stale-Data Scrap',
+              description: 'Real-time ECO propagation through Arena ensures manufacturing, suppliers, and quality all transition to new revisions simultaneously. Scrap and rework caused by stale BOMs or miscommunicated changes is virtually zero — only process-inherent variation remains.'
+            }
           ]
         },
         {
@@ -707,12 +931,28 @@ function getSheetConfig() {
           lowAnchor: 'Faster root cause analysis with complete product history',
           highAnchor: 'Proactive field issue prevention through quality integration',
           defaultInclude: true,
-          suggestedPct: 13,
+          suggestedPct: 12,
           maturityLevels: [
-            { pct: 10, label: 'Faster Investigation', description: 'Arena product history enables faster root cause analysis for field failures, reducing time-to-resolution and repeat warranty claims.' },
-            { pct: 13, label: 'Improving',            description: 'Better design-to-field traceability in Arena reduces investigation time and the rate of repeat failure occurrences.' },
-            { pct: 17, label: 'Proactive',            description: 'Quality data linked to Arena product records enables pattern detection and proactive field issue resolution before failures escalate.' },
-            { pct: 20, label: 'Warranty Excellence',  description: 'Closed-loop quality management with full product genealogy in Arena minimizes field failures and drives warranty costs to minimum.' }
+            {
+              pct: 10,
+              label: 'Reactive Service',
+              description: 'When field failures occur, your service team struggles to determine which revision of which component is in the affected units. Root cause analysis is slow because product history is scattered across multiple systems, and the same failure modes often recur because corrective actions are not systematically linked back to design changes.'
+            },
+            {
+              pct: 13,
+              label: 'Traceable History',
+              description: 'Arena\'s complete product record lets your service team quickly identify exactly which components and revisions are in affected units. Root cause analysis time has improved, and service engineers can access the full change history to understand why a design was modified.'
+            },
+            {
+              pct: 17,
+              label: 'Predictive Response',
+              description: 'Your team uses Arena\'s quality and change data to identify products at risk before field failures occur. When a supplier quality issue is detected, you can instantly determine which finished goods are affected and proactively schedule service interventions.'
+            },
+            {
+              pct: 20,
+              label: 'Proactive Prevention',
+              description: 'Arena\'s closed-loop integration of quality data, change history, and field service records enables true proactive warranty cost prevention. Patterns are caught early, corrective actions automatically trigger design improvements, and field failure rates steadily decline with each product generation.'
+            }
           ]
         },
         {
@@ -730,10 +970,26 @@ function getSheetConfig() {
           defaultInclude: true,
           suggestedPct: 2,
           maturityLevels: [
-            { pct: 1,   label: 'Audit Ready',         description: 'Arena provides document history for audits; regulatory penalty risk is modestly reduced by improved record consistency and retrieval.' },
-            { pct: 2,   label: 'Structured Evidence',  description: 'Compliance documentation consistently maintained in Arena significantly reduces audit preparation time and evidence-gathering effort.' },
-            { pct: 3.5, label: 'Automated Compliance', description: 'Arena generates compliance reports automatically; substance alerts prevent non-compliant designs from reaching production undetected.' },
-            { pct: 5,   label: 'Full Protection',      description: 'Proactive substance management, automated regulatory reporting, and complete compliance automation eliminate non-compliance cost exposure.' }
+            {
+              pct: 1,
+              label: 'Exposed & Unaware',
+              description: 'Your team has limited visibility into regulatory compliance status across the product portfolio. Substance declarations from suppliers arrive as email attachments that may or may not get filed properly. You learn about compliance gaps reactively — often during audits or customer inquiries.'
+            },
+            {
+              pct: 2,
+              label: 'Basic Tracking',
+              description: 'Arena provides a centralized record of approvals and change history, making audits less painful. Basic regulatory tracking is in place, but substance-level compliance (RoHS, REACH, Prop 65) still depends on periodic manual reviews of supplier data.'
+            },
+            {
+              pct: 3.5,
+              label: 'Active Monitoring',
+              description: 'Your compliance program uses Arena to actively monitor substance declarations, track regulatory deadlines, and flag at-risk components before they become violations. Audit preparation that once took weeks now takes hours, and surprise findings are rare.'
+            },
+            {
+              pct: 5,
+              label: 'Full Prevention',
+              description: 'Arena\'s automated compliance engine continuously validates your entire product portfolio against current regulations. Real-time substance alerts, automated supplier declaration collection, and proactive regulatory change tracking ensure you never face a non-compliance event.'
+            }
           ]
         },
         {
@@ -749,12 +1005,28 @@ function getSheetConfig() {
           lowAnchor: 'Improved visibility into aging parts/products',
           highAnchor: 'Automated EOL alerts, proactive product transition management',
           defaultInclude: true,
-          suggestedPct: 12,
+          suggestedPct: 10,
           maturityLevels: [
-            { pct: 6,  label: 'Reactive EOL',        description: 'EOL components identified late; unplanned redesigns and supply disruptions driven by component obsolescence are a recurring cost.' },
-            { pct: 12, label: 'Improving Visibility', description: 'Arena flags known EOL components in item records; some proactive redesign initiated but management remains largely reactive.' },
-            { pct: 19, label: 'Proactive Management', description: 'Arena integrates with component lifecycle data; EOL alerts trigger timely product transitions before availability impacts production.' },
-            { pct: 25, label: 'Optimized',            description: 'Automated EOL monitoring across the full product portfolio drives proactive transitions and eliminates unplanned obsolescence costs entirely.' }
+            {
+              pct: 6,
+              label: 'Blindsided by EOL',
+              description: 'Your team discovers component end-of-life notices too late — often after a supplier has already discontinued a part. Last-time buys are panicked and oversized, and redesigns to qualify alternate components are rushed, expensive, and disruptive to production schedules.'
+            },
+            {
+              pct: 12,
+              label: 'Improving Visibility',
+              description: 'Arena gives your team better visibility into component lifecycle status, so EOL surprises happen less frequently. However, monitoring is still somewhat manual, and the impact analysis to determine which products are affected by a component EOL still takes significant effort.'
+            },
+            {
+              pct: 19,
+              label: 'Proactive Transitions',
+              description: 'Your team uses Arena to proactively track component lifecycle data and plan product transitions well ahead of EOL dates. Impact analysis is fast — you know instantly which products use an at-risk component — and alternate qualification starts early.'
+            },
+            {
+              pct: 25,
+              label: 'Automated EOL Mgmt',
+              description: 'Arena\'s automated lifecycle alerts and where-used analysis give you months of advance notice for every component EOL event. Product transitions are planned, orderly, and cost-optimized. Last-time buys are precisely sized, and alternate components are pre-qualified — EOL is a managed process, not a crisis.'
+            }
           ]
         }
 
