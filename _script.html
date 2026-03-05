@@ -26,7 +26,7 @@
 
   // ── Init ───────────────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function() {
-    WIZARD.config = window.WIZ_CONFIG || { dataInputFields: [], benefitsFields: [], legacyTcoFields: [] };
+    WIZARD.config = window.WIZ_CONFIG || { dataInputFields: [], benefitsFields: [], legacyTcoRows: [] };
     buildUI();
     loadCurrentValues();
   });
@@ -381,74 +381,231 @@
   function renderStep7(panel) { renderBenefitStep(panel, 7); }
 
   // ── Step 8: Legacy System Costs ────────────────────────────────────────────
+  // Sheet structure (confirmed):
+  //   E3  = On-prem/Perpetual license toggle
+  //   C5:C11 = Unit Cost per line item ($)
+  //   D5:D11 = Qty (count or decimal multiplier)
+  //   F5:F11 = Include in TCO (Yes/No)
+  //   Total = C × D per row, summed in G12
   function renderStep8(panel) {
-    var fields = getFieldsByStep(8, 'legacyTco');
-    var byId = indexById(fields);
+    var rows = WIZARD.config.legacyTcoRows || [];
 
+    // ── On-prem toggle ──────────────────────────────────────────────────────
+    appendDivider(panel, 'Deployment Type');
+    var onPremWrap = make('div', 'legacy-onprem-wrap');
+
+    var onPremLabel = document.createElement('label');
+    onPremLabel.textContent = 'On-premises / Perpetual license?';
+    onPremLabel.className = 'legacy-onprem-label';
+    onPremWrap.appendChild(onPremLabel);
+
+    var toggle = make('div', 'include-toggle');
+    toggle.id = 'toggle_legacyOnPrem';
+    toggle.setAttribute('role', 'group');
+
+    var yesBtn = document.createElement('button');
+    yesBtn.type = 'button';
+    yesBtn.textContent = 'Yes';
+    yesBtn.className = 'toggle-btn active';
+    yesBtn.dataset.val = 'Yes';
+
+    var noBtn = document.createElement('button');
+    noBtn.type = 'button';
+    noBtn.textContent = 'No';
+    noBtn.className = 'toggle-btn';
+    noBtn.dataset.val = 'No';
+
+    function setOnPrem(val) {
+      WIZARD.formData['legacyOnPrem'] = val;
+      yesBtn.classList.toggle('active', val === 'Yes');
+      noBtn.classList.toggle('active', val === 'No');
+    }
+
+    yesBtn.addEventListener('click', function() { setOnPrem('Yes'); });
+    noBtn.addEventListener('click', function() { setOnPrem('No'); });
+
+    toggle.appendChild(yesBtn);
+    toggle.appendChild(noBtn);
+    onPremWrap.appendChild(toggle);
+    panel.appendChild(onPremWrap);
+
+    if (!WIZARD.formData['legacyOnPrem']) {
+      WIZARD.formData['legacyOnPrem'] = 'Yes';
+    }
+
+    // ── Line items table ────────────────────────────────────────────────────
     appendDivider(panel, 'Current Legacy System Costs');
-    var legacyGrid = make('div', 'field-group');
-    ['legacyLicenseCost','legacyITCost','legacyTrainingMaintCost','legacyIntegrationCost'].forEach(function(id) {
-      if (byId[id]) legacyGrid.appendChild(buildInputField(byId[id]));
+
+    var table = make('table', 'team-table legacy-tco-table');
+    var thead = document.createElement('thead');
+    var headerRow = document.createElement('tr');
+    ['Expense', 'Unit Cost ($)', 'Qty / Rate', 'Include'].forEach(function(text) {
+      var th = document.createElement('th');
+      th.textContent = text;
+      headerRow.appendChild(th);
     });
-    panel.appendChild(legacyGrid);
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
 
-    // Live total for legacy costs
-    var legacyTotalNote = make('div', 'fte-license-note');
-    var legacyIcon = document.createElement('span');
-    legacyIcon.textContent = '\u03A3';
-    legacyIcon.className = 'fte-note-icon';
-    var legacyText = document.createElement('span');
-    legacyText.id = 'legacy-annual-total';
-    legacyText.textContent = 'Estimated Legacy Annual TCO: \u2014';
-    legacyTotalNote.appendChild(legacyIcon);
-    legacyTotalNote.appendChild(legacyText);
-    panel.appendChild(legacyTotalNote);
+    var tbody = document.createElement('tbody');
 
-    appendDivider(panel, 'Arena Investment');
-    var arenaGrid = make('div', 'field-group');
-    ['arenaSubscriptionCost','arenaImplementationCost','arenaTrainingCost'].forEach(function(id) {
-      if (byId[id]) arenaGrid.appendChild(buildInputField(byId[id]));
-    });
-    panel.appendChild(arenaGrid);
+    rows.forEach(function(row) {
+      var unitCostId = row.id + '_unitCost';
+      var qtyId      = row.id + '_qty';
+      var includeId  = row.id + '_include';
 
-    appendDivider(panel, 'TCO Comparison Period');
-    var periodGroup = make('div', 'field-group single');
-    if (byId['tcoYears']) periodGroup.appendChild(buildInputField(byId['tcoYears']));
-    panel.appendChild(periodGroup);
+      var tr = document.createElement('tr');
 
-    // Pre-populate defaults for fields that have them
-    fields.forEach(function(f) {
-      if (f.default !== null && f.default !== undefined) {
-        var current = WIZARD.formData[f.id];
-        var isEmpty = (current === null || current === undefined || String(current).trim() === '');
-        if (isEmpty) {
-          WIZARD.formData[f.id] = f.default;
-          var inp = document.getElementById('field_' + f.id);
-          if (inp) inp.value = f.default;
+      // Expense label + hint
+      var tdLabel = document.createElement('td');
+      tdLabel.className = 'role-label';
+      var labelSpan = document.createElement('div');
+      labelSpan.textContent = row.label;
+      var hintSpan = document.createElement('div');
+      hintSpan.textContent = row.hint || '';
+      hintSpan.className = 'legacy-row-hint';
+      tdLabel.appendChild(labelSpan);
+      tdLabel.appendChild(hintSpan);
+      tr.appendChild(tdLabel);
+
+      // Unit Cost input
+      var tdUnitCost = document.createElement('td');
+      var unitInput = document.createElement('input');
+      unitInput.type = 'number';
+      unitInput.id = 'field_' + unitCostId;
+      unitInput.name = unitCostId;
+      unitInput.min = '0';
+      unitInput.placeholder = '0';
+      unitInput.className = 'legacy-currency-input';
+      unitInput.addEventListener('input', function() {
+        var v = parseFloat(this.value);
+        WIZARD.formData[unitCostId] = isNaN(v) ? null : v;
+        updateLegacyTCOTotal();
+      });
+      tdUnitCost.appendChild(unitInput);
+      tr.appendChild(tdUnitCost);
+
+      // Qty input
+      var tdQty = document.createElement('td');
+      var qtyInput = document.createElement('input');
+      qtyInput.type = 'number';
+      qtyInput.id = 'field_' + qtyId;
+      qtyInput.name = qtyId;
+      qtyInput.min = '0';
+      qtyInput.placeholder = row.qtyLabel;
+      qtyInput.className = 'legacy-qty-input';
+      // Set default
+      if (row.qtyDefault !== null && row.qtyDefault !== undefined) {
+        var curQty = WIZARD.formData[qtyId];
+        var qtyEmpty = (curQty === null || curQty === undefined || String(curQty).trim() === '');
+        if (qtyEmpty) {
+          WIZARD.formData[qtyId] = row.qtyDefault;
+          qtyInput.value = row.qtyDefault;
+        } else {
+          qtyInput.value = curQty;
         }
+      }
+      qtyInput.addEventListener('input', function() {
+        var v = parseFloat(this.value);
+        WIZARD.formData[qtyId] = isNaN(v) ? null : v;
+        updateLegacyTCOTotal();
+      });
+      var qtyLabelSpan = document.createElement('div');
+      qtyLabelSpan.textContent = row.qtyLabel;
+      qtyLabelSpan.className = 'legacy-row-hint';
+      tdQty.appendChild(qtyInput);
+      tdQty.appendChild(qtyLabelSpan);
+      tr.appendChild(tdQty);
+
+      // Include toggle
+      var tdInclude = document.createElement('td');
+      var incToggle = make('div', 'include-toggle');
+      incToggle.id = 'toggle_' + includeId;
+      var curInc = WIZARD.formData[includeId];
+      var isIncluded = (curInc === null || curInc === undefined) ? row.defaultInclude : curInc;
+      WIZARD.formData[includeId] = isIncluded;
+
+      var yBtn = document.createElement('button');
+      yBtn.type = 'button';
+      yBtn.textContent = 'Yes';
+      yBtn.className = 'toggle-btn' + (isIncluded ? ' active' : '');
+
+      var nBtn = document.createElement('button');
+      nBtn.type = 'button';
+      nBtn.textContent = 'No';
+      nBtn.className = 'toggle-btn' + (!isIncluded ? ' active' : '');
+
+      (function(yb, nb, id) {
+        yb.addEventListener('click', function() {
+          WIZARD.formData[id] = true;
+          yb.classList.add('active'); nb.classList.remove('active');
+        });
+        nb.addEventListener('click', function() {
+          WIZARD.formData[id] = false;
+          nb.classList.add('active'); yb.classList.remove('active');
+        });
+      })(yBtn, nBtn, includeId);
+
+      incToggle.appendChild(yBtn);
+      incToggle.appendChild(nBtn);
+      tdInclude.appendChild(incToggle);
+      tr.appendChild(tdInclude);
+
+      tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+
+    // Total footer row
+    var tfoot = document.createElement('tfoot');
+    var trTotal = document.createElement('tr');
+    trTotal.className = 'fte-total-row';
+    var tdTL = document.createElement('td');
+    tdTL.className = 'role-label';
+    tdTL.textContent = 'Legacy Annual TCO';
+    var tdTV = document.createElement('td');
+    tdTV.colSpan = 3;
+    var totalSpan = document.createElement('span');
+    totalSpan.id = 'legacy-annual-total';
+    totalSpan.className = 'fte-total-value';
+    totalSpan.textContent = '\u2014';
+    tdTV.appendChild(totalSpan);
+    trTotal.appendChild(tdTL);
+    trTotal.appendChild(tdTV);
+    tfoot.appendChild(trTotal);
+    table.appendChild(tfoot);
+
+    panel.appendChild(table);
+
+    var note = make('p', 'pdc-note');
+    note.textContent = 'Unit Cost \xd7 Qty = row total. The sheet formula sums all included rows automatically.';
+    panel.appendChild(note);
+
+    // Restore any previously loaded unit cost values
+    rows.forEach(function(row) {
+      var v = WIZARD.formData[row.id + '_unitCost'];
+      if (v !== null && v !== undefined) {
+        var inp = document.getElementById('field_' + row.id + '_unitCost');
+        if (inp) inp.value = v;
       }
     });
 
-    // Wire live total update
-    var legacyCostIds = ['legacyLicenseCost','legacyITCost','legacyTrainingMaintCost','legacyIntegrationCost'];
-    legacyCostIds.forEach(function(id) {
-      var inp = document.getElementById('field_' + id);
-      if (inp) inp.addEventListener('input', updateLegacyTCOTotal);
-    });
+    updateLegacyTCOTotal();
   }
 
   function updateLegacyTCOTotal() {
+    var rows = WIZARD.config.legacyTcoRows || [];
     var total = 0;
-    ['legacyLicenseCost','legacyITCost','legacyTrainingMaintCost','legacyIntegrationCost'].forEach(function(id) {
-      var val = parseFloat(WIZARD.formData[id]);
-      if (!isNaN(val) && val > 0) total += val;
+    rows.forEach(function(row) {
+      var unitCost = parseFloat(WIZARD.formData[row.id + '_unitCost']);
+      var qty = parseFloat(WIZARD.formData[row.id + '_qty']);
+      var included = WIZARD.formData[row.id + '_include'] !== false;
+      if (!isNaN(unitCost) && !isNaN(qty) && included) {
+        total += unitCost * (row.qtyStoreAs === 'decimal' ? qty / 100 : qty);
+      }
     });
     var el = document.getElementById('legacy-annual-total');
-    if (el) {
-      el.textContent = total > 0
-        ? 'Estimated Legacy Annual TCO: ' + formatCurrency(total)
-        : 'Estimated Legacy Annual TCO: \u2014';
-    }
+    if (el) el.textContent = total > 0 ? formatCurrency(total) : '\u2014';
   }
 
   // ── Step 9: Review ────────────────────────────────────────────────────────
@@ -471,7 +628,7 @@
       { title: 'Revenue & COGS Benefits', fields: getFieldsByStep(5, 'benefits'), isBenefit: true },
       { title: 'Productivity Benefits',   fields: getFieldsByStep(6, 'benefits'), isBenefit: true },
       { title: 'Cost Recovery Benefits',  fields: getFieldsByStep(7, 'benefits'), isBenefit: true },
-      { title: 'Legacy System Costs',   fields: getFieldsByStep(8, 'legacyTco') }
+      { title: 'Legacy System Costs', fields: [], isLegacyTco: true }
     ];
 
     sections.forEach(function(sec) {
@@ -481,32 +638,68 @@
       secTitle.textContent = sec.title;
       section.appendChild(secTitle);
 
-      sec.fields.forEach(function(field) {
-        var row = make('div', 'review-row');
-        var label = make('span', 'rv-label');
-        label.textContent = field.label;
+      if (sec.isLegacyTco) {
+        // Special rendering for Legacy TCO rows
+        var onPrem = WIZARD.formData['legacyOnPrem'];
+        var onPremRow = make('div', 'review-row');
+        var onPremLabel = make('span', 'rv-label');
+        onPremLabel.textContent = 'On-premises / Perpetual';
+        var onPremVal = make('span', 'rv-value');
+        onPremVal.textContent = onPrem || 'Yes';
+        onPremRow.appendChild(onPremLabel);
+        onPremRow.appendChild(onPremVal);
+        section.appendChild(onPremRow);
 
-        var value = make('span', 'rv-value');
-        var rawVal = WIZARD.formData[field.id];
+        (WIZARD.config.legacyTcoRows || []).forEach(function(tcoRow) {
+          var uc = WIZARD.formData[tcoRow.id + '_unitCost'];
+          var qty = WIZARD.formData[tcoRow.id + '_qty'];
+          var inc = WIZARD.formData[tcoRow.id + '_include'];
+          var rr = make('div', 'review-row');
+          var rl = make('span', 'rv-label');
+          rl.textContent = tcoRow.label;
+          var rv = make('span', 'rv-value');
+          if (inc === false) {
+            rv.className = 'rv-excluded';
+            rv.textContent = 'Excluded';
+          } else if (uc !== null && uc !== undefined && qty !== null && qty !== undefined) {
+            var lineTotal = parseFloat(uc) * (tcoRow.qtyStoreAs === 'decimal' ? parseFloat(qty) / 100 : parseFloat(qty));
+            rv.textContent = formatCurrency(lineTotal) + ' / yr';
+          } else {
+            rv.className = 'rv-skip';
+            rv.textContent = '(not entered)';
+          }
+          rr.appendChild(rl);
+          rr.appendChild(rv);
+          section.appendChild(rr);
+        });
+      } else {
+        sec.fields.forEach(function(field) {
+          var row = make('div', 'review-row');
+          var label = make('span', 'rv-label');
+          label.textContent = field.label;
 
-        if (sec.isBenefit && WIZARD.includeData[field.id + '_include'] === false) {
-          value.className = 'rv-excluded';
-          value.textContent = 'Excluded';
-        } else if (rawVal === null || rawVal === undefined || rawVal === '') {
-          value.className = 'rv-skip';
-          value.textContent = '(using default)';
-        } else if (field.unit === '%') {
-          value.textContent = rawVal + '%';
-        } else if (field.storeAs === 'currency' || field.type === 'currency') {
-          value.textContent = formatCurrency(parseFloat(rawVal));
-        } else {
-          value.textContent = rawVal;
-        }
+          var value = make('span', 'rv-value');
+          var rawVal = WIZARD.formData[field.id];
 
-        row.appendChild(label);
-        row.appendChild(value);
-        section.appendChild(row);
-      });
+          if (sec.isBenefit && WIZARD.includeData[field.id + '_include'] === false) {
+            value.className = 'rv-excluded';
+            value.textContent = 'Excluded';
+          } else if (rawVal === null || rawVal === undefined || rawVal === '') {
+            value.className = 'rv-skip';
+            value.textContent = '(using default)';
+          } else if (field.unit === '%') {
+            value.textContent = rawVal + '%';
+          } else if (field.storeAs === 'currency' || field.type === 'currency') {
+            value.textContent = formatCurrency(parseFloat(rawVal));
+          } else {
+            value.textContent = rawVal;
+          }
+
+          row.appendChild(label);
+          row.appendChild(value);
+          section.appendChild(row);
+        });
+      }
       grid.appendChild(section);
     });
   }
@@ -937,14 +1130,17 @@
       }
     });
 
-    // Apply Legacy TCO fields
-    (WIZARD.config.legacyTcoFields || []).forEach(function(field) {
-      var val = vals[field.id];
-      if (val === null || val === undefined) return;
-      WIZARD.formData[field.id] = val;
-      var input = document.getElementById('field_' + field.id);
-      if (!input) return;
-      input.value = val;
+    // Apply Legacy TCO rows (onPrem toggle + unitCost/qty/include per row)
+    if (vals['legacyOnPrem'] !== null && vals['legacyOnPrem'] !== undefined) {
+      WIZARD.formData['legacyOnPrem'] = vals['legacyOnPrem'];
+    }
+    (WIZARD.config.legacyTcoRows || []).forEach(function(row) {
+      var ucVal  = vals[row.id + '_unitCost'];
+      var qtyVal = vals[row.id + '_qty'];
+      var incVal = vals[row.id + '_include'];
+      if (ucVal  !== null && ucVal  !== undefined) { WIZARD.formData[row.id + '_unitCost'] = ucVal; }
+      if (qtyVal !== null && qtyVal !== undefined) { WIZARD.formData[row.id + '_qty']      = qtyVal; }
+      if (incVal !== null && incVal !== undefined) { WIZARD.formData[row.id + '_include']  = incVal; }
     });
 
     WIZARD.config.benefitsFields.forEach(function(field) {
@@ -1140,7 +1336,7 @@
     if (source === 'dataInput') {
       list = WIZARD.config.dataInputFields || [];
     } else if (source === 'legacyTco') {
-      list = WIZARD.config.legacyTcoFields || [];
+      list = []; // legacyTco uses rows structure, not flat fields
     } else {
       list = WIZARD.config.benefitsFields || [];
     }

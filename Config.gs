@@ -1035,101 +1035,90 @@ function getSheetConfig() {
     },
 
     // ── Legacy TCO Tab ────────────────────────────────────────────────────────
+    // Structure (confirmed via SheetAudit):
+    //   E3  = On-prem / Perpetual license toggle (Yes/No dropdown)
+    //   Row 4 = Column headers (Type, Expenses, Unit Cost, Qty, Total, Include in TCO, Total Ann.)
+    //   Rows 5–11 = Line items:
+    //     C{row} = Unit Cost ($)   — yellow input
+    //     D{row} = Qty             — yellow input (count or decimal multiplier)
+    //     F{row} = Include in TCO  — yellow Yes/No dropdown
+    //   G12 = Legacy System Total Annual Costs (formula)
     legacyTco: {
       tab: SPREADSHEET_TABS.LEGACY_TCO,
-      writeCol: 'D',
-      fields: [
-        // Current Legacy System Costs
+      unitCostCol: 'C',
+      qtyCol: 'D',
+      includeCol: 'F',
+      onPremCell: 'E3',
+      rows: [
         {
-          id: 'legacyLicenseCost',
-          label: 'Current PLM/PDM Annual License Cost ($)',
-          row: 4, // ROW ESTIMATE — verify vs live sheet
-          type: 'currency',
-          storeAs: 'currency',
-          step: 8,
-          default: null,
-          min: 0,
-          hint: 'Annual license fees for your current PDM/PLM system'
+          id: 'legacySoftware',
+          label: 'PLM/QMS License / Subscriptions',
+          row: 5,
+          qtyLabel: '# of users/seats',
+          qtyStoreAs: 'number',
+          qtyDefault: null,
+          defaultInclude: false,
+          hint: 'Per-seat annual license fee for current PLM/QMS system'
         },
         {
-          id: 'legacyITCost',
-          label: 'Annual IT Infrastructure & Support ($)',
-          row: 5, // ROW ESTIMATE — verify vs live sheet
-          type: 'currency',
-          storeAs: 'currency',
-          step: 8,
-          default: null,
-          min: 0,
-          hint: 'Server costs, database licenses, IT support staff for legacy system'
+          id: 'legacySoftwareSupport',
+          label: 'Annual Support & Maintenance',
+          row: 6,
+          qtyLabel: '% of license cost',
+          qtyStoreAs: 'decimal',
+          qtyDefault: 20,
+          defaultInclude: true,
+          hint: 'Annual support contract — typically 18–22% of license cost'
         },
         {
-          id: 'legacyTrainingMaintCost',
-          label: 'Annual Training & Maintenance ($)',
-          row: 6, // ROW ESTIMATE — verify vs live sheet
-          type: 'currency',
-          storeAs: 'currency',
-          step: 8,
-          default: null,
-          min: 0,
-          hint: 'Annual training, upgrades, and maintenance for legacy tools'
+          id: 'legacyIntegrations',
+          label: 'CAD, ERP & Other Connectors',
+          row: 7,
+          qtyLabel: 'Count',
+          qtyStoreAs: 'number',
+          qtyDefault: 1,
+          defaultInclude: true,
+          hint: 'Annual cost per integration connector (CAD, ERP, Reporting tools)'
         },
         {
-          id: 'legacyIntegrationCost',
-          label: 'Annual Integration & Customization ($)',
-          row: 7, // ROW ESTIMATE — verify vs live sheet
-          type: 'currency',
-          storeAs: 'currency',
-          step: 8,
-          default: null,
-          min: 0,
-          hint: 'Cost to maintain integrations and customizations in legacy system'
-        },
-        // Arena Investment
-        {
-          id: 'arenaSubscriptionCost',
-          label: 'Arena Annual Subscription Cost ($)',
-          row: 11, // ROW ESTIMATE — verify vs live sheet
-          type: 'currency',
-          storeAs: 'currency',
-          step: 8,
-          default: null,
-          min: 0,
-          hint: 'Annual Arena PLM subscription fee'
+          id: 'legacyInfrastructure',
+          label: 'Hosting, Backup & Security',
+          row: 8,
+          qtyLabel: '% of license cost',
+          qtyStoreAs: 'decimal',
+          qtyDefault: 10,
+          defaultInclude: true,
+          hint: 'IT infrastructure: servers, backup, security, managed services'
         },
         {
-          id: 'arenaImplementationCost',
-          label: 'Arena Implementation Cost ($)',
-          row: 12, // ROW ESTIMATE — verify vs live sheet
-          type: 'currency',
-          storeAs: 'currency',
-          step: 8,
-          default: null,
-          min: 0,
-          hint: 'One-time professional services / implementation investment'
+          id: 'legacyMaintenance',
+          label: 'IT Resources & Labor',
+          row: 9,
+          qtyLabel: '% of infra cost',
+          qtyStoreAs: 'decimal',
+          qtyDefault: 10,
+          defaultInclude: true,
+          hint: 'Internal IT staff time: BDA, admin, hardware support'
         },
         {
-          id: 'arenaTrainingCost',
-          label: 'Arena Training & Onboarding ($)',
-          row: 13, // ROW ESTIMATE — verify vs live sheet
-          type: 'currency',
-          storeAs: 'currency',
-          step: 8,
-          default: null,
-          min: 0,
-          hint: 'One-time training and onboarding investment'
+          id: 'legacyUpgrades',
+          label: 'Hardware, Software & Training',
+          row: 10,
+          qtyLabel: 'Count',
+          qtyStoreAs: 'number',
+          qtyDefault: 1,
+          defaultInclude: true,
+          hint: 'Annual upgrade costs: hardware refreshes, software updates, training'
         },
-        // TCO Comparison Period
         {
-          id: 'tcoYears',
-          label: 'TCO Comparison Period (years)',
-          row: 17, // ROW ESTIMATE — verify vs live sheet
-          type: 'number',
-          storeAs: 'number',
-          step: 8,
-          default: 3,
-          min: 1,
-          max: 10,
-          hint: '3 or 5 year comparison is standard'
+          id: 'legacyOtherSubs',
+          label: 'Other Subscriptions',
+          row: 11,
+          qtyLabel: 'Count',
+          qtyStoreAs: 'number',
+          qtyDefault: 1,
+          defaultInclude: true,
+          hint: 'Other third-party tools (e.g. SiliconExpert, component intelligence)'
         }
       ]
     }
@@ -1145,6 +1134,7 @@ function getWizardConfig() {
   return {
     dataInputFields: config.dataInput.fields,
     benefitsFields: config.benefitsCalc.fields,
-    legacyTcoFields: config.legacyTco.fields
+    legacyTcoRows: config.legacyTco.rows,
+    legacyTcoOnPremCell: config.legacyTco.onPremCell
   };
 }

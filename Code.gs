@@ -94,10 +94,20 @@ function getCurrentValues() {
   // Read Legacy TCO tab
   var tcoSheet = ss.getSheetByName(config.tabs.LEGACY_TCO);
   if (tcoSheet) {
-    config.legacyTco.fields.forEach(function(field) {
-      var cell = tcoSheet.getRange(config.legacyTco.writeCol + field.row);
-      var raw = cell.getValue();
-      result[field.id] = convertFromSheet(raw, field.storeAs);
+    // On-prem / perpetual license toggle (E3)
+    var rawOnPrem = tcoSheet.getRange(config.legacyTco.onPremCell).getValue();
+    result['legacyOnPrem'] = (rawOnPrem === '' || rawOnPrem === null) ? 'Yes' : String(rawOnPrem);
+
+    config.legacyTco.rows.forEach(function(row) {
+      var rawUnitCost = tcoSheet.getRange(config.legacyTco.unitCostCol + row.row).getValue();
+      var rawQty      = tcoSheet.getRange(config.legacyTco.qtyCol      + row.row).getValue();
+      var rawInclude  = tcoSheet.getRange(config.legacyTco.includeCol  + row.row).getValue();
+
+      result[row.id + '_unitCost'] = convertFromSheet(rawUnitCost, 'currency');
+      result[row.id + '_qty']      = convertFromSheet(rawQty, row.qtyStoreAs);
+      result[row.id + '_include']  = (rawInclude === '' || rawInclude === null)
+        ? row.defaultInclude
+        : (rawInclude === 'Yes' || rawInclude === true);
     });
   }
 
@@ -176,11 +186,26 @@ function saveWizardData(formData) {
     });
 
     // Write Legacy TCO tab
-    config.legacyTco.fields.forEach(function(field) {
-      var value = formData[field.id];
-      if (value === null || value === undefined || value === '') return;
-      var cellRef = config.legacyTco.writeCol + field.row;
-      tcoSheet.getRange(cellRef).setValue(toSheetValue(value, field.storeAs));
+    var onPremVal = formData['legacyOnPrem'];
+    if (onPremVal !== null && onPremVal !== undefined && onPremVal !== '') {
+      tcoSheet.getRange(config.legacyTco.onPremCell).setValue(String(onPremVal));
+    }
+
+    config.legacyTco.rows.forEach(function(row) {
+      var unitCostVal = formData[row.id + '_unitCost'];
+      var qtyVal      = formData[row.id + '_qty'];
+      var includeVal  = formData[row.id + '_include'];
+
+      if (unitCostVal !== null && unitCostVal !== undefined && unitCostVal !== '') {
+        tcoSheet.getRange(config.legacyTco.unitCostCol + row.row)
+          .setValue(toSheetValue(unitCostVal, 'currency'));
+      }
+      if (qtyVal !== null && qtyVal !== undefined && qtyVal !== '') {
+        tcoSheet.getRange(config.legacyTco.qtyCol + row.row)
+          .setValue(toSheetValue(qtyVal, row.qtyStoreAs));
+      }
+      tcoSheet.getRange(config.legacyTco.includeCol + row.row)
+        .setValue(includeVal === false ? 'No' : 'Yes');
     });
 
     // Force recalculation
@@ -253,17 +278,19 @@ function validateFormData(formData) {
     }
   });
 
-  config.legacyTco.fields.forEach(function(field) {
-    var value = formData[field.id];
-    var isEmpty = (value === null || value === undefined || String(value).trim() === '');
-    if (!isEmpty && field.type !== 'text') {
-      var num = parseFloat(String(value).replace(/[^0-9.-]/g, ''));
-      if (isNaN(num)) {
-        errors.push(field.label + ' must be a number.');
-      } else if (field.min !== undefined && num < field.min) {
-        errors.push(field.label + ' must be at least ' + field.min + '.');
-      } else if (field.max !== undefined && num > field.max) {
-        errors.push(field.label + ' must be at most ' + field.max + '.');
+  config.legacyTco.rows.forEach(function(row) {
+    var unitCost = formData[row.id + '_unitCost'];
+    if (unitCost !== null && unitCost !== undefined && unitCost !== '') {
+      var num = parseFloat(String(unitCost).replace(/[^0-9.-]/g, ''));
+      if (isNaN(num) || num < 0) {
+        errors.push(row.label + ' unit cost must be a positive number.');
+      }
+    }
+    var qty = formData[row.id + '_qty'];
+    if (qty !== null && qty !== undefined && qty !== '') {
+      var qnum = parseFloat(qty);
+      if (isNaN(qnum) || qnum < 0) {
+        errors.push(row.label + ' quantity must be a positive number.');
       }
     }
   });
@@ -309,8 +336,10 @@ function clearAllInputs() {
   // Clear Legacy TCO
   var tcoSheet = ss.getSheetByName(config.tabs.LEGACY_TCO);
   if (tcoSheet) {
-    config.legacyTco.fields.forEach(function(field) {
-      tcoSheet.getRange(config.legacyTco.writeCol + field.row).clearContent();
+    config.legacyTco.rows.forEach(function(row) {
+      tcoSheet.getRange(config.legacyTco.unitCostCol + row.row).clearContent();
+      tcoSheet.getRange(config.legacyTco.qtyCol      + row.row).clearContent();
+      tcoSheet.getRange(config.legacyTco.includeCol  + row.row).clearContent();
     });
   }
 

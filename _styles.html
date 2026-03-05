@@ -401,6 +401,22 @@
   .team-table tbody tr:last-child td { border-bottom: none; }
   .team-table tbody tr:hover td { background: rgba(0,137,11,.04); }
   .team-table .role-label { font-weight: 600; color: var(--text-dark); }
+  /* Legacy TCO table */
+  .legacy-tco-table td { vertical-align: top; padding: 10px 12px; }
+  .legacy-tco-table .legacy-row-hint { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+  .legacy-currency-input, .legacy-qty-input {
+    width: 100%; padding: 6px 10px; border: 1px solid var(--border);
+    border-radius: 6px; font-size: 13px;
+  }
+  .legacy-currency-input:focus, .legacy-qty-input:focus {
+    outline: none; border-color: var(--arena-green);
+    box-shadow: 0 0 0 2px rgba(0,137,11,.15);
+  }
+  .legacy-qty-input { max-width: 90px; }
+  /* On-prem toggle row */
+  .legacy-onprem-wrap { display: flex; align-items: center; gap: 16px; padding: 10px 0 4px; }
+  .legacy-onprem-label { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+
   /* FTE total footer row */
   .fte-total-row td {
     background: var(--arena-dark);
