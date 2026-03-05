@@ -406,19 +406,17 @@
     var yesBtn = document.createElement('button');
     yesBtn.type = 'button';
     yesBtn.textContent = 'Yes';
-    yesBtn.className = 'toggle-btn active';
-    yesBtn.dataset.val = 'Yes';
+    yesBtn.className = 'tog-yes';
 
     var noBtn = document.createElement('button');
     noBtn.type = 'button';
     noBtn.textContent = 'No';
-    noBtn.className = 'toggle-btn';
-    noBtn.dataset.val = 'No';
+    noBtn.className = 'tog-no';
 
     function setOnPrem(val) {
       WIZARD.formData['legacyOnPrem'] = val;
-      yesBtn.classList.toggle('active', val === 'Yes');
-      noBtn.classList.toggle('active', val === 'No');
+      toggle.classList.toggle('yes', val === 'Yes');
+      toggle.classList.toggle('no',  val === 'No');
     }
 
     yesBtn.addEventListener('click', function() { setOnPrem('Yes'); });
@@ -525,26 +523,30 @@
       var isIncluded = (curInc === null || curInc === undefined) ? row.defaultInclude : curInc;
       WIZARD.formData[includeId] = isIncluded;
 
+      incToggle.classList.add(isIncluded ? 'yes' : 'no');
+
       var yBtn = document.createElement('button');
       yBtn.type = 'button';
       yBtn.textContent = 'Yes';
-      yBtn.className = 'toggle-btn' + (isIncluded ? ' active' : '');
+      yBtn.className = 'tog-yes';
 
       var nBtn = document.createElement('button');
       nBtn.type = 'button';
       nBtn.textContent = 'No';
-      nBtn.className = 'toggle-btn' + (!isIncluded ? ' active' : '');
+      nBtn.className = 'tog-no';
 
-      (function(yb, nb, id) {
+      (function(tog, yb, nb, id) {
         yb.addEventListener('click', function() {
           WIZARD.formData[id] = true;
-          yb.classList.add('active'); nb.classList.remove('active');
+          tog.classList.add('yes'); tog.classList.remove('no');
+          updateLegacyTCOTotal();
         });
         nb.addEventListener('click', function() {
           WIZARD.formData[id] = false;
-          nb.classList.add('active'); yb.classList.remove('active');
+          tog.classList.add('no'); tog.classList.remove('yes');
+          updateLegacyTCOTotal();
         });
-      })(yBtn, nBtn, includeId);
+      })(incToggle, yBtn, nBtn, includeId);
 
       incToggle.appendChild(yBtn);
       incToggle.appendChild(nBtn);

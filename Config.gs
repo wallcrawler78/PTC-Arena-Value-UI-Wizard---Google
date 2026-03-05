@@ -27,7 +27,7 @@ function getSheetConfig() {
 
     dataInput: {
       tab: SPREADSHEET_TABS.DATA_INPUT,
-      writeCol: 'D',
+      writeCol: 'E',
       fields: [
         // Step 1: Company Profile
         {

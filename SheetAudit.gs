@@ -92,26 +92,32 @@ function runSheetAudit() {
   if (!tcoSheet) {
     report.push('ERROR: Tab not found: ' + config.tabs.LEGACY_TCO);
   } else {
-    config.legacyTco.fields.forEach(function(field) {
-      var cellRef = config.legacyTco.writeCol + field.row;
-      var range = tcoSheet.getRange(cellRef);
-      var value = range.getValue();
-      var formula = range.getFormula();
-      var hasFormula = formula && formula.trim() !== '';
+    config.legacyTco.rows.forEach(function(row) {
+      var cols = [
+        { ref: config.legacyTco.unitCostCol + row.row, label: 'unitCost', storeAs: 'currency' },
+        { ref: config.legacyTco.qtyCol      + row.row, label: 'qty',      storeAs: row.qtyStoreAs },
+        { ref: config.legacyTco.includeCol  + row.row, label: 'include',  storeAs: 'text' }
+      ];
+      cols.forEach(function(col) {
+        var range = tcoSheet.getRange(col.ref);
+        var value = range.getValue();
+        var formula = range.getFormula();
+        var hasFormula = formula && formula.trim() !== '';
 
-      var status = 'OK';
-      var note = '';
+        var status = 'OK';
+        var note = '';
 
-      if (hasFormula) {
-        status = 'WARNING';
-        note = 'Cell has formula: ' + formula + ' (wizard should only write to input/yellow cells)';
-        warnings.push(field.id + ' (' + cellRef + '): ' + note);
-      }
+        if (hasFormula) {
+          status = 'WARNING';
+          note = 'Cell has formula: ' + formula + ' (wizard should only write to input/yellow cells)';
+          warnings.push(row.id + '_' + col.label + ' (' + col.ref + '): ' + note);
+        }
 
-      report.push('[' + status + '] ' + field.id + ' → ' + cellRef +
-                  ' | value: ' + JSON.stringify(value) +
-                  ' | storeAs: ' + field.storeAs +
-                  (note ? ' | NOTE: ' + note : ''));
+        report.push('[' + status + '] ' + row.id + '_' + col.label + ' → ' + col.ref +
+                    ' | value: ' + JSON.stringify(value) +
+                    ' | storeAs: ' + col.storeAs +
+                    (note ? ' | NOTE: ' + note : ''));
+      });
     });
   }
 
