@@ -52,13 +52,19 @@
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(0,0,0,.25);
   }
+  /* Logo pill — white background lets the full-colour Arena logo pop on green */
+  .logo-pill {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 5px 14px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
   .logo-img {
-    height: 36px;
+    height: 26px;
     width: auto;
     display: block;
-    /* Invert dark logo to white for the green header background */
-    filter: brightness(0) invert(1);
-    flex-shrink: 0;
   }
   .header-divider {
     width: 1px;
