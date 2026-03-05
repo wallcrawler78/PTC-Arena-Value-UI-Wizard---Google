@@ -550,7 +550,7 @@ function getSheetConfig() {
           row: 7,
           storeAs: 'decimal',
           step: 5,
-          default: 5,
+          default: 3,
           min: 3,
           max: 8,
           unit: '%',

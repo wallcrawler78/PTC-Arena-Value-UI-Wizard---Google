@@ -20,10 +20,20 @@ function onOpen() {
     .addItem('Launch Wizard', 'showWizard')
     .addSeparator()
     .addItem('Clear All Inputs', 'clearAllInputs')
+    .addSeparator()
+    .addItem('Help / How It Works', 'showHelp')
     .addToUi();
 }
 
 // ─── Dialog ──────────────────────────────────────────────────────────────────
+
+function showHelp() {
+  var html = HtmlService.createHtmlOutputFromFile('Help')
+    .setWidth(760)
+    .setHeight(580)
+    .setTitle('Arena Value Wizard — Help & Guide');
+  SpreadsheetApp.getUi().showModelessDialog(html, 'Arena Value Wizard — Help & Guide');
+}
 
 function showWizard() {
   var template = HtmlService.createTemplateFromFile('Wizard');

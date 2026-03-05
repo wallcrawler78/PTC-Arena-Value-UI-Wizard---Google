@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arena Value Wizard — Help &amp; Guide</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --arena-green:    #00890B;
+      --arena-dark:     #004D07;
+      --arena-mid:      #007B0E;
+      --arena-light:    #40AA1D;
+      --arena-tint:     #EAF7EB;
+      --ptc-orange:     #F47920;
+      --bg:             #F5F7FA;
+      --text-dark:      #1A1A2E;
+      --text-mid:       #4A5568;
+      --text-light:     #718096;
+      --border:         #E0E4EA;
+      --white:          #FFFFFF;
+      --success:        #2F855A;
+      --danger:         #C53030;
+      --radius:         8px;
+      --shadow:         0 2px 8px rgba(0,0,0,.10);
+      --transition:     0.18s ease;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 14px;
+      color: var(--text-dark);
+      background: var(--bg);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .help-header {
+      background: linear-gradient(135deg, var(--arena-dark) 0%, var(--arena-mid) 100%);
+      color: var(--white);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .help-header .title-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .help-header .help-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .help-header h1 {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: .3px;
+    }
+    .btn-close {
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      color: var(--white);
+      border-radius: var(--radius);
+      padding: 5px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-close:hover { background: rgba(255,255,255,.3); }
+
+    /* ── Tab Navigation ── */
+    .tab-nav {
+      display: flex;
+      background: var(--white);
+      border-bottom: 2px solid var(--border);
+      overflow-x: auto;
+      flex-shrink: 0;
+      padding: 0 8px;
+    }
+    .tab-btn {
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-light);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .tab-btn:hover { color: var(--arena-green); }
+    .tab-btn.active {
+      color: var(--arena-green);
+      border-bottom-color: var(--arena-green);
+    }
+
+    /* ── Content Area ── */
+    .help-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .tab-content h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--arena-dark);
+      margin-bottom: 6px;
+    }
+    .tab-content h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--arena-green);
+      margin: 16px 0 6px;
+    }
+    .tab-content p {
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.65;
+      margin-bottom: 10px;
+    }
+    .tab-content ul {
+      margin: 0 0 12px 18px;
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.65;
+    }
+    .tab-content li { margin-bottom: 4px; }
+
+    /* Highlight boxes */
+    .info-box {
+      background: var(--arena-tint);
+      border-left: 3px solid var(--arena-light);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 10px 14px;
+      margin: 12px 0;
+      font-size: 12px;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+    .formula-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      margin: 10px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--text-dark);
+      line-height: 1.5;
+      box-shadow: var(--shadow);
+    }
+
+    /* Data Flow diagram */
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 16px 0;
+      overflow-x: auto;
+      padding: 8px 0;
+    }
+    .flow-step {
+      background: var(--white);
+      border: 2px solid var(--arena-green);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      text-align: center;
+      min-width: 120px;
+      flex-shrink: 0;
+    }
+    .flow-step .flow-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--arena-dark);
+      margin-bottom: 4px;
+    }
+    .flow-step .flow-detail {
+      font-size: 10px;
+      color: var(--text-mid);
+      line-height: 1.4;
+    }
+    .flow-step.highlight {
+      background: var(--arena-green);
+      border-color: var(--arena-dark);
+    }
+    .flow-step.highlight .flow-title,
+    .flow-step.highlight .flow-detail {
+      color: var(--white);
+    }
+    .flow-arrow {
+      font-size: 18px;
+      color: var(--arena-green);
+      padding: 0 6px;
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    /* Maturity table */
+    .maturity-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin: 10px 0 14px;
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .maturity-table th {
+      background: var(--arena-green);
+      color: var(--white);
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+    .maturity-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      background: var(--white);
+    }
+    .maturity-table tr:last-child td { border-bottom: none; }
+
+    /* Field list table */
+    .field-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin: 10px 0 14px;
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .field-table th {
+      background: var(--arena-green);
+      color: var(--white);
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+    }
+    .field-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--white);
+    }
+    .field-table tr:last-child td { border-bottom: none; }
+
+    .step-badge {
+      display: inline-block;
+      background: var(--arena-green);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="help-header">
+    <div class="title-area">
+      <div class="help-icon">?</div>
+      <h1>Arena Value Wizard — Help &amp; Guide</h1>
+    </div>
+    <button class="btn-close" id="btnClose">Close</button>
+  </header>
+
+  <!-- ── Tab Navigation ── -->
+  <nav class="tab-nav" id="tabNav">
+    <button class="tab-btn active" data-tab="step1">1. Company</button>
+    <button class="tab-btn" data-tab="step2">2. Assumptions</button>
+    <button class="tab-btn" data-tab="step3">3. Cost Structure</button>
+    <button class="tab-btn" data-tab="step4">4. Team</button>
+    <button class="tab-btn" data-tab="step5">5. Revenue</button>
+    <button class="tab-btn" data-tab="step6">6. Productivity</button>
+    <button class="tab-btn" data-tab="step7">7. Cost Recovery</button>
+    <button class="tab-btn" data-tab="step8">8. Review</button>
+    <button class="tab-btn" data-tab="dataflow">Data Flow</button>
+  </nav>
+
+  <!-- ── Help Body ── -->
+  <div class="help-body" id="helpBody">
+
+    <!-- ════════ STEP 1 ════════ -->
+    <div class="tab-content active" id="tab-step1">
+      <span class="step-badge">Step 1 of 8</span>
+      <h2>Company Profile</h2>
+      <p>This step captures the foundational data that drives every downstream calculation in the Arena Value Assessment.</p>
+
+      <h3>Inputs</h3>
+      <table class="field-table">
+        <tr><th>Field</th><th>Type</th><th>Why It Matters</th></tr>
+        <tr>
+          <td><strong>Customer Name</strong></td>
+          <td>Text</td>
+          <td>Labels the output report. Does not affect calculations.</td>
+        </tr>
+        <tr>
+          <td><strong>Annual Revenue ($)</strong></td>
+          <td>Currency</td>
+          <td>The single most important input. Revenue is the base for all revenue-side benefits: Time-to-Market, Direct Material savings, CM Material savings, and more.</td>
+        </tr>
+        <tr>
+          <td><strong>Total Employees</strong></td>
+          <td>Number</td>
+          <td>Multiplied by each team's FTE percentage (Step 4) to produce FTE counts. Those FTE counts then multiply by salary and efficiency improvement to produce labor dollar savings.</td>
+        </tr>
+      </table>
+
+      <div class="info-box">
+        <strong>Tip:</strong> Use the most recent fiscal year's figures. Revenue and headcount are the two anchors that size every benefit — accuracy here means accuracy everywhere.
+      </div>
+    </div>
+
+    <!-- ════════ STEP 2 ════════ -->
+    <div class="tab-content" id="tab-step2">
+      <span class="step-badge">Step 2 of 8</span>
+      <h2>Business Assumptions</h2>
+      <p>These assumptions shape the revenue-side benefit calculations, particularly the Time-to-Market benefit.</p>
+
+      <h3>Inputs</h3>
+      <table class="field-table">
+        <tr><th>Field</th><th>Range</th><th>How It Feeds Calculations</th></tr>
+        <tr>
+          <td><strong>Revenue Growth Rate</strong></td>
+          <td>0–50%</td>
+          <td>Feeds the Time-to-Market benefit. Faster product launch means capturing more of this growth revenue before competitors.</td>
+        </tr>
+        <tr>
+          <td><strong>% Revenue from New Products</strong></td>
+          <td>0–100%</td>
+          <td>Weights how much of total revenue comes from new or recently launched products — the portion most sensitive to launch timing.</td>
+        </tr>
+        <tr>
+          <td><strong>Profit Margin on New Products</strong></td>
+          <td>0–50%</td>
+          <td>The margin applied to incremental early-launch revenue. Higher margins amplify the value of getting to market sooner.</td>
+        </tr>
+        <tr>
+          <td><strong>NPD/NPI Cycle Time (weeks)</strong></td>
+          <td>4–260 wks</td>
+          <td>Your baseline development cycle. The Time-to-Market improvement percentage reduces this to calculate weeks saved, which translates to revenue captured earlier.</td>
+        </tr>
+      </table>
+
+      <div class="info-box">
+        <strong>Example:</strong> If your NPD cycle is 52 weeks and Arena helps reduce it by 15%, that's ~8 weeks faster to market — potentially capturing weeks of premium pricing that would otherwise go to competitors.
+      </div>
+    </div>
+
+    <!-- ════════ STEP 3 ════════ -->
+    <div class="tab-content" id="tab-step3">
+      <span class="step-badge">Step 3 of 8</span>
+      <h2>Cost Structure</h2>
+      <p>This step captures your cost-of-goods and operational cost data, which drives material savings, inventory reduction, and cost recovery benefits.</p>
+
+      <h3>Material Cost Inputs</h3>
+      <table class="field-table">
+        <tr><th>Field</th><th>How It's Used</th></tr>
+        <tr>
+          <td><strong>COGS % of Revenue</strong></td>
+          <td>Revenue &times; COGS% = total cost-of-goods base for material savings.</td>
+        </tr>
+        <tr>
+          <td><strong>Direct Material % of COGS</strong></td>
+          <td>Revenue &times; COGS% &times; DirectMat% &times; improvement% = Direct Material savings.</td>
+        </tr>
+        <tr>
+          <td><strong>CM Material % of COGS</strong></td>
+          <td>Revenue &times; COGS% &times; CMMat% &times; improvement% = CM Material savings.</td>
+        </tr>
+      </table>
+
+      <h3>Inventory Inputs</h3>
+      <table class="field-table">
+        <tr><th>Field</th><th>How It's Used</th></tr>
+        <tr>
+          <td><strong>Inventory Value ($)</strong></td>
+          <td>Base for inventory carrying cost reduction. Default: 10% of Annual Revenue.</td>
+        </tr>
+        <tr>
+          <td><strong>Carrying Cost %</strong></td>
+          <td>Inventory Value &times; Carrying Cost% &times; improvement% = Inventory savings.</td>
+        </tr>
+      </table>
+
+      <h3>Annual Cost Inputs (for Step 7 Recovery)</h3>
+      <table class="field-table">
+        <tr><th>Field</th><th>Default</th></tr>
+        <tr><td><strong>Expediting Costs</strong></td><td>0.2% of Revenue</td></tr>
+        <tr><td><strong>Scrap &amp; Rework</strong></td><td>0.2% of Revenue</td></tr>
+        <tr><td><strong>Warranty &amp; Service</strong></td><td>0.2% of Revenue</td></tr>
+        <tr><td><strong>Excess &amp; Obsolete</strong></td><td>0.2% of Revenue</td></tr>
+      </table>
+
+      <div class="info-box">
+        <strong>Tip:</strong> These annual cost figures are multiplied by the reduction percentages you set in Step 7 (Cost Recovery Benefits) to calculate dollar savings.
+      </div>
+    </div>
+
+    <!-- ════════ STEP 4 ════════ -->
+    <div class="tab-content" id="tab-step4">
+      <span class="step-badge">Step 4 of 8</span>
+      <h2>Team Resources</h2>
+      <p>Define the size and salary of each team that benefits from Arena PLM. These numbers directly drive the productivity benefits in Step 6.</p>
+
+      <h3>How FTE Counts Work</h3>
+      <p>Each role has a default FTE percentage of Total Employees. You can override with exact numbers.</p>
+
+      <table class="field-table">
+        <tr><th>Team Role</th><th>Default FTE %</th><th>Avg Salary Default</th></tr>
+        <tr><td>Development Team</td><td>15%</td><td>$120,000</td></tr>
+        <tr><td>CAD Design</td><td>2%</td><td>$120,000</td></tr>
+        <tr><td>Eng Services / Doc Mgmt</td><td>1%</td><td>$120,000</td></tr>
+        <tr><td>Product Data Consumers</td><td>20%</td><td>$120,000</td></tr>
+        <tr><td>Quality / CAPA</td><td>5%</td><td>$120,000</td></tr>
+        <tr><td>Compliance</td><td>2%</td><td>$120,000</td></tr>
+        <tr><td>Sourcing</td><td>1%</td><td>$120,000</td></tr>
+      </table>
+
+      <div class="formula-box">
+        <strong>Benefit Formula:</strong><br>
+        FTE Count &times; Annual Salary &times; Efficiency Improvement% = Annual Labor Benefit
+      </div>
+
+      <div class="info-box">
+        <strong>Example:</strong> 250 employees &times; 15% Dev = 37.5 FTEs &times; $120K salary &times; 3% efficiency improvement = <strong>$135,000/year</strong> in productivity benefit.
+      </div>
+
+      <h3>Product Data Consumers (PDC)</h3>
+      <p>PDCs have an additional "% Workweek Consuming Data" slider. This adjusts the effective labor base — if PDCs only spend 10% of their time on product data, only that fraction is eligible for improvement.</p>
+    </div>
+
+    <!-- ════════ STEP 5 ════════ -->
+    <div class="tab-content" id="tab-step5">
+      <span class="step-badge">Step 5 of 8</span>
+      <h2>Revenue &amp; COGS Benefits</h2>
+      <p>These sliders set the improvement percentages that Arena PLM delivers against your revenue and cost-of-goods baseline.</p>
+
+      <h3>Benefit Calculations</h3>
+      <table class="field-table">
+        <tr><th>Benefit</th><th>Formula</th></tr>
+        <tr>
+          <td><strong>Time to Market</strong></td>
+          <td>Revenue &times; Growth% &times; NewProd% &times; Margin% &times; TTM improvement%</td>
+        </tr>
+        <tr>
+          <td><strong>Incremental Margin</strong></td>
+          <td>Additional early-launch margin on premium products</td>
+        </tr>
+        <tr>
+          <td><strong>Direct Material</strong></td>
+          <td>Revenue &times; COGS% &times; DirectMat% &times; improvement%</td>
+        </tr>
+        <tr>
+          <td><strong>CM Material</strong></td>
+          <td>Revenue &times; COGS% &times; CMMat% &times; improvement%</td>
+        </tr>
+        <tr>
+          <td><strong>Inventory</strong></td>
+          <td>Inventory Value &times; Carrying Cost% &times; improvement%</td>
+        </tr>
+      </table>
+
+      <h3>Include / Exclude Toggle</h3>
+      <p>Each benefit row has a Yes/No toggle. Excluded rows write "No" to column F in the Benefits Calc tab and are not counted in the total. Use this to remove benefits that don't apply to the customer's situation.</p>
+
+      <h3>Maturity Levels</h3>
+      <p>Each slider has 4 maturity checkpoints shown as dots on the track. As you move the slider, the maturity description updates to reflect the customer's current PLM adoption level.</p>
+      <table class="maturity-table">
+        <tr><th>Level</th><th>Meaning</th></tr>
+        <tr><td><strong>LOW</strong></td><td>Manual/fragmented processes, high variability, shared drives and email</td></tr>
+        <tr><td><strong>MID-LOW</strong></td><td>Early PLM adoption, some automation, core data in Arena</td></tr>
+        <tr><td><strong>MID-HIGH</strong></td><td>Streamlined workflows, automated change routing, most data in system</td></tr>
+        <tr><td><strong>HIGH</strong></td><td>Full digital thread, optimized processes, real-time visibility</td></tr>
+      </table>
+    </div>
+
+    <!-- ════════ STEP 6 ════════ -->
+    <div class="tab-content" id="tab-step6">
+      <span class="step-badge">Step 6 of 8</span>
+      <h2>Productivity Benefits</h2>
+      <p>Seven efficiency sliders — one per team role defined in Step 4. Each slider sets the percentage efficiency improvement Arena PLM delivers for that team.</p>
+
+      <h3>How Productivity Benefits are Calculated</h3>
+      <div class="formula-box">
+        <strong>Per-role benefit:</strong><br>
+        FTE Count (from Step 4) &times; Avg Salary (from Step 4) &times; Efficiency Improvement% (this slider) = Annual savings
+      </div>
+
+      <h3>Teams &amp; Their Arena Impact</h3>
+      <table class="field-table">
+        <tr><th>Team</th><th>What Arena Improves</th></tr>
+        <tr><td><strong>Development Team</strong></td><td>Faster change orders, real-time BOM access, less rework</td></tr>
+        <tr><td><strong>CAD Design</strong></td><td>Integrated file management, automated revision control</td></tr>
+        <tr><td><strong>Eng Services / Doc Mgmt</strong></td><td>Automated document workflows, digital approvals</td></tr>
+        <tr><td><strong>Product Data Consumers</strong></td><td>Self-service data access, single source of truth</td></tr>
+        <tr><td><strong>Quality / CAPA</strong></td><td>Streamlined CAPA workflows, audit-ready records</td></tr>
+        <tr><td><strong>Compliance</strong></td><td>Automated compliance tracking, regulatory data in one place</td></tr>
+        <tr><td><strong>Sourcing</strong></td><td>Better component visibility, approved vendor lists</td></tr>
+      </table>
+
+      <p>Each benefit has an Include/Exclude toggle and maturity level indicators, just like Step 5.</p>
+    </div>
+
+    <!-- ════════ STEP 7 ════════ -->
+    <div class="tab-content" id="tab-step7">
+      <span class="step-badge">Step 7 of 8</span>
+      <h2>Cost Recovery Benefits</h2>
+      <p>Five cost reduction sliders, each mapping to an annual cost input from Step 3. The improvement percentage represents how much Arena PLM can reduce each cost category.</p>
+
+      <h3>Benefit Calculations</h3>
+      <table class="field-table">
+        <tr><th>Cost Category</th><th>Formula</th></tr>
+        <tr>
+          <td><strong>Expediting Costs</strong></td>
+          <td>Annual Expediting (Step 3) &times; reduction% = savings</td>
+        </tr>
+        <tr>
+          <td><strong>Scrap &amp; Rework</strong></td>
+          <td>Annual Scrap (Step 3) &times; reduction% = savings</td>
+        </tr>
+        <tr>
+          <td><strong>Warranty &amp; Service</strong></td>
+          <td>Annual Warranty (Step 3) &times; reduction% = savings</td>
+        </tr>
+        <tr>
+          <td><strong>Non-compliance Cost Avoidance</strong></td>
+          <td>Estimated risk exposure &times; reduction% = savings</td>
+        </tr>
+        <tr>
+          <td><strong>Excess &amp; Obsolete (E&amp;O)</strong></td>
+          <td>Annual E&amp;O (Step 3) &times; reduction% = savings</td>
+        </tr>
+      </table>
+
+      <div class="info-box">
+        <strong>How it works:</strong> The dollar amounts you entered in Step 3 are the baseline. These sliders set how much Arena can reduce each cost. For example, $100K in expediting costs &times; 20% reduction = $20K annual savings.
+      </div>
+
+      <p>Each benefit has an Include/Exclude toggle and maturity level indicators, consistent with Steps 5 and 6.</p>
+    </div>
+
+    <!-- ════════ STEP 8 ════════ -->
+    <div class="tab-content" id="tab-step8">
+      <span class="step-badge">Step 8 of 8</span>
+      <h2>Review &amp; Submit</h2>
+      <p>This final step shows a summary of all values before writing them to the spreadsheet. Review everything carefully before submitting.</p>
+
+      <h3>What Happens on Submit</h3>
+      <ul>
+        <li><strong>Data Input tab, Column D</strong> — All company profile, assumptions, cost structure, and team resource values are written (rows D3–D48).</li>
+        <li><strong>Benefits Calc tab, Column D</strong> — Improvement percentages for each benefit (stored as decimals, e.g. 15% becomes 0.15).</li>
+        <li><strong>Benefits Calc tab, Column F</strong> — "Yes" or "No" for each benefit's include/exclude toggle.</li>
+        <li><strong>SpreadsheetApp.flush()</strong> — Forces Google Sheets to recalculate all formula cells immediately.</li>
+        <li><strong>Column G auto-updates</strong> — All benefit dollar amounts in column G recalculate instantly based on your new inputs.</li>
+      </ul>
+
+      <div class="info-box">
+        <strong>Safe to re-run:</strong> You can submit multiple times. Each submit overwrites the previous values. Use "Clear All Inputs" from the Arena menu to reset everything back to blank.
+      </div>
+
+      <h3>After Submitting</h3>
+      <p>Close the wizard and review the spreadsheet. The Benefits Summary and ROI Output sections will reflect your inputs immediately. You can reopen the wizard at any time from the Arena menu to adjust values.</p>
+    </div>
+
+    <!-- ════════ DATA FLOW ════════ -->
+    <div class="tab-content" id="tab-dataflow">
+      <h2>Data Flow Overview</h2>
+      <p>This diagram shows how data moves from the wizard through the spreadsheet to produce the final ROI output.</p>
+
+      <h3>End-to-End Flow</h3>
+      <div class="flow-diagram">
+        <div class="flow-step highlight">
+          <div class="flow-title">Wizard Input</div>
+          <div class="flow-detail">Steps 1–7<br>User enters values</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">
+          <div class="flow-title">Data Input Tab</div>
+          <div class="flow-detail">Column D<br>Raw values</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">
+          <div class="flow-title">Benefits Calc Tab</div>
+          <div class="flow-detail">Col D = improvement%<br>Col F = Yes/No</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">
+          <div class="flow-title">Column G</div>
+          <div class="flow-detail">Dollar Benefits<br>(auto-calculated)</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">
+          <div class="flow-title">Benefits Summary</div>
+          <div class="flow-detail">Totals by category</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step highlight">
+          <div class="flow-title">ROI Output</div>
+          <div class="flow-detail">Final ROI %<br>&amp; payback period</div>
+        </div>
+      </div>
+
+      <h3>Column Mapping Detail</h3>
+      <table class="field-table">
+        <tr><th>Tab</th><th>Column</th><th>Content</th><th>Source</th></tr>
+        <tr>
+          <td>Data Input</td>
+          <td>D (rows 3–48)</td>
+          <td>Raw input values (revenue, headcount, costs, FTEs, salaries)</td>
+          <td>Wizard Steps 1–4</td>
+        </tr>
+        <tr>
+          <td>Benefits Calc</td>
+          <td>D</td>
+          <td>Improvement percentages (stored as decimals: 15% = 0.15)</td>
+          <td>Wizard Steps 5–7</td>
+        </tr>
+        <tr>
+          <td>Benefits Calc</td>
+          <td>F</td>
+          <td>"Yes" or "No" — whether each benefit is included</td>
+          <td>Wizard Steps 5–7 toggles</td>
+        </tr>
+        <tr>
+          <td>Benefits Calc</td>
+          <td>G</td>
+          <td>Dollar benefit amounts — <em>formula cells, auto-calculated</em></td>
+          <td>Formulas referencing D, F, and Data Input</td>
+        </tr>
+      </table>
+
+      <h3>How Benefits are Calculated (Column G)</h3>
+      <p>Column G cells contain formulas that combine:</p>
+      <ul>
+        <li>Base values from the Data Input tab (Revenue, FTEs, Salaries, Costs)</li>
+        <li>Improvement percentages from Benefits Calc column D</li>
+        <li>Include/Exclude flags from Benefits Calc column F</li>
+      </ul>
+      <p>When a benefit is set to "No" (excluded), the column G formula returns $0 for that row regardless of the improvement percentage.</p>
+
+      <div class="info-box">
+        <strong>Key insight:</strong> The wizard only writes raw inputs and improvement percentages. All dollar benefit calculations happen via spreadsheet formulas — ensuring full transparency and auditability of the ROI model.
+      </div>
+    </div>
+
+  </div><!-- /help-body -->
+
+  <script>
+    (function() {
+      /* ── Tab switching ── */
+      var tabNav = document.getElementById('tabNav');
+      var tabBtns = tabNav.querySelectorAll('.tab-btn');
+      var tabPanels = document.querySelectorAll('.tab-content');
+
+      function switchTab(tabId) {
+        for (var i = 0; i < tabBtns.length; i++) {
+          if (tabBtns[i].getAttribute('data-tab') === tabId) {
+            tabBtns[i].classList.add('active');
+          } else {
+            tabBtns[i].classList.remove('active');
+          }
+        }
+        for (var j = 0; j < tabPanels.length; j++) {
+          if (tabPanels[j].id === 'tab-' + tabId) {
+            tabPanels[j].classList.add('active');
+          } else {
+            tabPanels[j].classList.remove('active');
+          }
+        }
+      }
+
+      for (var k = 0; k < tabBtns.length; k++) {
+        tabBtns[k].addEventListener('click', function() {
+          switchTab(this.getAttribute('data-tab'));
+        });
+      }
+
+      /* ── Close button ── */
+      document.getElementById('btnClose').addEventListener('click', function() {
+        google.script.host.close();
+      });
+    })();
+  </script>
+</body>
+</html>
