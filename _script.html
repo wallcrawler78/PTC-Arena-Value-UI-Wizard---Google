@@ -448,22 +448,22 @@
 
   function buildBenefitSlider(field) {
     var wrapper = make('div', 'slider-field');
+    var defaultVal = (field.default !== null && field.default !== undefined) ? field.default : field.min;
 
+    // Header: label | include toggle | value badge
     var header = make('div', 'slider-header');
     var labelEl = make('span', 'slider-label');
     labelEl.textContent = field.label;
     var toggle = buildIncludeToggle(field);
-
     var badge = make('span', 'slider-value-badge');
     badge.id = 'badge_' + field.id;
-    var defaultVal = (field.default !== null && field.default !== undefined) ? field.default : field.min;
     badge.textContent = defaultVal + '%';
-
     header.appendChild(labelEl);
     header.appendChild(toggle);
     header.appendChild(badge);
     wrapper.appendChild(header);
 
+    // Low/high descriptive anchors
     if (field.lowAnchor || field.highAnchor) {
       var anchorsDesc = make('div', 'slider-anchors');
       if (field.lowAnchor) {
@@ -479,19 +479,22 @@
       wrapper.appendChild(anchorsDesc);
     }
 
+    // Slider track
     var input = makeSlider(field, defaultVal);
-    input.addEventListener('input', function() {
-      var val = parseFloat(input.value);
-      WIZARD.formData[field.id] = val;
-      badge.textContent = val + '%';
-      updateSliderGradient(input);
-    });
     WIZARD.formData[field.id] = defaultVal;
-
     var trackWrap = make('div', 'slider-track-wrap');
     trackWrap.appendChild(input);
     wrapper.appendChild(trackWrap);
 
+    // Maturity dots (positioned below track, aligned to thumb travel)
+    var dotsEl = null;
+    var stateBox = null;
+    if (field.maturityLevels && field.maturityLevels.length) {
+      dotsEl = buildMaturityDots(field);
+      wrapper.appendChild(dotsEl);
+    }
+
+    // Numeric min/max labels
     var numAnchors = make('div', 'slider-anchors');
     var numLow = make('span', 'anchor-low');
     numLow.textContent = field.min + '%  Low';
@@ -500,6 +503,25 @@
     numAnchors.appendChild(numLow);
     numAnchors.appendChild(numHigh);
     wrapper.appendChild(numAnchors);
+
+    // Maturity state description box
+    if (field.maturityLevels && field.maturityLevels.length) {
+      stateBox = make('div', 'maturity-state');
+      stateBox.id = 'mstate_' + field.id;
+      stateBox.appendChild(make('div', 'state-label'));
+      stateBox.appendChild(make('div', 'state-desc'));
+      wrapper.appendChild(stateBox);
+      updateMaturityUI(field, defaultVal, stateBox, dotsEl);
+    }
+
+    // Wire slider events (after stateBox and dotsEl exist)
+    input.addEventListener('input', function() {
+      var val = parseFloat(input.value);
+      WIZARD.formData[field.id] = val;
+      badge.textContent = val + '%';
+      updateSliderGradient(input);
+      if (stateBox && dotsEl) updateMaturityUI(field, val, stateBox, dotsEl);
+    });
 
     return wrapper;
   }
@@ -603,6 +625,85 @@
       ' var(--slider-high) 100%)';
   }
 
+  // ── Maturity Level UI ──────────────────────────────────────────────────────
+
+  /**
+   * Builds a row of positioned dot markers at each maturity level's pct.
+   * Dots use calc() to align with the range thumb's travel path (9px offset for thumb radius).
+   */
+  function buildMaturityDots(field) {
+    var container = make('div', 'maturity-dots');
+    container.id = 'mdots_' + field.id;
+    field.maturityLevels.forEach(function(level) {
+      var dot = make('div', 'maturity-dot');
+      dot.title = level.label;
+      var ratio = (field.max === field.min) ? 0
+        : (level.pct - field.min) / (field.max - field.min);
+      // Align dot center with thumb center at this % position
+      dot.style.left = 'calc(9px + ' + ratio.toFixed(4) + ' * (100% - 18px))';
+      container.appendChild(dot);
+    });
+    return container;
+  }
+
+  /**
+   * Returns the maturity level object nearest to the given slider value.
+   */
+  function getMaturityLevel(field, val) {
+    var best = field.maturityLevels[0];
+    var bestDist = Math.abs(best.pct - val);
+    field.maturityLevels.forEach(function(lv) {
+      var d = Math.abs(lv.pct - val);
+      if (d < bestDist) { bestDist = d; best = lv; }
+    });
+    return best;
+  }
+
+  /**
+   * Returns an hsl() color string interpolated from red (low) to green (high).
+   * hue: 0 (red) → 120 (green)
+   */
+  function getMaturityColor(val, min, max) {
+    var ratio = (max === min) ? 0 : Math.max(0, Math.min(1, (val - min) / (max - min)));
+    var hue = Math.round(ratio * 120);
+    return 'hsl(' + hue + ', 68%, 40%)';
+  }
+
+  /**
+   * Updates the maturity state box and dots to reflect the current slider value.
+   */
+  function updateMaturityUI(field, val, stateEl, dotsEl) {
+    if (!field.maturityLevels || !stateEl || !dotsEl) return;
+    var level = getMaturityLevel(field, val);
+    if (!level) return;
+    var color = getMaturityColor(val, field.min, field.max);
+
+    // Update state box
+    stateEl.style.borderLeftColor = color;
+    var labelEl = stateEl.querySelector('.state-label');
+    var descEl  = stateEl.querySelector('.state-desc');
+    if (labelEl) { labelEl.textContent = level.label; labelEl.style.color = color; }
+    if (descEl)  descEl.textContent = level.description;
+
+    // Update dots — highlight the nearest one
+    var nearestIdx = 0;
+    var minDist = Infinity;
+    field.maturityLevels.forEach(function(lv, i) {
+      var d = Math.abs(lv.pct - val);
+      if (d < minDist) { minDist = d; nearestIdx = i; }
+    });
+    var dots = dotsEl.querySelectorAll('.maturity-dot');
+    dots.forEach(function(dot, i) {
+      if (i === nearestIdx) {
+        dot.classList.add('active');
+        dot.style.background = color;
+      } else {
+        dot.classList.remove('active');
+        dot.style.background = '';
+      }
+    });
+  }
+
   // ── Load existing sheet values ─────────────────────────────────────────────
   function loadCurrentValues() {
     showSpinner('Loading current values...');
@@ -655,6 +756,11 @@
           var badge = document.getElementById('badge_' + field.id);
           if (badge) badge.textContent = numVal + '%';
           updateSliderGradient(input);
+          if (field.maturityLevels) {
+            var stateEl = document.getElementById('mstate_' + field.id);
+            var dotsEl  = document.getElementById('mdots_'  + field.id);
+            updateMaturityUI(field, numVal, stateEl, dotsEl);
+          }
         }
       }
 

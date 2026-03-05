@@ -394,7 +394,8 @@ function getSheetConfig() {
       improvementCol: 'D',
       includeCol: 'F',
       fields: [
-        // Step 5: Revenue & COGS Benefits
+
+        // ── Step 5: Revenue & COGS Benefits ──────────────────────────────────
         {
           id: 'reduceTimeToMarket',
           label: 'Reduce Time to Market',
@@ -407,7 +408,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Minor process improvements, limited PLM adoption',
           highAnchor: 'Full digital thread, real-time BOM visibility across teams',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 15,
+          maturityLevels: [
+            { pct: 10, label: 'Fragmented Process',    description: 'Change orders tracked in spreadsheets; approval routing via email means design iterations take weeks longer than necessary.' },
+            { pct: 17, label: 'Process Forming',       description: 'Core BOM and change workflows are managed in Arena, but supplier collaboration and cross-site visibility remain limited.' },
+            { pct: 23, label: 'Digitally Connected',   description: 'Arena manages end-to-end change workflows with full stakeholder visibility, compressing cycle time across every function.' },
+            { pct: 30, label: 'Digital Thread Leader', description: 'Full digital thread from concept to release. Suppliers collaborate directly in Arena; real-time change propagation drives market-leading launch speed.' }
+          ]
         },
         {
           id: 'incrementalMargin',
@@ -421,7 +429,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Modest margin recovery from slight schedule improvement',
           highAnchor: 'Significant first-mover advantage on premium products',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 1.5,
+          maturityLevels: [
+            { pct: 1,   label: 'Reactive',      description: 'Delayed launches due to change management gaps result in missed first-mover windows and compressed initial margins.' },
+            { pct: 1.5, label: 'Improving',     description: 'Better schedule visibility from Arena change workflows reduces slippage; some early-launch margin is now captured.' },
+            { pct: 2.5, label: 'Proactive',     description: 'Parallel engineering enabled by Arena\'s shared BOM environment consistently shortens time to market and improves margin capture.' },
+            { pct: 3,   label: 'Market Leader', description: 'Systematic early market entry, driven by Arena\'s real-time release workflows, consistently captures premium pricing and margin.' }
+          ]
         },
         {
           id: 'reduceDirectMaterial',
@@ -435,7 +450,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Better supplier visibility, reduced duplicate parts',
           highAnchor: 'Strategic sourcing optimization with full part reuse analytics',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 1.5,
+          maturityLevels: [
+            { pct: 1,   label: 'Fragmented Sourcing',  description: 'Duplicate parts proliferate across product lines; supplier data managed in spreadsheets disconnected from design.' },
+            { pct: 1.5, label: 'Improving Visibility', description: 'Arena provides part master with AML/AVL linkage; occasional reuse reviews begin reducing duplicate part specifications.' },
+            { pct: 2.5, label: 'Managed',              description: 'Procurement uses Arena BOM data for strategic sourcing negotiations; part reuse tracking actively reduces redundant spend.' },
+            { pct: 3,   label: 'Optimized',            description: 'Full part reuse analytics, AVL cost benchmarking, and automated duplicate detection maximize direct material savings.' }
+          ]
         },
         {
           id: 'reduceInventoryCarrying',
@@ -449,7 +471,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Improved BOM accuracy reduces buffer stock slightly',
           highAnchor: 'Real-time inventory intelligence, proactive obsolescence management',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 8,
+          maturityLevels: [
+            { pct: 5,  label: 'BOM-Driven',  description: 'Arena BOM accuracy reduces buffer stock slightly; obsolescence management remains largely reactive and behind the curve.' },
+            { pct: 8,  label: 'Improving',   description: 'Change effectivity dates in Arena enable better inventory planning against pending design changes and upcoming EOL components.' },
+            { pct: 12, label: 'Proactive',   description: 'Arena change management integrates with supply chain visibility, enabling proactive inventory reduction before EOL events occur.' },
+            { pct: 15, label: 'Optimized',   description: 'Real-time Arena intelligence drives dynamic safety stock adjustments and proactive EOL management across all SKUs.' }
+          ]
         },
         {
           id: 'reduceCMMaterial',
@@ -463,10 +492,17 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Better CM collaboration, reduced re-orders',
           highAnchor: 'Tight CM integration with shared BOM, real-time change propagation',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 5,
+          maturityLevels: [
+            { pct: 3,   label: 'Ad-Hoc Collaboration', description: 'BOMs transmitted to contract manufacturers via email or spreadsheet; version errors and costly re-orders are common.' },
+            { pct: 5,   label: 'Structured Handoffs',  description: 'Standardized BOM packages sent to CM reduce errors, but change propagation is still delayed and manual.' },
+            { pct: 6.5, label: 'Collaborative',        description: 'CM has direct visibility into Arena item records; change notifications significantly reduce expedited orders and material waste.' },
+            { pct: 8,   label: 'Integrated',           description: 'CM operates within the Arena workspace; real-time BOM and change updates eliminate material waste from stale or misaligned data.' }
+          ]
         },
 
-        // Step 6: Productivity Benefits
+        // ── Step 6: Productivity Benefits ─────────────────────────────────────
         {
           id: 'devTeamEfficiency',
           label: 'Development Team Efficiency',
@@ -479,7 +515,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Reduced searching for correct BOM/documentation',
           highAnchor: 'Fully automated change notifications, zero duplicate work',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 2,
+          maturityLevels: [
+            { pct: 1,   label: 'Search & Rework',    description: 'Engineers spend significant time hunting for correct BOM versions; stale data leads to rework and duplicated effort across the team.' },
+            { pct: 2,   label: 'Improving Access',   description: 'Arena provides a single source of truth; search time decreases meaningfully but some manual coordination steps remain.' },
+            { pct: 3.5, label: 'Connected Teams',    description: 'Automated change notifications eliminate most duplicate effort; engineers focus on design rather than data management.' },
+            { pct: 5,   label: 'Peak Efficiency',    description: 'Real-time product record access and automated change alerts eliminate wasted engineering time entirely; teams operate at full capacity.' }
+          ]
         },
         {
           id: 'engServicesEfficiency',
@@ -493,7 +536,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Basic document management improvements',
           highAnchor: 'Fully automated release workflows, e-signatures, zero manual routing',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 30,
+          maturityLevels: [
+            { pct: 15, label: 'Manual Routing',    description: 'Approval workflows managed by email; release packages assembled by hand with frequent missing items or wrong document revisions.' },
+            { pct: 28, label: 'Basic Workflow',    description: 'Arena manages some approval workflows, but e-signatures and automated routing are not fully configured or consistently used.' },
+            { pct: 50, label: 'Streamlined',       description: 'Most release workflows are automated within Arena; e-signatures replace wet signatures in nearly all cases.' },
+            { pct: 65, label: 'Fully Automated',   description: 'Zero manual document routing; complete automated release workflows, e-signatures, and audit-ready archives throughout Arena.' }
+          ]
         },
         {
           id: 'pdcEfficiency',
@@ -507,7 +557,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Single source of truth reduces search time',
           highAnchor: 'Full self-service access, no manual data requests',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 40,
+          maturityLevels: [
+            { pct: 18, label: 'Data Gating',         description: 'Manufacturing, service, and procurement teams rely entirely on engineering to pull and deliver product data — high wait times, frequent interruptions.' },
+            { pct: 38, label: 'Partial Self-Service', description: 'Arena provides some direct access, but permission gaps and training barriers limit adoption among downstream teams.' },
+            { pct: 65, label: 'Broad Access',         description: 'Most data consumers access current product records in Arena directly, dramatically reducing engineering interrupt rate.' },
+            { pct: 90, label: 'Full Self-Service',    description: 'All product data consumers are autonomous Arena users; zero manual data requests to engineering; teams operate independently.' }
+          ]
         },
         {
           id: 'cadEfficiency',
@@ -521,7 +578,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Better part library access, fewer redesigns',
           highAnchor: 'Full CAD-PLM integration, automated BOM population',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 1.5,
+          maturityLevels: [
+            { pct: 1,   label: 'Disconnected CAD',    description: 'CAD data and PLM are siloed; BOMs are built manually from CAD exports, creating version drift, errors, and redundant part creation.' },
+            { pct: 1.5, label: 'Partial Integration', description: 'Some CAD-PLM linkage exists but BOM population remains semi-manual and prone to synchronization errors.' },
+            { pct: 2.5, label: 'Integrated Workflow', description: 'CAD integration pushes accurate BOMs to Arena automatically; part library reuse is tracked and enforced to prevent duplication.' },
+            { pct: 3,   label: 'Fully Optimized',     description: 'Seamless CAD-Arena integration with automatic BOM creation, reuse analytics, and zero redundant part generation.' }
+          ]
         },
         {
           id: 'qualityEfficiency',
@@ -535,7 +599,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Faster access to quality records and history',
           highAnchor: 'Automated CAPA workflows, closed-loop quality management',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 8,
+          maturityLevels: [
+            { pct: 4,  label: 'Reactive Quality', description: 'CAPAs tracked in spreadsheets or standalone tools; traceability between design changes and quality events is entirely manual.' },
+            { pct: 9,  label: 'Connected Records', description: 'Arena links quality records to product items and changes; some CAPA workflows automated but not consistently adopted.' },
+            { pct: 14, label: 'Closed-Loop',       description: 'Automated CAPA workflows tied to Arena change events; resolution time decreases as teams work within a unified quality system.' },
+            { pct: 20, label: 'Proactive Quality', description: 'Fully automated, closed-loop quality management in Arena eliminates reactive firefighting and significantly reduces repeat failure rates.' }
+          ]
         },
         {
           id: 'complianceEfficiency',
@@ -549,7 +620,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Easier audit trail access and report generation',
           highAnchor: 'Fully automated compliance reporting, real-time substance alerts',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 8,
+          maturityLevels: [
+            { pct: 2,  label: 'Manual Compliance',    description: 'Compliance documentation prepared manually for each audit; RoHS/REACH substance data tracked in disconnected spreadsheets by individual contributors.' },
+            { pct: 7,  label: 'Structured Records',   description: 'Compliance declarations linked to Arena items; report preparation is faster but still requires manual assembly and review.' },
+            { pct: 14, label: 'Automated Reporting',  description: 'Compliance reports generated directly from Arena with complete roll-up substance data; audit readiness is maintained continuously.' },
+            { pct: 20, label: 'Full Automation',      description: 'Real-time compliance alerts, automated regulatory filings, and proactive substance change management eliminate compliance exposure and audit prep burden.' }
+          ]
         },
         {
           id: 'sourcingEfficiency',
@@ -563,10 +641,17 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Better supplier data visibility, reduced manual work',
           highAnchor: 'Integrated sourcing workflows, automated AVL management',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 5,
+          maturityLevels: [
+            { pct: 3,   label: 'Manual Sourcing',      description: 'AVL managed in spreadsheets disconnected from Arena BOMs; supplier changes communicated by email, causing data inconsistency and re-sourcing effort.' },
+            { pct: 5,   label: 'Improving Visibility', description: 'AML/AVL linked to Arena items; procurement has read access but change-driven sourcing workflows are not yet integrated.' },
+            { pct: 7.5, label: 'Collaborative',        description: 'Supplier qualification workflows managed in Arena; BOM-linked AVL enables accurate RFQ data and reduces sourcing cycle time.' },
+            { pct: 10,  label: 'Optimized',            description: 'Fully integrated sourcing workflows with Arena-driven AVL management, automated supplier notifications, and real-time compliance tracking.' }
+          ]
         },
 
-        // Step 7: Cost Recovery Benefits
+        // ── Step 7: Cost Recovery Benefits ────────────────────────────────────
         {
           id: 'reduceExpediting',
           label: 'Reduce Expediting Costs',
@@ -579,7 +664,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Fewer surprises from better BOM accuracy',
           highAnchor: 'Proactive change management eliminates most expediting',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 12,
+          maturityLevels: [
+            { pct: 6,  label: 'Reactive',   description: 'Expediting driven by BOM errors and delayed change communication to manufacturing; high premium freight costs are a regular occurrence.' },
+            { pct: 12, label: 'Improving',  description: 'Arena BOM accuracy and change notifications reduce most BOM-driven surprises; expediting declining but not yet eliminated.' },
+            { pct: 19, label: 'Managed',    description: 'Proactive Arena change management and real-time supplier visibility significantly reduce unplanned shortages and last-minute procurement.' },
+            { pct: 25, label: 'Proactive',  description: 'Real-time change propagation through Arena to manufacturing and supply chain virtually eliminates data-error-driven expediting.' }
+          ]
         },
         {
           id: 'reduceScrapRework',
@@ -593,7 +685,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Better documentation reduces build errors',
           highAnchor: 'Real-time ECO propagation, zero rework from stale BOMs',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 8,
+          maturityLevels: [
+            { pct: 5,  label: 'Stale BOMs',  description: 'Manufacturing occasionally builds to outdated BOM revisions; scrap and rework driven by ECO communication gaps are a recurring cost.' },
+            { pct: 8,  label: 'Improving',   description: 'Arena change management reduces most BOM-driven rework; legacy process gaps account for remaining scrap and rework occurrences.' },
+            { pct: 12, label: 'Connected',   description: 'ECOs managed in Arena with clear effectivity dates; manufacturing consistently executes to the correct current product revision.' },
+            { pct: 15, label: 'Zero Rework', description: 'Real-time ECO propagation and Arena-managed work instructions eliminate scrap and rework from stale product data entirely.' }
+          ]
         },
         {
           id: 'reduceWarranty',
@@ -607,7 +706,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Faster root cause analysis with complete product history',
           highAnchor: 'Proactive field issue prevention through quality integration',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 13,
+          maturityLevels: [
+            { pct: 10, label: 'Faster Investigation', description: 'Arena product history enables faster root cause analysis for field failures, reducing time-to-resolution and repeat warranty claims.' },
+            { pct: 13, label: 'Improving',            description: 'Better design-to-field traceability in Arena reduces investigation time and the rate of repeat failure occurrences.' },
+            { pct: 17, label: 'Proactive',            description: 'Quality data linked to Arena product records enables pattern detection and proactive field issue resolution before failures escalate.' },
+            { pct: 20, label: 'Warranty Excellence',  description: 'Closed-loop quality management with full product genealogy in Arena minimizes field failures and drives warranty costs to minimum.' }
+          ]
         },
         {
           id: 'nonComplianceAvoidance',
@@ -621,7 +727,14 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Better audit readiness reduces minor penalty risk',
           highAnchor: 'Full compliance automation prevents major regulatory exposure',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 2,
+          maturityLevels: [
+            { pct: 1,   label: 'Audit Ready',         description: 'Arena provides document history for audits; regulatory penalty risk is modestly reduced by improved record consistency and retrieval.' },
+            { pct: 2,   label: 'Structured Evidence',  description: 'Compliance documentation consistently maintained in Arena significantly reduces audit preparation time and evidence-gathering effort.' },
+            { pct: 3.5, label: 'Automated Compliance', description: 'Arena generates compliance reports automatically; substance alerts prevent non-compliant designs from reaching production undetected.' },
+            { pct: 5,   label: 'Full Protection',      description: 'Proactive substance management, automated regulatory reporting, and complete compliance automation eliminate non-compliance cost exposure.' }
+          ]
         },
         {
           id: 'reduceEOL',
@@ -635,8 +748,16 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Improved visibility into aging parts/products',
           highAnchor: 'Automated EOL alerts, proactive product transition management',
-          defaultInclude: true
+          defaultInclude: true,
+          suggestedPct: 12,
+          maturityLevels: [
+            { pct: 6,  label: 'Reactive EOL',        description: 'EOL components identified late; unplanned redesigns and supply disruptions driven by component obsolescence are a recurring cost.' },
+            { pct: 12, label: 'Improving Visibility', description: 'Arena flags known EOL components in item records; some proactive redesign initiated but management remains largely reactive.' },
+            { pct: 19, label: 'Proactive Management', description: 'Arena integrates with component lifecycle data; EOL alerts trigger timely product transitions before availability impacts production.' },
+            { pct: 25, label: 'Optimized',            description: 'Automated EOL monitoring across the full product portfolio drives proactive transitions and eliminates unplanned obsolescence costs entirely.' }
+          ]
         }
+
       ]
     }
   };
