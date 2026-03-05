@@ -333,7 +333,13 @@
 
     var label = document.createElement('label');
     label.htmlFor = 'field_' + field.id;
-    label.textContent = field.label + (field.required ? ' *' : '');
+    label.textContent = field.label;
+    if (field.required) {
+      var dot = make('span', 'req-dot');
+      dot.setAttribute('aria-label', 'Required');
+      dot.setAttribute('title', 'Required field');
+      label.appendChild(dot);
+    }
     wrapper.appendChild(label);
 
     if (field.hint) {
@@ -358,6 +364,7 @@
         ? (input.value === '' ? '' : parseFloat(input.value.replace(/[^0-9.]/g, '')))
         : input.value;
       clearFieldError(field.id);
+      refreshNextButton();
     });
 
     if (isCurrency) {
@@ -603,6 +610,7 @@
       .withSuccessHandler(function(values) {
         WIZARD.currentValues = values || {};
         applyCurrentValues();
+        refreshNextButton();
         hideSpinner();
       })
       .withFailureHandler(function(err) {
@@ -701,6 +709,22 @@
     document.getElementById('btnBack').disabled = (WIZARD.currentStep === 1);
     document.getElementById('btnNext').style.display = isLast ? 'none' : 'inline-flex';
     document.getElementById('btnSubmit').style.display = isLast ? 'inline-flex' : 'none';
+    refreshNextButton();
+  }
+
+  // Disable Next in real time until all required fields on the current step are filled
+  function refreshNextButton() {
+    var btn = document.getElementById('btnNext');
+    if (!btn || btn.style.display === 'none') return;
+    var requiredFields = getFieldsByStep(WIZARD.currentStep, 'dataInput').filter(function(f) {
+      return f.required;
+    });
+    if (requiredFields.length === 0) { btn.disabled = false; return; }
+    var allFilled = requiredFields.every(function(f) {
+      var val = WIZARD.formData[f.id];
+      return val !== null && val !== undefined && String(val).trim() !== '';
+    });
+    btn.disabled = !allFilled;
   }
 
   // ── Client-side Validation ─────────────────────────────────────────────────

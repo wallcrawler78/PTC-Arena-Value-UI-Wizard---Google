@@ -90,6 +90,8 @@ function getCurrentValues() {
  */
 function convertFromSheet(raw, storeAs) {
   if (raw === '' || raw === null || raw === undefined) return null;
+  // Treat "Mandatory" template placeholders in the sheet as empty
+  if (typeof raw === 'string' && raw.trim().toLowerCase() === 'mandatory') return null;
   if (storeAs === 'decimal') {
     // Sheet stores as decimal (0.10), wizard works in percent (10)
     return Math.round(parseFloat(raw) * 100 * 100) / 100; // two decimal places
