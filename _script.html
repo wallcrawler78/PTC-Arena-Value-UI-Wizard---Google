@@ -203,7 +203,14 @@
         tdE2.style.cssText = 'font-size:11px;color:var(--text-light);padding:4px 14px;';
         tdE2.textContent = '% Workweek Consuming Data';
         var tdE3 = document.createElement('td');
-        tdE3.appendChild(buildTableInput(extraField));
+        var extraWrap = make('div', '');
+        extraWrap.style.cssText = 'display:flex;align-items:center;gap:6px;';
+        extraWrap.appendChild(buildTableInput(extraField));
+        var pctLabel = document.createElement('span');
+        pctLabel.textContent = '%';
+        pctLabel.style.cssText = 'font-size:12px;color:var(--text-mid);';
+        extraWrap.appendChild(pctLabel);
+        tdE3.appendChild(extraWrap);
         trExtra.appendChild(tdE1);
         trExtra.appendChild(tdE2);
         trExtra.appendChild(tdE3);
@@ -485,12 +492,16 @@
     input.id = 'field_' + field.id;
     input.name = field.id;
     if (field.min !== undefined) input.min = field.min;
+    input.step = (field.type === 'currency') ? 'any' : 1;
+
+    // Pre-fill defaults so they are written to the sheet even if user doesn't change them
     if (field.default !== null && field.default !== undefined) {
-      input.placeholder = field.default.toLocaleString();
+      input.value = field.default;
+      WIZARD.formData[field.id] = field.default;
     } else if (field.placeholder) {
       input.placeholder = field.placeholder;
     }
-    input.step = (field.type === 'currency') ? 'any' : 1;
+
     input.addEventListener('input', function() {
       WIZARD.formData[field.id] = input.value === '' ? null : parseFloat(input.value);
     });
