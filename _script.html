@@ -753,7 +753,7 @@
       var ratio = (field.max === field.min) ? 0
         : (level.pct - field.min) / (field.max - field.min);
       // Align dot center with thumb center at this % position
-      dot.style.left = 'calc(9px + ' + ratio.toFixed(4) + ' * (100% - 18px))';
+      dot.style.left = (ratio * 100).toFixed(3) + '%';
       container.appendChild(dot);
     });
     return container;
