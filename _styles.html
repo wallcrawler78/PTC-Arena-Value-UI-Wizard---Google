@@ -706,4 +706,101 @@
     .field-group { grid-template-columns: 1fr; }
     .review-grid { grid-template-columns: 1fr; }
   }
+
+  /* ── Dual Maturity Slider Card ──────────────────────────────────────────── */
+  .dual-slider-section {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    background: var(--bg);
+    border: 1px solid var(--border);
+  }
+
+  .dual-slider-section + .dual-slider-section {
+    margin-top: 6px;
+  }
+
+  .dual-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dual-section-label.current-label {
+    color: var(--text-mid);
+  }
+
+  .dual-section-label.future-label {
+    color: var(--arena-dark);
+  }
+
+  .dual-section-label .section-badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 10px;
+    margin-left: auto;
+  }
+
+  .current-label .section-badge {
+    background: #E2E8F0;
+    color: var(--text-mid);
+  }
+
+  .future-label .section-badge {
+    background: var(--arena-tint);
+    color: var(--arena-dark);
+  }
+
+  /* Current-state slider uses a flat grey gradient */
+  .current-state-track input[type="range"] {
+    background: linear-gradient(to right, #CBD5E0 0%, #A0AEC0 100%) !important;
+  }
+
+  /* Net benefit bar shown between the two sections */
+  .net-benefit-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 0;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-mid);
+  }
+
+  .net-benefit-bar .net-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--arena-green);
+    background: var(--arena-tint);
+    border-radius: 10px;
+    padding: 2px 10px;
+  }
+
+  .net-benefit-bar .net-value.zero {
+    color: var(--text-light);
+    background: #F0F0F0;
+  }
+
+  /* Replace the single slider-value-badge with a net badge in the header */
+  .net-header-badge {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--arena-green);
+    background: var(--arena-tint);
+    border-radius: 10px;
+    padding: 2px 10px;
+    white-space: nowrap;
+  }
+
+  .net-header-badge.zero {
+    color: var(--text-light);
+    background: #F0F0F0;
+  }
 </style>
