@@ -828,24 +828,99 @@
     return wrapper;
   }
 
+  function buildCurrentSlider(field) {
+    var input = document.createElement('input');
+    input.type = 'range';
+    input.id = 'cur_' + field.id;
+    input.name = 'cur_' + field.id;
+    input.setAttribute('aria-label', 'Current state: ' + field.label);
+    input.min = 0;
+    input.max = field.max;
+    input.step = 0.5;
+    input.value = 0;
+    WIZARD.currentStateData[field.id] = 0;
+    return input;
+  }
+
   function buildBenefitSlider(field) {
     var wrapper = make('div', 'slider-field');
     var defaultVal = (field.default !== null && field.default !== undefined) ? field.default : field.min;
 
-    // Header: label | include toggle | value badge
+    // ── Header: label | include toggle | net badge ─────────────────────────
     var header = make('div', 'slider-header');
     var labelEl = make('span', 'slider-label');
     labelEl.textContent = field.label;
     var toggle = buildIncludeToggle(field);
-    var badge = make('span', 'slider-value-badge');
-    badge.id = 'badge_' + field.id;
-    badge.textContent = defaultVal + '%';
+    var netBadge = make('span', 'net-header-badge');
+    netBadge.id = 'nbadge_' + field.id;
+    netBadge.textContent = defaultVal + '% net';
     header.appendChild(labelEl);
     header.appendChild(toggle);
-    header.appendChild(badge);
+    header.appendChild(netBadge);
     wrapper.appendChild(header);
 
-    // Low/high descriptive anchors
+    // ── Current State section ───────────────────────────────────────────────
+    var curSection = make('div', 'dual-slider-section');
+
+    var curLabel = make('div', 'dual-section-label current-label');
+    var curLabelText = document.createElement('span');
+    curLabelText.textContent = 'Today (without Arena)';
+    var curBadge = make('span', 'section-badge');
+    curBadge.id = 'cbadge_' + field.id;
+    curBadge.textContent = '0%';
+    curLabel.appendChild(curLabelText);
+    curLabel.appendChild(curBadge);
+    curSection.appendChild(curLabel);
+
+    var curAnchors = make('div', 'slider-anchors');
+    var curLow = make('span', 'anchor-low');
+    curLow.textContent = 'No existing capability';
+    var curHigh = make('span', 'anchor-high');
+    curHigh.textContent = 'Strong existing advantage';
+    curAnchors.appendChild(curLow);
+    curAnchors.appendChild(curHigh);
+    curSection.appendChild(curAnchors);
+
+    var curTrack = make('div', 'slider-track-wrap current-state-track');
+    var curInput = buildCurrentSlider(field);
+    curTrack.appendChild(curInput);
+    curSection.appendChild(curTrack);
+
+    var curNumAnchors = make('div', 'slider-anchors');
+    var curNumLow = make('span', 'anchor-low');
+    curNumLow.textContent = '0%  Min';
+    var curNumHigh = make('span', 'anchor-high');
+    curNumHigh.textContent = 'Max  ' + field.max + '%';
+    curNumAnchors.appendChild(curNumLow);
+    curNumAnchors.appendChild(curNumHigh);
+    curSection.appendChild(curNumAnchors);
+
+    wrapper.appendChild(curSection);
+
+    // ── Net benefit bar (between sections) ─────────────────────────────────
+    var netBar = make('div', 'net-benefit-bar');
+    var netArrow = document.createElement('span');
+    netArrow.textContent = 'Net benefit with Arena:';
+    var netVal = make('span', 'net-value');
+    netVal.id = 'nval_' + field.id;
+    netVal.textContent = defaultVal + '%';
+    netBar.appendChild(netArrow);
+    netBar.appendChild(netVal);
+    wrapper.appendChild(netBar);
+
+    // ── Future State section ────────────────────────────────────────────────
+    var futSection = make('div', 'dual-slider-section');
+
+    var futLabel = make('div', 'dual-section-label future-label');
+    var futLabelText = document.createElement('span');
+    futLabelText.textContent = 'With Arena (Target)';
+    var futBadge = make('span', 'section-badge');
+    futBadge.id = 'badge_' + field.id;
+    futBadge.textContent = defaultVal + '%';
+    futLabel.appendChild(futLabelText);
+    futLabel.appendChild(futBadge);
+    futSection.appendChild(futLabel);
+
     if (field.lowAnchor || field.highAnchor) {
       var anchorsDesc = make('div', 'slider-anchors');
       if (field.lowAnchor) {
@@ -858,25 +933,22 @@
         hi.textContent = field.highAnchor;
         anchorsDesc.appendChild(hi);
       }
-      wrapper.appendChild(anchorsDesc);
+      futSection.appendChild(anchorsDesc);
     }
 
-    // Slider track
-    var input = makeSlider(field, defaultVal);
+    var futInput = makeSlider(field, defaultVal);
     WIZARD.formData[field.id] = defaultVal;
-    var trackWrap = make('div', 'slider-track-wrap');
-    trackWrap.appendChild(input);
-    wrapper.appendChild(trackWrap);
+    var futTrack = make('div', 'slider-track-wrap');
+    futTrack.appendChild(futInput);
+    futSection.appendChild(futTrack);
 
-    // Maturity dots (positioned below track, aligned to thumb travel)
     var dotsEl = null;
     var stateBox = null;
     if (field.maturityLevels && field.maturityLevels.length) {
       dotsEl = buildMaturityDots(field);
-      wrapper.appendChild(dotsEl);
+      futSection.appendChild(dotsEl);
     }
 
-    // Numeric min/max labels
     var numAnchors = make('div', 'slider-anchors');
     var numLow = make('span', 'anchor-low');
     numLow.textContent = field.min + '%  Low';
@@ -884,9 +956,8 @@
     numHigh.textContent = 'High  ' + field.max + '%';
     numAnchors.appendChild(numLow);
     numAnchors.appendChild(numHigh);
-    wrapper.appendChild(numAnchors);
+    futSection.appendChild(numAnchors);
 
-    // Maturity state description box
     if (field.maturityLevels && field.maturityLevels.length) {
       stateBox = make('div', 'maturity-state');
       stateBox.id = 'mstate_' + field.id;
@@ -894,18 +965,58 @@
       stateInner.appendChild(make('div', 'state-label'));
       stateInner.appendChild(make('p', 'state-desc'));
       stateBox.appendChild(stateInner);
-      wrapper.appendChild(stateBox);
+      futSection.appendChild(stateBox);
       updateMaturityUI(field, defaultVal, stateBox, dotsEl);
     }
 
-    // Wire slider events (after stateBox and dotsEl exist)
-    input.addEventListener('input', function() {
-      var val = parseFloat(input.value);
-      WIZARD.formData[field.id] = val;
-      badge.textContent = val + '%';
-      updateSliderGradient(input);
-      if (stateBox && dotsEl) updateMaturityUI(field, val, stateBox, dotsEl);
+    wrapper.appendChild(futSection);
+
+    // ── Shared net updater ──────────────────────────────────────────────────
+    function refreshNet() {
+      var futVal = parseFloat(WIZARD.formData[field.id]) || 0;
+      var curVal = parseFloat(WIZARD.currentStateData[field.id]) || 0;
+      var delta  = Math.max(0, futVal - curVal);
+      var isZero = delta === 0;
+
+      netVal.textContent = delta + '%';
+      netVal.classList.toggle('zero', isZero);
+
+      netBadge.textContent = delta + '% net';
+      netBadge.classList.toggle('zero', isZero);
+    }
+
+    // ── Wire current slider ─────────────────────────────────────────────────
+    curInput.addEventListener('input', function() {
+      var curVal = parseFloat(curInput.value);
+      var futVal = parseFloat(WIZARD.formData[field.id]) || 0;
+      if (curVal > futVal) {
+        curVal = futVal;
+        curInput.value = curVal;
+      }
+      WIZARD.currentStateData[field.id] = curVal;
+      curBadge.textContent = curVal + '%';
+      refreshNet();
     });
+
+    // ── Wire future slider ──────────────────────────────────────────────────
+    futInput.addEventListener('input', function() {
+      var futVal = parseFloat(futInput.value);
+      var curVal = parseFloat(WIZARD.currentStateData[field.id]) || 0;
+      if (curVal > futVal) {
+        curVal = futVal;
+        WIZARD.currentStateData[field.id] = curVal;
+        curInput.value = curVal;
+        curBadge.textContent = curVal + '%';
+      }
+      WIZARD.formData[field.id] = futVal;
+      futBadge.textContent = futVal + '%';
+      updateSliderGradient(futInput);
+      if (stateBox && dotsEl) updateMaturityUI(field, futVal, stateBox, dotsEl);
+      refreshNet();
+    });
+
+    updateSliderGradient(futInput);
+    refreshNet();
 
     return wrapper;
   }
