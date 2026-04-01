@@ -272,7 +272,7 @@ function validateFormData(formData) {
       var num = parseFloat(value);
       if (isNaN(num)) {
         errors.push(field.label + ' improvement must be a number.');
-      } else if (num < field.min || num > field.max) {
+      } else if (num < 0 || num > field.max) {
         errors.push(field.label + ' must be between ' + field.min + '% and ' + field.max + '%.');
       }
     }
