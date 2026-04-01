@@ -273,7 +273,7 @@ function validateFormData(formData) {
       if (isNaN(num)) {
         errors.push(field.label + ' improvement must be a number.');
       } else if (num < 0 || num > field.max) {
-        errors.push(field.label + ' must be between ' + field.min + '% and ' + field.max + '%.');
+        errors.push(field.label + ' must be between 0% and ' + field.max + '%.');
       }
     }
   });
