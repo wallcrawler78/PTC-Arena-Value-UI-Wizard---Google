@@ -1,5 +1,13 @@
 # Legacy TCO Analysis — Arena Value Assessment Wizard
 
+> **SUPERSEDED — Planning document only.** Legacy TCO has been implemented as Step 8 of the wizard.
+> The actual implementation differs from this proposal: it uses a unit-cost × qty structure
+> writing to columns C/D/F (not a single column D), and does not include an Arena investment
+> section in the wizard (may be handled elsewhere in the sheet).
+> See `Docs/SHEET_CONFIG.md` for the verified field mapping and `Docs/CODE_REVIEW.md` for architecture details.
+
+---
+
 ## Executive Summary
 
 ### What Legacy TCO Measures
