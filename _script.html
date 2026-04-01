@@ -8,6 +8,8 @@
     totalSteps: 9,
     formData: {},
     includeData: {},
+    currentStateData: {},   // pre-Arena baseline values per benefit field (not written to sheet)
+    _netRefreshers: {},     // registry: field.id → refreshNet() closure (populated by buildBenefitSlider)
     config: null,
     currentValues: {}
   };
@@ -1307,6 +1309,13 @@
     var payload = {};
     Object.keys(WIZARD.formData).forEach(function(k) { payload[k] = WIZARD.formData[k]; });
     Object.keys(WIZARD.includeData).forEach(function(k) { payload[k] = WIZARD.includeData[k]; });
+
+  // Overwrite benefit fields with the delta (future - current baseline)
+  (WIZARD.config.benefitsFields || []).forEach(function(field) {
+    var future  = parseFloat(WIZARD.formData[field.id]) || 0;
+    var current = parseFloat(WIZARD.currentStateData[field.id]) || 0;
+    payload[field.id] = Math.max(0, future - current);
+  });
 
     showSpinner('Saving to spreadsheet...');
     document.getElementById('btnSubmit').disabled = true;
