@@ -216,6 +216,16 @@ Note the split between `formData` (everything except benefit toggles) and `inclu
 - Maturity dots aligned to slider travel path (using `calc()` and % positioning)
 - Maturity state description box (label + paragraph, animated on zone change)
 
+### Dual Maturity Slider (Steps 5–7)
+
+Each benefit slider card contains two sliders:
+- **Current State (pre-Arena):** range 0–field.max, stored in `WIZARD.currentStateData[field.id]`. Not written to sheet.
+- **Future State (with Arena):** range field.min–field.max, stored in `WIZARD.formData[field.id]`. Same maturity levels as before.
+- **Delta:** `Math.max(0, future - current)` computed in `submitWizard()` and sent as the payload value for each benefit field. Written to Benefits Calc column D as a decimal.
+- Hard clamp: current slider cannot exceed future slider (enforced on both slider `input` events).
+- On restore (loading from sheet): future state populated from saved delta, current state always resets to 0.
+- Net badge registry: `WIZARD._netRefreshers[field.id]` holds each field's `refreshNet()` closure; `applyCurrentValues()` calls it after restoring a benefit value to update the net display.
+
 `autoFillStep3Defaults()` — On step 3 entry, fills cost fields from revenue × percentage if empty. Never overwrites user data.
 
 `autoFillStep4Defaults()` — On step 4 entry, fills FTE counts from totalEmployees × role default % if empty. Uses `FTE_DEFAULTS` map: devTeam=15%, cad=2%, engServices=1%, pdc=20%, quality=5%, compliance=2%, sourcing=1%.
