@@ -97,6 +97,7 @@
     flex-shrink: 0;
   }
   .step-circle {
+    position: relative;
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -802,5 +803,30 @@
   .net-header-badge.zero {
     color: var(--text-light);
     background: #F0F0F0;
+  }
+
+  /* ── Free navigation + dirty indicator ──────────────────────────────────── */
+  .step-item {
+    cursor: pointer;
+  }
+
+  .step-item:hover .step-circle:not(.active) {
+    background: #C8E6C9;
+  }
+
+  .dirty-dot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #F47920;
+    border: 2px solid #fff;
+    display: none;
+  }
+
+  .step-circle.touched .dirty-dot {
+    display: block;
   }
 </style>
