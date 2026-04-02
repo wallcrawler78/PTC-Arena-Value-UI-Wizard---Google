@@ -113,6 +113,7 @@ function markStepTouched(el) {
   if (!panel) return;
   var stepNum = parseInt(panel.id.replace('step-', ''), 10);
   if (isNaN(stepNum)) return;
+  if (WIZARD.touchedSteps[stepNum]) return; // already dirty — skip re-render
   WIZARD.touchedSteps[stepNum] = true;
   updateStepIndicator();
 }
