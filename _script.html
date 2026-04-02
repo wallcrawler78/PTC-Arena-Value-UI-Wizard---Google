@@ -691,6 +691,15 @@
           } else if (rawVal === null || rawVal === undefined || rawVal === '') {
             value.className = 'rv-skip';
             value.textContent = '(using default)';
+          } else if (field.unit === '%' && sec.isBenefit) {
+            var cur = parseFloat(WIZARD.currentStateData[field.id]) || 0;
+            var fut = parseFloat(rawVal) || 0;
+            var net = Math.max(0, fut - cur);
+            if (cur > 0) {
+              value.textContent = cur + '% today \u2192 ' + fut + '% target (net: ' + net + '%)';
+            } else {
+              value.textContent = fut + '% (net: ' + net + '%)';
+            }
           } else if (field.unit === '%') {
             value.textContent = rawVal + '%';
           } else if (field.storeAs === 'currency' || field.type === 'currency') {
