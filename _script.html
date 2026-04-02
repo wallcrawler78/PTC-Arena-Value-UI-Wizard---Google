@@ -1336,6 +1336,31 @@
       if (tag === 'BUTTON' || tag === 'TEXTAREA') return;
       if (WIZARD.currentStep < WIZARD.totalSteps) goNext();
     });
+
+    // Dirty tracking: mark a step touched when the user interacts with any field
+    function markStepTouched(el) {
+      var panel = el.closest('.step-panel');
+      if (!panel) return;
+      var stepNum = parseInt(panel.id.replace('step-', ''), 10);
+      if (isNaN(stepNum)) return;
+      if (WIZARD.touchedSteps[stepNum]) return; // already dirty — skip re-render
+      WIZARD.touchedSteps[stepNum] = true;
+      updateStepIndicator();
+    }
+
+    var wizBody = document.getElementById('wizBody');
+
+    // Input events: text fields, sliders, number inputs
+    wizBody.addEventListener('input', function(e) {
+      markStepTouched(e.target);
+    });
+
+    // Click events: include-toggle buttons (not <input> elements, won't fire 'input')
+    wizBody.addEventListener('click', function(e) {
+      if (e.target.closest('.include-toggle')) {
+        markStepTouched(e.target);
+      }
+    });
   }
 
   function goBack() {
