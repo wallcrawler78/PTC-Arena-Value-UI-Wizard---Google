@@ -994,6 +994,9 @@
       netBadge.classList.toggle('zero', isZero);
     }
 
+    // Register so applyCurrentValues can trigger a net update after restore
+    WIZARD._netRefreshers[field.id] = refreshNet;
+
     // ── Wire current slider ─────────────────────────────────────────────────
     curInput.addEventListener('input', function() {
       var curVal = parseFloat(curInput.value);
@@ -1285,6 +1288,8 @@
             var dotsEl  = document.getElementById('mdots_'  + field.id);
             updateMaturityUI(field, numVal, stateEl, dotsEl);
           }
+          // Refresh net badge now that future value is restored (current stays 0)
+          if (WIZARD._netRefreshers[field.id]) WIZARD._netRefreshers[field.id]();
         }
       }
 
