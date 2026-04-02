@@ -37,9 +37,34 @@ Add the new rules at the very end of the `<style>` block, just before `</style>`
 
   Read the last ~20 lines of `_styles.html` to confirm the exact line of `</style>`.
 
-- [ ] **Step 1.2 — Append the CSS block**
+- [ ] **Step 1.2 — Add `position: relative` to the existing `.step-circle` rule**
 
-  Add the following immediately before `</style>`:
+  Find the existing `.step-circle` rule in `_styles.html` (~line 99). It currently has these properties:
+  `width`, `height`, `border-radius`, `border`, `display`, `align-items`, `justify-content`, `font-size`, `font-weight`, `color`, `background`, `transition`.
+
+  Add `position: relative;` as the first property in that block (before `width`):
+
+  ```css
+  .step-circle {
+    position: relative;  /* ← ADD: anchors .dirty-dot's absolute positioning */
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-light);
+    background: var(--white);
+    transition: var(--transition);
+  }
+  ```
+
+- [ ] **Step 1.3 — Append the remaining CSS before `</style>`**
+
+  Add the following immediately before `</style>` (after the last existing rule — the dual-slider block added previously):
 
   ```css
   /* ── Free navigation + dirty indicator ──────────────────────────────────── */
@@ -49,12 +74,6 @@ Add the new rules at the very end of the `<style>` block, just before `</style>`
 
   .step-item:hover .step-circle:not(.active) {
     background: #C8E6C9;
-  }
-
-  /* position: relative is required so .dirty-dot's absolute positioning
-     is anchored to the circle, not a distant ancestor */
-  .step-circle {
-    position: relative;
   }
 
   .dirty-dot {
@@ -74,7 +93,7 @@ Add the new rules at the very end of the `<style>` block, just before `</style>`
   }
   ```
 
-- [ ] **Step 1.3 — Commit**
+- [ ] **Step 1.4 — Commit**
 
   ```bash
   git add _styles.html
@@ -207,7 +226,11 @@ Three additions with no visible UI effect yet — they just add state and functi
 
 **Why the DOM restructure is needed:** `updateStepIndicator()` currently calls `circle.textContent = num` and `circle.textContent = '\u2713'`. Setting `textContent` on an element destroys all its child nodes. If we append a `.dirty-dot` span to the circle, it would be wiped on every navigation. The fix: put the number/checkmark in an inner `<span class="circle-text">` and only mutate that span's text — leaving the `.dirty-dot` sibling untouched.
 
-- [ ] **Step 3.1 — Replace `buildStepIndicator()`**
+- [ ] **Step 3.1 — Note on `Element.closest()`**
+
+  The new code uses `e.target.closest()` and `el.closest()` without a feature-detection guard. This is intentional: GAS dialogs run in a Chrome-based WebView where `closest()` has been supported since Chrome 41 (2015). An older guarded pattern exists at line 1091 of `_script.html` (`toggleEl.closest ? ... : null`) — that is legacy defensive coding and does not need to be replicated here.
+
+- [ ] **Step 3.2 — Replace `buildStepIndicator()`**
 
   Find the full `buildStepIndicator()` function (lines 43–65). Replace it entirely:
 
@@ -249,7 +272,7 @@ Three additions with no visible UI effect yet — they just add state and functi
   }
   ```
 
-- [ ] **Step 3.2 — Replace `updateStepIndicator()`**
+- [ ] **Step 3.3 — Replace `updateStepIndicator()`**
 
   Find the full `updateStepIndicator()` function (lines 67–88). Replace it entirely:
 
@@ -287,7 +310,7 @@ Three additions with no visible UI effect yet — they just add state and functi
   }
   ```
 
-- [ ] **Step 3.3 — Verify**
+- [ ] **Step 3.4 — Verify**
 
   Confirm:
   - `buildStepIndicator` no longer calls `circle.textContent` directly (only `circleText.textContent`)
@@ -295,7 +318,7 @@ Three additions with no visible UI effect yet — they just add state and functi
   - The click delegation on `container` calls `navigateTo` (defined in Task 2)
   - The `touched` class is toggled on `circle` based on `WIZARD.touchedSteps[num]`
 
-- [ ] **Step 3.4 — Commit**
+- [ ] **Step 3.5 — Commit**
 
   ```bash
   git add _script.html
