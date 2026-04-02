@@ -10,6 +10,7 @@
     includeData: {},
     currentStateData: {},   // pre-Arena baseline values per benefit field (not written to sheet)
     _netRefreshers: {},     // registry: field.id → refreshNet() closure (populated by buildBenefitSlider)
+    touchedSteps: {},       // stepNum → true when user has interacted with any field on that step
     config: null,
     currentValues: {}
   };
@@ -1326,6 +1327,22 @@
     }
   }
 
+  function navigateTo(target) {
+    if (target === WIZARD.currentStep) return;
+    if (target > WIZARD.currentStep) {
+      // Validate required-field steps up to (but not including) target.
+      // Only step 1 has required fields in practice.
+      for (var s = 1; s < target; s++) {
+        if (s > 4) break;
+        if (!validateStep(s)) {
+          showStep(s);
+          return;
+        }
+      }
+    }
+    showStep(target);
+  }
+
   function showStep(num) {
     document.querySelectorAll('.step-panel').forEach(function(p) {
       p.classList.remove('active');
@@ -1399,9 +1416,9 @@
   }
 
   // ── Client-side Validation ─────────────────────────────────────────────────
-  function validateCurrentStep() {
-    if (WIZARD.currentStep > 4) return true; // sliders always have valid defaults
-    var fields = getFieldsByStep(WIZARD.currentStep, 'dataInput');
+  function validateStep(stepNum) {
+    if (stepNum > 4) return true; // sliders always have valid defaults
+    var fields = getFieldsByStep(stepNum, 'dataInput');
     var valid = true;
     fields.forEach(function(field) {
       if (field.required) {
@@ -1413,6 +1430,10 @@
       }
     });
     return valid;
+  }
+
+  function validateCurrentStep() {
+    return validateStep(WIZARD.currentStep);
   }
 
   function showFieldError(fieldId, msg) {
