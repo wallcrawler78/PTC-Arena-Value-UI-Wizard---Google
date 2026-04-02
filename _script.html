@@ -49,7 +49,11 @@
       item.dataset.step = meta.num;
 
       var circle = make('div', 'step-circle');
-      circle.textContent = meta.num;
+      var circleText = make('span', 'circle-text');
+      circleText.textContent = meta.num;
+      var dot = make('span', 'dirty-dot');
+      circle.appendChild(circleText);
+      circle.appendChild(dot);
 
       var label = make('div', 'step-label');
       label.textContent = meta.title;
@@ -62,22 +66,39 @@
         container.appendChild(make('div', 'step-connector'));
       }
     });
+
+    // Free navigation: click any step item to jump there
+    container.addEventListener('click', function(e) {
+      var item = e.target.closest('.step-item');
+      if (!item) return;
+      navigateTo(parseInt(item.dataset.step, 10));
+    });
+
     updateStepIndicator();
   }
 
   function updateStepIndicator() {
     document.querySelectorAll('.step-item').forEach(function(item) {
-      var num = parseInt(item.dataset.step);
+      var num = parseInt(item.dataset.step, 10);
       var circle = item.querySelector('.step-circle');
+      var circleText = circle ? circle.querySelector('.circle-text') : null;
       item.classList.remove('active', 'done');
       if (num === WIZARD.currentStep) {
         item.classList.add('active');
-        if (circle) circle.textContent = num;
+        if (circleText) circleText.textContent = num;
       } else if (num < WIZARD.currentStep) {
         item.classList.add('done');
-        if (circle) circle.textContent = '\u2713'; // ✓ checkmark
+        if (circleText) circleText.textContent = '\u2713';
       } else {
-        if (circle) circle.textContent = num;
+        if (circleText) circleText.textContent = num;
+      }
+      // Dirty dot: show orange badge if user has interacted with this step
+      if (circle) {
+        if (WIZARD.touchedSteps[num]) {
+          circle.classList.add('touched');
+        } else {
+          circle.classList.remove('touched');
+        }
       }
     });
     document.querySelectorAll('.step-connector').forEach(function(conn, idx) {
