@@ -37,6 +37,12 @@ The step indicator (`#stepIndicator`) is built once by `buildStepIndicator()` an
 function navigateTo(target) {
   if (target === WIZARD.currentStep) return;
   if (target > WIZARD.currentStep) {
+    // Validate all required-field steps up to (but not including) target.
+    // Intent: the user should land on the target step; if a prerequisite step
+    // fails, redirect to that step instead. Step 4's own required fields are
+    // not validated here — they are enforced by goNext() when leaving step 4.
+    // In practice only step 1 has required fields, so this rarely iterates
+    // more than once.
     for (var s = 1; s < target; s++) {
       if (s > 4) break;
       if (!validateStep(s)) {
@@ -95,10 +101,9 @@ document.getElementById('wizBody').addEventListener('input', function(e) {
   markStepTouched(e.target);
 });
 
-// Track include-toggle clicks (benefit <button> elements)
+// Track include-toggle clicks (benefit <button> elements inside .include-toggle wrapper)
 document.getElementById('wizBody').addEventListener('click', function(e) {
-  if (e.target.classList.contains('include-toggle') ||
-      e.target.closest('.include-toggle')) {
+  if (e.target.closest('.include-toggle')) {
     markStepTouched(e.target);
   }
 });
@@ -115,16 +120,35 @@ function markStepTouched(el) {
 
 ### Dot badge DOM
 
-In `buildStepIndicator()`, each `.step-circle` gets a pre-created dot element:
+**Problem with existing `updateStepIndicator()`:** The current implementation uses `circle.textContent = num` and `circle.textContent = '\u2713'` to update the step number/checkmark. Setting `textContent` on the circle replaces all child nodes, which would destroy any appended `.dirty-dot` span.
+
+**Fix:** Restructure each `.step-circle` to contain a dedicated `<span class="circle-text">` for the number/checkmark, plus a `<span class="dirty-dot">`. All textContent mutations are then made on the inner `.circle-text` span, not on the circle element itself.
+
+In `buildStepIndicator()`, build each circle as:
 
 ```javascript
+var circle = make('div', 'step-circle');
+var circleText = make('span', 'circle-text');
+circleText.textContent = meta.num;
+circle.appendChild(circleText);
 var dot = make('span', 'dirty-dot');
 circle.appendChild(dot);
 ```
 
-In `updateStepIndicator()`, toggle the `touched` class on each `.step-circle`:
+In `updateStepIndicator()`, replace all three `circle.textContent = ...` assignments with mutations on the inner span:
 
 ```javascript
+var circleText = circle.querySelector('.circle-text');
+if (num === WIZARD.currentStep) {
+  item.classList.add('active');
+  if (circleText) circleText.textContent = num;
+} else if (num < WIZARD.currentStep) {
+  item.classList.add('done');
+  if (circleText) circleText.textContent = '\u2713';
+} else {
+  if (circleText) circleText.textContent = num;
+}
+// Dirty dot
 if (WIZARD.touchedSteps[num]) {
   circle.classList.add('touched');
 } else {
@@ -132,7 +156,7 @@ if (WIZARD.touchedSteps[num]) {
 }
 ```
 
-CSS in `_styles.html` controls visibility:
+CSS in `_styles.html` controls dot visibility:
 
 ```css
 .dirty-dot {
@@ -157,6 +181,13 @@ CSS in `_styles.html` controls visibility:
 }
 
 /* ── Dirty dot badge ─────────────────────────────────────────────────────── */
+
+/* position: relative is required so the dot's absolute positioning is
+   anchored to the circle, not a distant ancestor. Added to existing rule. */
+.step-circle {
+  position: relative;
+}
+
 .dirty-dot {
   position: absolute;
   top: -2px;
