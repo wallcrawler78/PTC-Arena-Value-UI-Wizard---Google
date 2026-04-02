@@ -27,6 +27,10 @@
     { num: 9, title: 'Review & Submit',         subtitle: 'Review all inputs before writing to the spreadsheet.' }
   ];
 
+  // Help tab mapping: wizard step number → Help.html data-tab value
+  var HELP_TAB_MAP = { 1:'step1', 2:'step2', 3:'step3', 4:'step4', 5:'step5', 6:'step6', 7:'step7', 8:'step8', 9:'step9' };
+  function getHelpTab(stepNum) { return HELP_TAB_MAP[stepNum] || 'step1'; }
+
   // ── Init ───────────────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function() {
     WIZARD.config = window.WIZ_CONFIG || { dataInputFields: [], benefitsFields: [], legacyTcoRows: [] };
@@ -118,11 +122,25 @@
       panel.id = 'step-' + meta.num;
       if (meta.num === 1) panel.classList.add('active');
 
+      var titleRow = make('div', 'step-title-row');
       var title = make('h2', 'step-title');
       title.textContent = meta.title;
+      var helpBtn = make('button', 'step-help-btn');
+      helpBtn.setAttribute('type', 'button');
+      helpBtn.setAttribute('title', 'Help for this step');
+      helpBtn.setAttribute('aria-label', 'Help for this step');
+      helpBtn.textContent = '?';
+      (function(tabId) {
+        helpBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          google.script.run.showHelp(tabId);
+        });
+      })(getHelpTab(meta.num));
+      titleRow.appendChild(title);
+      titleRow.appendChild(helpBtn);
       var subtitle = make('p', 'step-subtitle');
       subtitle.textContent = meta.subtitle;
-      panel.appendChild(title);
+      panel.appendChild(titleRow);
       panel.appendChild(subtitle);
 
       switch (meta.num) {
@@ -741,6 +759,35 @@
 
   // ── Field Builders ─────────────────────────────────────────────────────────
 
+  function closeAllTips() {
+    document.querySelectorAll('.field-tip-popover.open').forEach(function(p) {
+      p.classList.remove('open');
+      var btn = p.parentNode && p.parentNode.querySelector('.field-tip-btn');
+      if (btn) btn.classList.remove('open');
+    });
+  }
+
+  function buildFieldTip(hintText, targetEl) {
+    var tipWrap = make('span', 'field-tip-wrap');
+    var tipBtn = make('button', 'field-tip-btn');
+    tipBtn.setAttribute('type', 'button');
+    tipBtn.setAttribute('aria-label', 'Field information');
+    tipBtn.textContent = '?';
+    var tipPop = make('div', 'field-tip-popover');
+    tipPop.textContent = hintText;
+    (function(btn, pop) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var isOpen = pop.classList.contains('open');
+        closeAllTips();
+        if (!isOpen) { pop.classList.add('open'); btn.classList.add('open'); }
+      });
+    })(tipBtn, tipPop);
+    tipWrap.appendChild(tipBtn);
+    tipWrap.appendChild(tipPop);
+    targetEl.appendChild(tipWrap);
+  }
+
   function buildInputField(field) {
     var wrapper = make('div', 'field');
 
@@ -753,13 +800,8 @@
       dot.setAttribute('title', 'Required field');
       label.appendChild(dot);
     }
+    if (field.hint) { buildFieldTip(field.hint, label); }
     wrapper.appendChild(label);
-
-    if (field.hint) {
-      var hint = make('p', 'hint');
-      hint.textContent = field.hint;
-      wrapper.appendChild(hint);
-    }
 
     var isCurrency = (field.type === 'currency');
     var input = document.createElement('input');
@@ -824,15 +866,10 @@
     var defaultVal = (field.default !== null && field.default !== undefined) ? field.default : field.min;
     badge.textContent = defaultVal + (field.unit || '');
 
+    if (field.hint) { buildFieldTip(field.hint, labelEl); }
     header.appendChild(labelEl);
     header.appendChild(badge);
     wrapper.appendChild(header);
-
-    if (field.hint) {
-      var hint = make('p', 'hint');
-      hint.textContent = field.hint;
-      wrapper.appendChild(hint);
-    }
 
     var input = makeSlider(field, defaultVal);
     input.addEventListener('input', function() {
@@ -1361,6 +1398,9 @@
         markStepTouched(e.target);
       }
     });
+
+    // Close any open field tip popovers when clicking outside them
+    document.addEventListener('click', closeAllTips);
   }
 
   function goBack() {

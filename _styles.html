@@ -829,4 +829,86 @@
   .step-circle.touched .dirty-dot {
     display: block;
   }
+
+  /* ── Step help button ────────────────────────────────────────────────────── */
+  .step-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .step-title-row .step-title {
+    margin-bottom: 0;
+  }
+  .step-help-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text-light);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: var(--transition);
+  }
+  .step-help-btn:hover {
+    background: var(--arena-tint);
+    border-color: var(--arena-green);
+    color: var(--arena-green);
+  }
+
+  /* ── Field tooltip ───────────────────────────────────────────────────────── */
+  .field-tip-wrap {
+    position: relative;
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+  .field-tip-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--border);
+    border: none;
+    color: var(--text-light);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: var(--transition);
+  }
+  .field-tip-btn:hover,
+  .field-tip-btn.open {
+    background: var(--arena-tint);
+    color: var(--arena-green);
+  }
+  .field-tip-popover {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 20px;
+    width: 220px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--text-mid);
+    line-height: 1.55;
+    box-shadow: 0 4px 12px rgba(0,0,0,.12);
+    z-index: 100;
+    font-weight: 400;
+  }
+  .field-tip-popover.open {
+    display: block;
+  }
 </style>

@@ -297,7 +297,8 @@
     <button class="tab-btn" data-tab="step5">5. Revenue</button>
     <button class="tab-btn" data-tab="step6">6. Productivity</button>
     <button class="tab-btn" data-tab="step7">7. Cost Recovery</button>
-    <button class="tab-btn" data-tab="step8">8. Review</button>
+    <button class="tab-btn" data-tab="step8">8. Legacy TCO</button>
+    <button class="tab-btn" data-tab="step9">9. Review</button>
     <button class="tab-btn" data-tab="dataflow">Data Flow</button>
   </nav>
 
@@ -306,7 +307,7 @@
 
     <!-- ════════ STEP 1 ════════ -->
     <div class="tab-content active" id="tab-step1">
-      <span class="step-badge">Step 1 of 8</span>
+      <span class="step-badge">Step 1 of 9</span>
       <h2>Company Profile</h2>
       <p>This step captures the foundational data that drives every downstream calculation in the Arena Value Assessment.</p>
 
@@ -337,7 +338,7 @@
 
     <!-- ════════ STEP 2 ════════ -->
     <div class="tab-content" id="tab-step2">
-      <span class="step-badge">Step 2 of 8</span>
+      <span class="step-badge">Step 2 of 9</span>
       <h2>Business Assumptions</h2>
       <p>These assumptions shape the revenue-side benefit calculations, particularly the Time-to-Market benefit.</p>
 
@@ -373,7 +374,7 @@
 
     <!-- ════════ STEP 3 ════════ -->
     <div class="tab-content" id="tab-step3">
-      <span class="step-badge">Step 3 of 8</span>
+      <span class="step-badge">Step 3 of 9</span>
       <h2>Cost Structure</h2>
       <p>This step captures your cost-of-goods and operational cost data, which drives material savings, inventory reduction, and cost recovery benefits.</p>
 
@@ -423,7 +424,7 @@
 
     <!-- ════════ STEP 4 ════════ -->
     <div class="tab-content" id="tab-step4">
-      <span class="step-badge">Step 4 of 8</span>
+      <span class="step-badge">Step 4 of 9</span>
       <h2>Team Resources</h2>
       <p>Define the size and salary of each team that benefits from Arena PLM. These numbers directly drive the productivity benefits in Step 6.</p>
 
@@ -456,7 +457,7 @@
 
     <!-- ════════ STEP 5 ════════ -->
     <div class="tab-content" id="tab-step5">
-      <span class="step-badge">Step 5 of 8</span>
+      <span class="step-badge">Step 5 of 9</span>
       <h2>Revenue &amp; COGS Benefits</h2>
       <p>These sliders set the improvement percentages that Arena PLM delivers against your revenue and cost-of-goods baseline.</p>
 
@@ -503,7 +504,7 @@
 
     <!-- ════════ STEP 6 ════════ -->
     <div class="tab-content" id="tab-step6">
-      <span class="step-badge">Step 6 of 8</span>
+      <span class="step-badge">Step 6 of 9</span>
       <h2>Productivity Benefits</h2>
       <p>Seven efficiency sliders — one per team role defined in Step 4. Each slider sets the percentage efficiency improvement Arena PLM delivers for that team.</p>
 
@@ -530,7 +531,7 @@
 
     <!-- ════════ STEP 7 ════════ -->
     <div class="tab-content" id="tab-step7">
-      <span class="step-badge">Step 7 of 8</span>
+      <span class="step-badge">Step 7 of 9</span>
       <h2>Cost Recovery Benefits</h2>
       <p>Five cost reduction sliders, each mapping to an annual cost input from Step 3. The improvement percentage represents how much Arena PLM can reduce each cost category.</p>
 
@@ -568,7 +569,57 @@
 
     <!-- ════════ STEP 8 ════════ -->
     <div class="tab-content" id="tab-step8">
-      <span class="step-badge">Step 8 of 8</span>
+      <span class="step-badge">Step 8 of 9</span>
+      <h2>Legacy System Costs</h2>
+      <p>Capture the total cost of your current PLM/QMS system so the spreadsheet can calculate Arena's total cost of ownership (TCO) advantage.</p>
+
+      <h3>Line Items</h3>
+      <table class="field-table">
+        <tr><th>Row</th><th>What to enter</th></tr>
+        <tr>
+          <td><strong>PLM Software License</strong></td>
+          <td>Per-seat annual license fee × number of seats (default: excluded — check Include if applicable)</td>
+        </tr>
+        <tr>
+          <td><strong>Support &amp; Maintenance</strong></td>
+          <td>Annual support contract — typically 18–22% of license cost</td>
+        </tr>
+        <tr>
+          <td><strong>Integrations</strong></td>
+          <td>Annual cost per integration connector (CAD, ERP, Reporting tools)</td>
+        </tr>
+        <tr>
+          <td><strong>IT Infrastructure</strong></td>
+          <td>Servers, backup, security, managed services</td>
+        </tr>
+        <tr>
+          <td><strong>IT Labor</strong></td>
+          <td>Internal IT staff time: BDA, admin, hardware support</td>
+        </tr>
+        <tr>
+          <td><strong>Upgrades &amp; Training</strong></td>
+          <td>Annual upgrade costs: hardware refreshes, software updates, training</td>
+        </tr>
+        <tr>
+          <td><strong>Other Tools</strong></td>
+          <td>Third-party tools (e.g. SiliconExpert, component intelligence platforms)</td>
+        </tr>
+      </table>
+
+      <h3>How Each Row Works</h3>
+      <p>Each row has three inputs: <strong>Unit Cost</strong> (annual $ per unit), <strong>Quantity</strong> (number of units or a percentage multiplier), and an <strong>Include</strong> toggle. Excluded rows write "No" to the sheet and are not counted in the TCO total.</p>
+
+      <div class="info-box">
+        <strong>On-Prem / Perpetual toggle:</strong> The toggle at the top of Step 8 writes "Yes" or "No" to cell E3 of the Legacy TCO tab. Set it to "Yes" if the customer owns a perpetual on-premise license. This flag is used by TCO formulas in the spreadsheet.
+      </div>
+
+      <h3>Support &amp; Maintenance — Multiplier Note</h3>
+      <p>The Support row uses a percentage multiplier for Quantity (e.g. enter 20 for 20%). The sheet stores this as a decimal (0.20) and applies it to the license cost. This means you can leave Quantity at 20 even as license costs change — the formula recalculates automatically.</p>
+    </div>
+
+    <!-- ════════ STEP 9 ════════ -->
+    <div class="tab-content" id="tab-step9">
+      <span class="step-badge">Step 9 of 9</span>
       <h2>Review &amp; Submit</h2>
       <p>This final step shows a summary of all values before writing them to the spreadsheet. Review everything carefully before submitting.</p>
 
@@ -700,6 +751,12 @@
         tabBtns[k].addEventListener('click', function() {
           switchTab(this.getAttribute('data-tab'));
         });
+      }
+
+      /* ── Deep-link to a specific tab when opened from the wizard ── */
+      var initialTab = '<?= initialTab ?>';
+      if (initialTab && initialTab !== 'step1') {
+        switchTab(initialTab);
       }
 
       /* ── Close button ── */

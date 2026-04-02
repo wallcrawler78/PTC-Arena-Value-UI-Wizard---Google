@@ -27,8 +27,10 @@ function onOpen() {
 
 // ─── Dialog ──────────────────────────────────────────────────────────────────
 
-function showHelp() {
-  var html = HtmlService.createHtmlOutputFromFile('Help')
+function showHelp(tab) {
+  var template = HtmlService.createTemplateFromFile('Help');
+  template.initialTab = tab || 'step1';
+  var html = template.evaluate()
     .setWidth(760)
     .setHeight(580)
     .setTitle('Arena Value Wizard — Help & Guide');
