@@ -1061,11 +1061,6 @@
     // ── Wire current slider ─────────────────────────────────────────────────
     curInput.addEventListener('input', function() {
       var curVal = parseFloat(curInput.value);
-      var futVal = parseFloat(WIZARD.formData[field.id]) || 0;
-      if (curVal > futVal) {
-        curVal = futVal;
-        curInput.value = curVal;
-      }
       WIZARD.currentStateData[field.id] = curVal;
       curBadge.textContent = curVal + (field.unit || '%');
       refreshNet();
@@ -1074,13 +1069,6 @@
     // ── Wire future slider ──────────────────────────────────────────────────
     futInput.addEventListener('input', function() {
       var futVal = parseFloat(futInput.value);
-      var curVal = parseFloat(WIZARD.currentStateData[field.id]) || 0;
-      if (curVal > futVal) {
-        curVal = futVal;
-        WIZARD.currentStateData[field.id] = curVal;
-        curInput.value = curVal;
-        curBadge.textContent = curVal + (field.unit || '%');
-      }
       WIZARD.formData[field.id] = futVal;
       futBadge.textContent = futVal + '%';
       updateSliderGradient(futInput);
