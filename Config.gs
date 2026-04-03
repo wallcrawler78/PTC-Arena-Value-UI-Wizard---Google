@@ -409,6 +409,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Minor process improvements, limited PLM adoption',
           highAnchor: 'Full digital thread, real-time BOM visibility across teams',
+          currentDefault: 0,
+          currentLowAnchor: 'Manual BOM approvals and email ECOs — every change costs weeks',
+          currentHighAnchor: 'Highly digitized NPI today — approvals and changes move in days',
           defaultInclude: true,
           suggestedPct: 15,
           maturityLevels: [
@@ -446,6 +449,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Modest margin recovery from slight schedule improvement',
           highAnchor: 'Significant first-mover advantage on premium products',
+          currentDefault: 0,
+          currentLowAnchor: 'Products routinely launch late — premium pricing windows consistently missed',
+          currentHighAnchor: 'Reliably first to market today — premium windows captured without PLM',
           defaultInclude: true,
           suggestedPct: 1,
           maturityLevels: [
@@ -483,6 +489,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Better supplier visibility, reduced duplicate parts',
           highAnchor: 'Strategic sourcing optimization with full part reuse analytics',
+          currentDefault: 0,
+          currentLowAnchor: 'Engineers create duplicate parts freely — no part reuse visibility or controls',
+          currentHighAnchor: 'Active catalogue discipline today — part reuse and spend consolidation strong',
           defaultInclude: true,
           suggestedPct: 1,
           maturityLevels: [
@@ -520,6 +529,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Improved BOM accuracy reduces buffer stock slightly',
           highAnchor: 'Real-time inventory intelligence, proactive obsolescence management',
+          currentDefault: 0,
+          currentLowAnchor: 'BOM errors force heavy safety stock — buffer driven by uncertainty, not demand',
+          currentHighAnchor: 'Clean BOMs and accurate demand signal today — minimal buffer stock needed',
           defaultInclude: true,
           suggestedPct: 7,
           maturityLevels: [
@@ -557,6 +569,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Better CM collaboration, reduced re-orders',
           highAnchor: 'Tight CM integration with shared BOM, real-time change propagation',
+          currentDefault: 0,
+          currentLowAnchor: 'CMs work from emailed PDFs — revision mismatches and re-orders are frequent',
+          currentHighAnchor: 'CMs have near-real-time data access today — material waste is minimal',
           defaultInclude: true,
           suggestedPct: 5,
           maturityLevels: [
@@ -596,6 +611,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Reduced searching for correct BOM/documentation',
           highAnchor: 'Fully automated change notifications, zero duplicate work',
+          currentDefault: 1,
+          currentLowAnchor: 'Engineers spend hours per week hunting for the correct BOM or drawing revision',
+          currentHighAnchor: 'Existing tools give strong data access today — minimal search overhead',
           defaultInclude: true,
           suggestedPct: 2,
           maturityLevels: [
@@ -633,6 +651,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Basic document management improvements',
           highAnchor: 'Fully automated release workflows, e-signatures, zero manual routing',
+          currentDefault: 15,
+          currentLowAnchor: 'Fully manual routing — paper trails, shared drives, chasing approvers by email',
+          currentHighAnchor: 'Existing workflow tools cover most release automation today',
           defaultInclude: true,
           suggestedPct: 25,
           maturityLevels: [
@@ -670,6 +691,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Single source of truth reduces search time',
           highAnchor: 'Full self-service access, no manual data requests',
+          currentDefault: 18,
+          currentLowAnchor: 'All data requests route through engineering — zero self-service exists today',
+          currentHighAnchor: 'Consumers find data independently today — strong self-service culture in place',
           defaultInclude: true,
           suggestedPct: 30,
           maturityLevels: [
@@ -707,6 +731,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Better part library access, fewer redesigns',
           highAnchor: 'Full CAD-PLM integration, automated BOM population',
+          currentDefault: 1,
+          currentLowAnchor: 'CAD and BOMs are completely disconnected — all BOM entry is manual and error-prone',
+          currentHighAnchor: 'Existing CAD integration handles most BOM sync today — minimal manual entry',
           defaultInclude: true,
           suggestedPct: 1,
           maturityLevels: [
@@ -744,6 +771,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Faster access to quality records and history',
           highAnchor: 'Automated CAPA workflows, closed-loop quality management',
+          currentDefault: 4,
+          currentLowAnchor: 'CAPAs tracked in spreadsheets — quality data disconnected from product records',
+          currentHighAnchor: 'Strong quality system with product linkage today — good investigation efficiency',
           defaultInclude: true,
           suggestedPct: 7,
           maturityLevels: [
@@ -781,6 +811,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Easier audit trail access and report generation',
           highAnchor: 'Fully automated compliance reporting, real-time substance alerts',
+          currentDefault: 2,
+          currentLowAnchor: 'Compliance tracked in email and spreadsheets — audit prep takes days or weeks',
+          currentHighAnchor: 'Mature compliance program in place today — near-automated reporting already',
           defaultInclude: true,
           suggestedPct: 5,
           maturityLevels: [
@@ -818,6 +851,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Better supplier data visibility, reduced manual work',
           highAnchor: 'Integrated sourcing workflows, automated AVL management',
+          currentDefault: 3,
+          currentLowAnchor: 'Supplier AVLs live in spreadsheets — disconnected from product data entirely',
+          currentHighAnchor: 'Strong supplier management system with solid product linkage today',
           defaultInclude: true,
           suggestedPct: 4,
           maturityLevels: [
@@ -857,6 +893,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Fewer surprises from better BOM accuracy',
           highAnchor: 'Proactive change management eliminates most expediting',
+          currentDefault: 6,
+          currentLowAnchor: 'Constant fire drills — BOM errors and revision surprises drive regular expediting',
+          currentHighAnchor: 'Disciplined process today — expediting events are already rare without Arena',
           defaultInclude: true,
           suggestedPct: 10,
           maturityLevels: [
@@ -894,6 +933,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Better documentation reduces build errors',
           highAnchor: 'Real-time ECO propagation, zero rework from stale BOMs',
+          currentDefault: 5,
+          currentLowAnchor: 'Regular build-to-wrong-revision events today — scrap and rework are weekly',
+          currentHighAnchor: 'Clean change communication today — production always uses the latest data',
           defaultInclude: true,
           suggestedPct: 7,
           maturityLevels: [
@@ -931,6 +973,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Faster root cause analysis with complete product history',
           highAnchor: 'Proactive field issue prevention through quality integration',
+          currentDefault: 10,
+          currentLowAnchor: 'Field failures traced reactively — root cause is slow, same issues recur',
+          currentHighAnchor: 'Strong service records with product linkage today — fast traceability, low recurrence',
           defaultInclude: true,
           suggestedPct: 12,
           maturityLevels: [
@@ -968,6 +1013,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Better audit readiness reduces minor penalty risk',
           highAnchor: 'Full compliance automation prevents major regulatory exposure',
+          currentDefault: 1,
+          currentLowAnchor: 'Compliance gaps found during audits — reactive posture, exposed to penalties',
+          currentHighAnchor: 'Proactive monitoring in place today — regulatory exposure already minimal',
           defaultInclude: true,
           suggestedPct: 2,
           maturityLevels: [
@@ -1005,6 +1053,9 @@ function getSheetConfig() {
           unit: '%',
           lowAnchor: 'Improved visibility into aging parts/products',
           highAnchor: 'Automated EOL alerts, proactive product transition management',
+          currentDefault: 6,
+          currentLowAnchor: 'EOL notices arrive too late — panicked last-time buys and rushed redesigns',
+          currentHighAnchor: 'Strong lifecycle tracking today — EOL transitions planned months in advance',
           defaultInclude: true,
           suggestedPct: 10,
           maturityLevels: [

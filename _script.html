@@ -897,6 +897,7 @@
   }
 
   function buildCurrentSlider(field) {
+    var curDefault = (field.currentDefault !== undefined) ? field.currentDefault : 0;
     var input = document.createElement('input');
     input.type = 'range';
     input.id = 'cur_' + field.id;
@@ -905,8 +906,8 @@
     input.min = 0;
     input.max = field.max;
     input.step = 0.5;
-    input.value = 0;
-    WIZARD.currentStateData[field.id] = 0;
+    input.value = curDefault;
+    WIZARD.currentStateData[field.id] = curDefault;
     return input;
   }
 
@@ -935,16 +936,17 @@
     curLabelText.textContent = 'Today (without Arena)';
     var curBadge = make('span', 'section-badge');
     curBadge.id = 'cbadge_' + field.id;
-    curBadge.textContent = '0%';
+    var curDefault = (field.currentDefault !== undefined) ? field.currentDefault : 0;
+    curBadge.textContent = curDefault + '%';
     curLabel.appendChild(curLabelText);
     curLabel.appendChild(curBadge);
     curSection.appendChild(curLabel);
 
     var curAnchors = make('div', 'slider-anchors');
     var curLow = make('span', 'anchor-low');
-    curLow.textContent = 'No existing capability';
+    curLow.textContent = field.currentLowAnchor || 'No existing capability';
     var curHigh = make('span', 'anchor-high');
-    curHigh.textContent = 'Strong existing advantage';
+    curHigh.textContent = field.currentHighAnchor || 'Strong existing advantage';
     curAnchors.appendChild(curLow);
     curAnchors.appendChild(curHigh);
     curSection.appendChild(curAnchors);
