@@ -965,6 +965,19 @@
     curNumAnchors.appendChild(curNumHigh);
     curSection.appendChild(curNumAnchors);
 
+    // Current state maturity box — mirrors the future state box pattern
+    var curStateBox = null;
+    if (field.currentMaturityLevels && field.currentMaturityLevels.length) {
+      var curField = { maturityLevels: field.currentMaturityLevels, min: 0, max: field.max };
+      curStateBox = make('div', 'maturity-state');
+      var curStateInner = make('div', 'maturity-state-inner');
+      curStateInner.appendChild(make('div', 'state-label'));
+      curStateInner.appendChild(make('p', 'state-desc'));
+      curStateBox.appendChild(curStateInner);
+      curSection.appendChild(curStateBox);
+      updateMaturityUI(curField, curDefault, curStateBox, { querySelectorAll: function() { return []; } });
+    }
+
     wrapper.appendChild(curSection);
 
     // ── Net benefit bar (between sections) ─────────────────────────────────
@@ -1063,6 +1076,10 @@
       var curVal = parseFloat(curInput.value);
       WIZARD.currentStateData[field.id] = curVal;
       curBadge.textContent = curVal + (field.unit || '%');
+      if (curStateBox && field.currentMaturityLevels) {
+        var curField = { maturityLevels: field.currentMaturityLevels, min: 0, max: field.max };
+        updateMaturityUI(curField, curVal, curStateBox, { querySelectorAll: function() { return []; } });
+      }
       refreshNet();
     });
 

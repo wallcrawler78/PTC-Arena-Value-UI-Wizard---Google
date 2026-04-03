@@ -412,6 +412,11 @@ function getSheetConfig() {
           currentDefault: 0,
           currentLowAnchor: 'Manual BOM approvals and email ECOs — every change costs weeks',
           currentHighAnchor: 'Highly digitized NPI today — approvals and changes move in days',
+          currentMaturityLevels: [
+            { pct: 0,  label: 'Manual & Fragmented',    description: 'BOM revisions travel by email, change orders sit in inboxes waiting for signatures, and launches regularly slip weeks. There is no systematic way to compress the NPI cycle without a PLM system.' },
+            { pct: 10, label: 'Some Process Discipline', description: 'Basic stage-gate reviews and partial digital document management prevent the worst delays, but handoffs between engineering, procurement, and manufacturing still require significant manual coordination.' },
+            { pct: 20, label: 'Efficient Existing Process', description: 'Strong internal processes and collaboration tools have compressed your development cycles meaningfully. Most approvals move quickly, and your NPI team operates at a reasonable pace without a dedicated PLM system.' }
+          ],
           defaultInclude: true,
           suggestedPct: 15,
           maturityLevels: [
@@ -452,6 +457,11 @@ function getSheetConfig() {
           currentDefault: 0,
           currentLowAnchor: 'Products routinely launch late — premium pricing windows consistently missed',
           currentHighAnchor: 'Reliably first to market today — premium windows captured without PLM',
+          currentMaturityLevels: [
+            { pct: 0,   label: 'Consistently Late',    description: 'Products rarely hit their planned launch dates. By the time you reach market, competitors have established pricing pressure and the premium window has closed — early-mover margin is rarely captured.' },
+            { pct: 1.5, label: 'Occasionally On Time', description: 'Roughly half of launches hit their target windows. Premium pricing is possible on those products, but late launches erode overall portfolio margin and first-mover advantage is inconsistent.' },
+            { pct: 3,   label: 'Reliably First',       description: 'Your development process is disciplined enough that you consistently beat competitors to market even without PLM automation. Premium pricing windows are captured reliably.' }
+          ],
           defaultInclude: true,
           suggestedPct: 1,
           maturityLevels: [
@@ -492,6 +502,11 @@ function getSheetConfig() {
           currentDefault: 0,
           currentLowAnchor: 'Engineers create duplicate parts freely — no part reuse visibility or controls',
           currentHighAnchor: 'Active catalogue discipline today — part reuse and spend consolidation strong',
+          currentMaturityLevels: [
+            { pct: 0,   label: 'Part Number Proliferation', description: 'Engineers create new part numbers freely because searching for existing components is too slow. Supplier negotiations happen without consolidated spend data, and approved vendor lists are siloed across teams.' },
+            { pct: 1.5, label: 'Emerging Reuse',            description: 'A shared component library exists, though it is not always current or trusted. Part reuse happens informally through individual engineer knowledge, and some commodity consolidation has been achieved.' },
+            { pct: 3,   label: 'Active Reuse Culture',      description: 'Engineers actively search for reusable parts before designing new ones. Commodity managers have enough spend visibility to negotiate effectively, and part proliferation is largely under control.' }
+          ],
           defaultInclude: true,
           suggestedPct: 1,
           maturityLevels: [
@@ -532,6 +547,11 @@ function getSheetConfig() {
           currentDefault: 0,
           currentLowAnchor: 'BOM errors force heavy safety stock — buffer driven by uncertainty, not demand',
           currentHighAnchor: 'Clean BOMs and accurate demand signal today — minimal buffer stock needed',
+          currentMaturityLevels: [
+            { pct: 0,  label: 'Buffer-Heavy',    description: 'Inaccurate BOMs and late-breaking changes make demand unpredictable. Purchasing over-orders to compensate, warehouse space is consumed by excess stock, and obsolete inventory write-offs are a regular expense.' },
+            { pct: 7,  label: 'Managed Buffer',  description: 'Reasonably accurate demand signals mean purchasing does not over-order dramatically. Buffer stock is higher than ideal but reflects genuine uncertainty rather than data error.' },
+            { pct: 14, label: 'Lean Inventory',  description: 'Strong demand management and accurate BOMs keep inventory lean. Carrying costs are low relative to revenue, and obsolescence is actively managed before it becomes waste.' }
+          ],
           defaultInclude: true,
           suggestedPct: 7,
           maturityLevels: [
@@ -572,6 +592,11 @@ function getSheetConfig() {
           currentDefault: 0,
           currentLowAnchor: 'CMs work from emailed PDFs — revision mismatches and re-orders are frequent',
           currentHighAnchor: 'CMs have near-real-time data access today — material waste is minimal',
+          currentMaturityLevels: [
+            { pct: 0, label: 'Disconnected CMs',  description: 'CMs receive BOM exports by email on an ad-hoc basis. Revision mismatches are discovered after material is ordered — sometimes after builds have started — leading to costly re-orders and production delays.' },
+            { pct: 4, label: 'Regular Syncs',     description: 'BOM data is shared with CMs on a scheduled basis (weekly or at milestone gates). Most mismatches are caught before builds, though urgent changes sometimes miss the sync cadence and cause material waste.' },
+            { pct: 7, label: 'Near Real-Time',    description: 'CMs have reliable access to current BOM data through regular file shares or portal access. Material waste from revision errors is rare, though change acknowledgment tracking is still informal.' }
+          ],
           defaultInclude: true,
           suggestedPct: 5,
           maturityLevels: [
@@ -614,6 +639,11 @@ function getSheetConfig() {
           currentDefault: 1,
           currentLowAnchor: 'Engineers spend hours per week hunting for the correct BOM or drawing revision',
           currentHighAnchor: 'Existing tools give strong data access today — minimal search overhead',
+          currentMaturityLevels: [
+            { pct: 0, label: 'Search & Wait',    description: 'Engineers spend hours each week hunting for the correct BOM revision, chasing email chains for approval status, and manually reconciling document versions. Tribal knowledge determines who has the "real" latest file.' },
+            { pct: 2, label: 'Basic Tools',      description: 'Shared drives or basic document management have reduced the worst search inefficiencies. Engineers know where to look, though version control is informal and some time is still lost to manual reconciliation.' },
+            { pct: 4, label: 'Efficient Access', description: 'Existing tools give engineers reliable access to current product data. Most information is findable quickly, and the team operates with good efficiency for a company without a dedicated PLM system.' }
+          ],
           defaultInclude: true,
           suggestedPct: 2,
           maturityLevels: [
@@ -654,6 +684,11 @@ function getSheetConfig() {
           currentDefault: 15,
           currentLowAnchor: 'Fully manual routing — paper trails, shared drives, chasing approvers by email',
           currentHighAnchor: 'Existing workflow tools cover most release automation today',
+          currentMaturityLevels: [
+            { pct: 0,  label: 'Fully Manual',        description: 'Document releases require manual routing for wet signatures and physical filing. Every approval step is a bottleneck, and release packages take days or weeks to complete even for minor changes.' },
+            { pct: 25, label: 'Partially Digital',   description: 'Most documents are managed digitally with basic workflow tools. Approval routing is faster, though some steps still require manual follow-up and release packages still need manual assembly.' },
+            { pct: 55, label: 'Mostly Automated',    description: 'Existing tools automate most of the release workflow. Your team spends the majority of time on exception handling and process improvement rather than routine document routing.' }
+          ],
           defaultInclude: true,
           suggestedPct: 25,
           maturityLevels: [
@@ -694,6 +729,11 @@ function getSheetConfig() {
           currentDefault: 18,
           currentLowAnchor: 'All data requests route through engineering — zero self-service exists today',
           currentHighAnchor: 'Consumers find data independently today — strong self-service culture in place',
+          currentMaturityLevels: [
+            { pct: 0,  label: 'Engineering Bottleneck', description: 'Manufacturing, purchasing, and quality teams interrupt engineers constantly to get the latest BOM, drawing, or spec. Product data does not leave engineering without manual intervention.' },
+            { pct: 35, label: 'Partial Self-Service',   description: 'Some consumers can access product data through shared drives or portals. However, current-revision confidence is low and some teams still prefer to ask engineering directly rather than trust what they find.' },
+            { pct: 75, label: 'Strong Self-Service',    description: 'Most consumers can independently find what they need in current systems. Engineering interruptions are rare, and cross-functional teams trust the data they access without needing to verify with engineering.' }
+          ],
           defaultInclude: true,
           suggestedPct: 30,
           maturityLevels: [
@@ -734,6 +774,11 @@ function getSheetConfig() {
           currentDefault: 1,
           currentLowAnchor: 'CAD and BOMs are completely disconnected — all BOM entry is manual and error-prone',
           currentHighAnchor: 'Existing CAD integration handles most BOM sync today — minimal manual entry',
+          currentMaturityLevels: [
+            { pct: 0,   label: 'Fully Disconnected', description: 'BOM data is manually re-entered from CAD into spreadsheets or other systems. Designers regularly recreate parts that already exist, and BOM accuracy depends entirely on individual diligence.' },
+            { pct: 1.5, label: 'Basic Integration',  description: 'Some integration exists between CAD tools and downstream BOM management. Part reuse is improving, though manual synchronization steps remain and BOM accuracy still varies by designer.' },
+            { pct: 2.5, label: 'Good Integration',   description: 'CAD tools connect well to your existing BOM management with minimal manual re-entry. Most designers work efficiently within the existing toolchain, though full PLM-level automation is absent.' }
+          ],
           defaultInclude: true,
           suggestedPct: 1,
           maturityLevels: [
@@ -774,6 +819,11 @@ function getSheetConfig() {
           currentDefault: 4,
           currentLowAnchor: 'CAPAs tracked in spreadsheets — quality data disconnected from product records',
           currentHighAnchor: 'Strong quality system with product linkage today — good investigation efficiency',
+          currentMaturityLevels: [
+            { pct: 0,  label: 'Reactive & Manual',   description: 'Quality events are tracked in spreadsheets disconnected from product data. Root cause investigations require pulling data from multiple systems, and the same failure modes recur because corrective actions are not linked to design changes.' },
+            { pct: 8,  label: 'Basic QMS',           description: 'A quality management system handles CAPA tracking, though it is not linked to product BOMs or change history. Root cause investigations are faster but connecting an event to a specific design revision still requires manual effort.' },
+            { pct: 16, label: 'Integrated Quality',  description: 'Your quality system is linked to product records, enabling faster root cause analysis and more effective corrective actions. CAPA closure rates are good, though some cross-functional coordination remains manual.' }
+          ],
           defaultInclude: true,
           suggestedPct: 7,
           maturityLevels: [
@@ -814,6 +864,11 @@ function getSheetConfig() {
           currentDefault: 2,
           currentLowAnchor: 'Compliance tracked in email and spreadsheets — audit prep takes days or weeks',
           currentHighAnchor: 'Mature compliance program in place today — near-automated reporting already',
+          currentMaturityLevels: [
+            { pct: 0,  label: 'Reactive & Exposed', description: 'Compliance status is tracked in email threads and spreadsheets that are frequently out of date. Audit preparation requires days of manual evidence gathering, and gaps are typically discovered reactively during customer audits or inquiries.' },
+            { pct: 8,  label: 'Basic Tracking',     description: 'Compliance records are maintained in a central system, making audits more manageable. However, substance compliance at the component level still depends on periodic manual reviews of supplier spreadsheets.' },
+            { pct: 16, label: 'Proactive Program',  description: 'Your compliance team actively monitors regulatory status and substance declarations, catching issues before they become violations. Audit preparation is measured in hours rather than days, and surprise findings are uncommon.' }
+          ],
           defaultInclude: true,
           suggestedPct: 5,
           maturityLevels: [
@@ -854,6 +909,11 @@ function getSheetConfig() {
           currentDefault: 3,
           currentLowAnchor: 'Supplier AVLs live in spreadsheets — disconnected from product data entirely',
           currentHighAnchor: 'Strong supplier management system with solid product linkage today',
+          currentMaturityLevels: [
+            { pct: 0,  label: 'Spreadsheet Sourcing', description: 'Approved vendor lists live in spreadsheets that go stale quickly. Qualifying a new supplier means weeks of email exchanges, and there is no way to see which products are affected when a supplier has a disruption or price change.' },
+            { pct: 4,  label: 'Basic AVL System',     description: 'Approved vendor lists are maintained in a system that most stakeholders can access. Supplier qualification is partially standardized, though impact analysis for disruptions still requires manual research across product lines.' },
+            { pct: 8,  label: 'Mature Sourcing',      description: 'Your sourcing function operates with strong data and mostly systematic workflows. Supplier performance informs decisions, and commodity managers have good spend visibility for strategic negotiations.' }
+          ],
           defaultInclude: true,
           suggestedPct: 4,
           maturityLevels: [
@@ -896,6 +956,11 @@ function getSheetConfig() {
           currentDefault: 6,
           currentLowAnchor: 'Constant fire drills — BOM errors and revision surprises drive regular expediting',
           currentHighAnchor: 'Disciplined process today — expediting events are already rare without Arena',
+          currentMaturityLevels: [
+            { pct: 0,  label: 'Constant Fire Drills',   description: 'BOM errors, late revision releases, and supplier miscommunications cause frequent production shortages. Premium freight charges and supplier rush fees are a significant and accepted cost of doing business.' },
+            { pct: 10, label: 'Manageable Expediting',  description: 'Most expediting is driven by genuine demand variability rather than internal data errors. Your team catches most revision issues before they cause shortages, though expediting is still a regular occurrence.' },
+            { pct: 20, label: 'Rare Events',            description: 'Strong internal change management and supplier communication keep expediting events infrequent. When expediting does occur, it is typically due to external market factors rather than internal miscommunication.' }
+          ],
           defaultInclude: true,
           suggestedPct: 10,
           maturityLevels: [
@@ -936,6 +1001,11 @@ function getSheetConfig() {
           currentDefault: 5,
           currentLowAnchor: 'Regular build-to-wrong-revision events today — scrap and rework are weekly',
           currentHighAnchor: 'Clean change communication today — production always uses the latest data',
+          currentMaturityLevels: [
+            { pct: 0,  label: 'Build-to-Wrong-Rev', description: 'The production floor regularly builds to outdated BOMs or drawings because change notifications arrive late or get lost in email. Scrap and rework are weekly occurrences that teams have accepted as normal overhead.' },
+            { pct: 6,  label: 'Occasional Errors',  description: 'Most changes reach the production floor before builds start, but in-flight changes and late approvals still cause occasional rework. Root cause is usually communication lag rather than systemic process failure.' },
+            { pct: 12, label: 'Rare Rework',        description: 'Strong change communication practices mean production almost always builds to the correct revision. Scrap and rework occur only from process variation, not from stale BOM data.' }
+          ],
           defaultInclude: true,
           suggestedPct: 7,
           maturityLevels: [
@@ -976,6 +1046,11 @@ function getSheetConfig() {
           currentDefault: 10,
           currentLowAnchor: 'Field failures traced reactively — root cause is slow, same issues recur',
           currentHighAnchor: 'Strong service records with product linkage today — fast traceability, low recurrence',
+          currentMaturityLevels: [
+            { pct: 0,  label: 'Reactive Service',  description: 'Field failures trigger slow investigations because product history is scattered across systems. Root cause identification takes weeks, and the same failure modes recur because corrective actions are not systematically linked to design improvements.' },
+            { pct: 8,  label: 'Traceable History', description: 'Some product history is available, enabling faster initial triage. Connecting a field failure to a specific BOM revision or supplier lot still requires significant manual cross-referencing between systems.' },
+            { pct: 17, label: 'Proactive Response', description: 'Complete product records enable fast root cause analysis and proactive identification of at-risk units. Warranty repair rates are trending down as quality improvements are systematically incorporated into design updates.' }
+          ],
           defaultInclude: true,
           suggestedPct: 12,
           maturityLevels: [
@@ -1016,6 +1091,11 @@ function getSheetConfig() {
           currentDefault: 1,
           currentLowAnchor: 'Compliance gaps found during audits — reactive posture, exposed to penalties',
           currentHighAnchor: 'Proactive monitoring in place today — regulatory exposure already minimal',
+          currentMaturityLevels: [
+            { pct: 0,  label: 'Reactive & Exposed', description: 'Compliance gaps are discovered during customer audits or regulatory inquiries rather than through proactive monitoring. Corrective action is taken after the fact, and the same gaps tend to recur because systemic issues are not addressed.' },
+            { pct: 2,  label: 'Basic Monitoring',   description: 'Periodic compliance reviews catch most issues before they become violations. Your team is generally aware of regulatory requirements, though real-time substance monitoring and regulatory change tracking are not in place.' },
+            { pct: 4,  label: 'Proactive Program',  description: 'Compliance monitoring is systematic and largely proactive. Regulatory changes are tracked, substance declarations are reviewed regularly, and your team rarely faces unexpected audit findings.' }
+          ],
           defaultInclude: true,
           suggestedPct: 2,
           maturityLevels: [
@@ -1056,6 +1136,11 @@ function getSheetConfig() {
           currentDefault: 6,
           currentLowAnchor: 'EOL notices arrive too late — panicked last-time buys and rushed redesigns',
           currentHighAnchor: 'Strong lifecycle tracking today — EOL transitions planned months in advance',
+          currentMaturityLevels: [
+            { pct: 0,  label: 'Blindsided by EOL',     description: 'Component end-of-life notices arrive too late to plan effectively. Last-time buys are oversized and expensive, redesigns to qualify alternates are rushed and disruptive, and EOL events are a recurring source of production crisis.' },
+            { pct: 10, label: 'Improving Visibility',  description: 'Your team monitors supplier lifecycle bulletins and responds faster than average to EOL notices. Buy sizing has improved, though impact analysis across affected products still requires significant manual effort.' },
+            { pct: 20, label: 'Proactive Management',  description: 'Lifecycle monitoring is systematic and alternates are pre-qualified before EOL events occur. Transitions are planned, buy quantities are well-calibrated, and EOL is rarely a source of production disruption.' }
+          ],
           defaultInclude: true,
           suggestedPct: 10,
           maturityLevels: [
