@@ -937,7 +937,7 @@
     var curBadge = make('span', 'section-badge');
     curBadge.id = 'cbadge_' + field.id;
     var curDefault = (field.currentDefault !== undefined) ? field.currentDefault : 0;
-    curBadge.textContent = curDefault + '%';
+    curBadge.textContent = curDefault + (field.unit || '%');
     curLabel.appendChild(curLabelText);
     curLabel.appendChild(curBadge);
     curSection.appendChild(curLabel);
@@ -1067,7 +1067,7 @@
         curInput.value = curVal;
       }
       WIZARD.currentStateData[field.id] = curVal;
-      curBadge.textContent = curVal + '%';
+      curBadge.textContent = curVal + (field.unit || '%');
       refreshNet();
     });
 
@@ -1079,7 +1079,7 @@
         curVal = futVal;
         WIZARD.currentStateData[field.id] = curVal;
         curInput.value = curVal;
-        curBadge.textContent = curVal + '%';
+        curBadge.textContent = curVal + (field.unit || '%');
       }
       WIZARD.formData[field.id] = futVal;
       futBadge.textContent = futVal + '%';
