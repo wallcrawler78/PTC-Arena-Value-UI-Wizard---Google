@@ -31,9 +31,9 @@ The Legacy TCO tab likely feeds into a **TCO Projections** or **Summary/ROI** ta
 
 | Tab | Wizard Steps | Rows |
 |-----|-------------|------|
-| Data Input | Steps 1-5 (Company, Assumptions, Costs, Inventory, Workforce) | D3-D48 |
-| Benefits Calc | Steps 6-8 (Benefit sliders + include toggles) | D2-D19, F2-F19 |
-| **Legacy TCO** | **Not yet covered** | **Unknown** |
+| Data Input | Steps 1–4 (Company, Assumptions, Cost Structure, Team Resources) | E3–E48 |
+| Benefits Calc | Steps 5–7 (Benefit sliders + include toggles) | D2–D19, F2–F19 |
+| Legacy TCO | Step 8 (Unit cost × qty × include per row) | C5–C11, D5–D11, F5–F11, E3 |
 
 ---
 

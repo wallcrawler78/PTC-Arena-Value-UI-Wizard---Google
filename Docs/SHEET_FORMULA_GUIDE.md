@@ -27,9 +27,9 @@ Where:
 
 | Purpose | Column |
 |---------|--------|
-| Row labels / descriptions | A–C |
-| **User inputs (yellow cells)** | **D** |
-| Derived/calculated values | E (e.g., FTE counts = D5 × role %) |
+| Row labels / descriptions | A–D |
+| **User inputs (yellow cells)** | **E** |
+| Derived/calculated values | Other columns (e.g., FTE defaults = E5 × role %) |
 
 ### Benefits Calc (GID: 2005510170)
 
@@ -49,57 +49,52 @@ Where:
 
 | Cell | Field ID | Description | storeAs |
 |------|----------|-------------|---------|
-| D3 | `customerName` | Company name | text |
-| D4 | `annualRevenue` | Annual revenue ($) | currency |
-| D5 | `totalEmployees` | Total employee headcount | number |
+| E3 | `customerName` | Company name | text |
+| E4 | `annualRevenue` | Annual revenue ($) | currency |
+| E5 | `totalEmployees` | Total employee headcount | number |
 
 ### Step 2: Business Assumptions
 
 | Cell | Field ID | Description | storeAs | Default |
 |------|----------|-------------|---------|---------|
-| D10 | `revenueGrowthRate` | Annual revenue growth rate | decimal | 10% |
-| D11 | `revenueFromNewProducts` | % of revenue from new/recent products | decimal | 20% |
-| D12 | `profitMarginNewProducts` | Net profit margin on new product lines | decimal | 10% |
-| D15 | `npdCycleTime` | NPD/NPI cycle time in weeks | number | 52 |
+| E10 | `revenueGrowthRate` | Annual revenue growth rate | decimal | 10% |
+| E11 | `revenueFromNewProducts` | % of revenue from new/recent products | decimal | 20% |
+| E12 | `profitMarginNewProducts` | Net profit margin on new product lines | decimal | 10% |
+| E15 | `npdCycleTime` | NPD/NPI cycle time in weeks | number | 52 |
 
 ### Step 3: Cost Structure
 
 | Cell | Field ID | Description | storeAs | Default |
 |------|----------|-------------|---------|---------|
-| D18 | `cogsPercent` | COGS as % of revenue | decimal | 70% |
-| D19 | `directMaterialPercent` | Direct material as % of COGS | decimal | 30% |
-| D20 | `cmMaterialPercent` | Contract mfg material as % of COGS | decimal | 30% |
+| E18 | `cogsPercent` | COGS as % of revenue | decimal | 70% |
+| E19 | `directMaterialPercent` | Direct material as % of COGS | decimal | 30% |
+| E20 | `cmMaterialPercent` | Contract mfg material as % of COGS | decimal | 30% |
+| E23 | `inventoryValue` | Total inventory value ($) | currency | 10% of revenue |
+| E24 | `inventoryCarryingCost` | Annual carrying cost % | decimal | 25% |
+| E27 | `expeditingCosts` | Annual expediting costs ($) | currency | 0.2% of revenue |
+| E28 | `scrapRework` | Annual scrap & rework ($) | currency | 0.2% of revenue |
+| E29 | `warrantyService` | Annual warranty & service costs ($) | currency | 0.2% of revenue |
+| E30 | `excessObsolete` | Annual excess & obsolete inventory ($) | currency | 0.2% of revenue |
 
-### Step 4: Inventory & Quality Costs
-
-| Cell | Field ID | Description | storeAs | Default |
-|------|----------|-------------|---------|---------|
-| D23 | `inventoryValue` | Total inventory value ($) | currency | 10% of revenue |
-| D24 | `inventoryCarryingCost` | Annual carrying cost % | decimal | 25% |
-| D27 | `expeditingCosts` | Annual expediting costs ($) | currency | 0.2% of revenue |
-| D28 | `scrapRework` | Annual scrap & rework ($) | currency | 0.2% of revenue |
-| D29 | `warrantyService` | Annual warranty & service costs ($) | currency | 0.2% of revenue |
-| D30 | `excessObsolete` | Annual excess & obsolete inventory ($) | currency | 0.2% of revenue |
-
-### Step 5: Workforce
+### Step 4: Team Resources
 
 | Cell | Field ID | Description | storeAs | Default |
 |------|----------|-------------|---------|---------|
-| D34 | `devTeamFTEs` | Development team FTEs | number | 15% of employees |
-| D35 | `devSalary` | Dev team annual salary | currency | $120,000 |
-| D36 | `cadFTEs` | CAD design FTEs | number | 2% of employees |
-| D37 | `cadSalary` | CAD design annual salary | currency | $120,000 |
-| D38 | `engServicesFTEs` | Eng services / doc mgmt FTEs | number | 1% of employees |
-| D39 | `engServicesSalary` | Eng services annual salary | currency | $120,000 |
-| D40 | `pdcFTEs` | Product data consumer FTEs | number | 20% of employees |
-| D41 | `pdcWorkweekPercent` | PDC % of workweek consuming data | decimal | 10% |
-| D42 | `pdcSalary` | PDC annual salary | currency | $120,000 |
-| D43 | `qualityFTEs` | Quality/CAPA FTEs | number | 5% of employees |
-| D44 | `qualitySalary` | Quality annual salary | currency | $120,000 |
-| D45 | `complianceFTEs` | Compliance FTEs | number | 2% of employees |
-| D46 | `complianceSalary` | Compliance annual salary | currency | $120,000 |
-| D47 | `sourcingFTEs` | Sourcing FTEs | number | 1% of employees |
-| D48 | `sourcingSalary` | Sourcing annual salary | currency | $120,000 |
+| E34 | `devTeamFTEs` | Development team FTEs | number | 15% of employees |
+| E35 | `devSalary` | Dev team annual salary | currency | $120,000 |
+| E36 | `cadFTEs` | CAD design FTEs | number | 2% of employees |
+| E37 | `cadSalary` | CAD design annual salary | currency | $120,000 |
+| E38 | `engServicesFTEs` | Eng services / doc mgmt FTEs | number | 1% of employees |
+| E39 | `engServicesSalary` | Eng services annual salary | currency | $120,000 |
+| E40 | `pdcFTEs` | Product data consumer FTEs | number | 20% of employees |
+| E41 | `pdcWorkweekPercent` | PDC % of workweek consuming data | decimal | 10% |
+| E42 | `pdcSalary` | PDC annual salary | currency | $120,000 |
+| E43 | `qualityFTEs` | Quality/CAPA FTEs | number | 5% of employees |
+| E44 | `qualitySalary` | Quality annual salary | currency | $120,000 |
+| E45 | `complianceFTEs` | Compliance FTEs | number | 2% of employees |
+| E46 | `complianceSalary` | Compliance annual salary | currency | $120,000 |
+| E47 | `sourcingFTEs` | Sourcing FTEs | number | 1% of employees |
+| E48 | `sourcingSalary` | Sourcing annual salary | currency | $120,000 |
 
 > **Note on `storeAs: 'decimal'`**: The wizard displays these as whole percentages (e.g., "10%") but writes them to the sheet as decimals (0.10). The conversion is `value / 100` on write, `value * 100` on read. See `toSheetValue()` and `convertFromSheet()` in Code.gs.
 
@@ -119,13 +114,13 @@ Captures the value of launching products earlier, generating revenue sooner.
 G2 = Annual Revenue × Revenue Growth Rate × % New Product Revenue × New Product Margin
      × (Improvement% / NPD Cycle Time in weeks) × 52
 
-Inputs:  D4 (Revenue) × D10 (Growth) × D11 (New Product %) × D12 (Margin)
-         × (BenCalc D2 / D15) × 52
+Inputs:  E4 (Revenue) × E10 (Growth) × E11 (New Product %) × E12 (Margin)
+         × (BenCalc D2 / E15) × 52
 ```
 
 The formula divides the improvement % by cycle time to get a per-week acceleration factor, then annualizes it. Reducing a 52-week cycle by 10% = 5.2 weeks earlier to market.
 
-**Depends on:** D4, D10, D11, D12, D15, BenCalc D2
+**Depends on:** E4, E10, E11, E12, E15, BenCalc D2
 
 #### Row 4: Incremental Margin from Early Launch (1–3%)
 
@@ -134,10 +129,10 @@ Additional margin captured from being first/early to market.
 ```
 G4 = Annual Revenue × % New Product Revenue × New Product Margin × Improvement%
 
-Inputs:  D4 × D11 × D12 × BenCalc D4
+Inputs:  E4 × E11 × E12 × BenCalc D4
 ```
 
-**Depends on:** D4, D11, D12, BenCalc D4
+**Depends on:** E4, E11, E12, BenCalc D4
 
 ### Material & Supply Chain Benefits
 
@@ -148,10 +143,10 @@ PLM-driven sourcing optimization reduces direct material costs.
 ```
 G5 = Annual Revenue × COGS% × Direct Material% × Improvement%
 
-Inputs:  D4 × D18 × D19 × BenCalc D5
+Inputs:  E4 × E18 × E19 × BenCalc D5
 ```
 
-**Depends on:** D4, D18, D19, BenCalc D5
+**Depends on:** E4, E18, E19, BenCalc D5
 
 #### Row 6: Reduce Inventory Carrying Cost (5–15%)
 
@@ -160,10 +155,10 @@ Better BOM accuracy and demand visibility reduce excess inventory.
 ```
 G6 = Inventory Value × Inventory Carrying Cost% × Improvement%
 
-Inputs:  D23 × D24 × BenCalc D6
+Inputs:  E23 × E24 × BenCalc D6
 ```
 
-**Depends on:** D23, D24, BenCalc D6
+**Depends on:** E23, E24, BenCalc D6
 
 #### Row 7: Reduce CM Material Spend (3–8%)
 
@@ -172,10 +167,10 @@ Tighter collaboration with contract manufacturers reduces material waste.
 ```
 G7 = Annual Revenue × COGS% × CM Material% × Improvement%
 
-Inputs:  D4 × D18 × D20 × BenCalc D7
+Inputs:  E4 × E18 × E20 × BenCalc D7
 ```
 
-**Depends on:** D4, D18, D20, BenCalc D7
+**Depends on:** E4, E18, E20, BenCalc D7
 
 ### Labor Efficiency Benefits
 
@@ -192,20 +187,20 @@ Where FTE Count is entered directly (the wizard computes defaults as `Total Empl
 ```
 G8 = Dev FTEs × Dev Salary × Improvement%
 
-Inputs:  D34 × D35 × BenCalc D8
+Inputs:  E34 × E35 × BenCalc D8
 ```
 
-**Depends on:** D34, D35, BenCalc D8
+**Depends on:** E34, E35, BenCalc D8
 
 #### Row 9: Eng Services / Doc Mgmt Efficiency (15–65%)
 
 ```
 G9 = Eng Services FTEs × Eng Services Salary × Improvement%
 
-Inputs:  D38 × D39 × BenCalc D9
+Inputs:  E38 × E39 × BenCalc D9
 ```
 
-**Depends on:** D38, D39, BenCalc D9
+**Depends on:** E38, E39, BenCalc D9
 
 #### Row 10: Product Data Consumer Efficiency (18–90%)
 
@@ -214,50 +209,50 @@ This role has an extra factor: the % of their workweek spent consuming product d
 ```
 G10 = PDC FTEs × PDC Workweek% × PDC Salary × Improvement%
 
-Inputs:  D40 × D41 × D42 × BenCalc D10
+Inputs:  E40 × E41 × E42 × BenCalc D10
 ```
 
-**Depends on:** D40, D41, D42, BenCalc D10
+**Depends on:** E40, E41, E42, BenCalc D10
 
 #### Row 11: CAD Design Efficiency (1–3%)
 
 ```
 G11 = CAD FTEs × CAD Salary × Improvement%
 
-Inputs:  D36 × D37 × BenCalc D11
+Inputs:  E36 × E37 × BenCalc D11
 ```
 
-**Depends on:** D36, D37, BenCalc D11
+**Depends on:** E36, E37, BenCalc D11
 
 #### Row 12: Quality/CAPA Efficiency (4–20%)
 
 ```
 G12 = Quality FTEs × Quality Salary × Improvement%
 
-Inputs:  D43 × D44 × BenCalc D12
+Inputs:  E43 × E44 × BenCalc D12
 ```
 
-**Depends on:** D43, D44, BenCalc D12
+**Depends on:** E43, E44, BenCalc D12
 
 #### Row 13: Compliance Efficiency (2–20%)
 
 ```
 G13 = Compliance FTEs × Compliance Salary × Improvement%
 
-Inputs:  D45 × D46 × BenCalc D13
+Inputs:  E45 × E46 × BenCalc D13
 ```
 
-**Depends on:** D45, D46, BenCalc D13
+**Depends on:** E45, E46, BenCalc D13
 
 #### Row 14: Sourcing Efficiency (3–10%)
 
 ```
 G14 = Sourcing FTEs × Sourcing Salary × Improvement%
 
-Inputs:  D47 × D48 × BenCalc D14
+Inputs:  E47 × E48 × BenCalc D14
 ```
 
-**Depends on:** D47, D48, BenCalc D14
+**Depends on:** E47, E48, BenCalc D14
 
 ### Cost Recovery Benefits
 
@@ -268,10 +263,10 @@ These rows apply improvement percentages directly to known annual cost pools.
 ```
 G15 = Annual Expediting Costs × Improvement%
 
-Inputs:  D27 × BenCalc D15
+Inputs:  E27 × BenCalc D15
 ```
 
-**Depends on:** D27, BenCalc D15
+**Depends on:** E27, BenCalc D15
 
 #### Row 16: Reduce Scrap & Rework (5–15%)
 
@@ -288,10 +283,10 @@ Inputs:  D28 × BenCalc D16
 ```
 G17 = Annual Warranty & Service × Improvement%
 
-Inputs:  D29 × BenCalc D17
+Inputs:  E29 × BenCalc D17
 ```
 
-**Depends on:** D29, BenCalc D17
+**Depends on:** E29, BenCalc D17
 
 #### Row 18: Non-Compliance Cost Avoidance (1–5%)
 
@@ -300,20 +295,20 @@ Estimated cost of regulatory non-compliance events, scaled by revenue.
 ```
 G18 = Annual Revenue × Compliance Risk Factor × Improvement%
 
-Inputs:  D4 × (compliance base rate) × BenCalc D18
+Inputs:  E4 × (compliance base rate) × BenCalc D18
 ```
 
-**Depends on:** D4, BenCalc D18
+**Depends on:** E4, BenCalc D18
 
 #### Row 19: Reduce End of Life Costs (6–25%)
 
 ```
 G19 = Annual Excess & Obsolete × Improvement%
 
-Inputs:  D30 × BenCalc D19
+Inputs:  E30 × BenCalc D19
 ```
 
-**Depends on:** D30, BenCalc D19
+**Depends on:** E30, BenCalc D19
 
 ---
 
@@ -325,36 +320,36 @@ Inputs:  D30 × BenCalc D19
 
 | Field | Value | Sheet Cell |
 |-------|-------|------------|
-| Annual Revenue | $50,000,000 | D4 |
-| Total Employees | 250 | D5 |
-| Revenue Growth Rate | 10% (stored 0.10) | D10 |
-| % Revenue New Products | 20% (stored 0.20) | D11 |
-| Profit Margin New Products | 10% (stored 0.10) | D12 |
-| NPD Cycle Time | 52 weeks | D15 |
-| COGS % | 70% (stored 0.70) | D18 |
-| Direct Material % | 30% (stored 0.30) | D19 |
-| CM Material % | 30% (stored 0.30) | D20 |
-| Inventory Value | $5,000,000 (10% of rev) | D23 |
-| Inventory Carrying Cost | 25% (stored 0.25) | D24 |
-| Expediting Costs | $100,000 (0.2% of rev) | D27 |
-| Scrap & Rework | $100,000 | D28 |
-| Warranty & Service | $100,000 | D29 |
-| Excess & Obsolete | $100,000 | D30 |
-| Dev Team FTEs | 38 (15% of 250) | D34 |
-| Dev Salary | $120,000 | D35 |
-| CAD FTEs | 5 (2% of 250) | D36 |
-| CAD Salary | $120,000 | D37 |
-| Eng Services FTEs | 3 (1% of 250) | D38 |
-| Eng Services Salary | $120,000 | D39 |
-| PDC FTEs | 50 (20% of 250) | D40 |
-| PDC Workweek % | 10% (stored 0.10) | D41 |
-| PDC Salary | $120,000 | D42 |
-| Quality FTEs | 13 (5% of 250) | D43 |
-| Quality Salary | $120,000 | D44 |
-| Compliance FTEs | 5 (2% of 250) | D45 |
-| Compliance Salary | $120,000 | D46 |
-| Sourcing FTEs | 3 (1% of 250) | D47 |
-| Sourcing Salary | $120,000 | D48 |
+| Annual Revenue | $50,000,000 | E4 |
+| Total Employees | 250 | E5 |
+| Revenue Growth Rate | 10% (stored 0.10) | E10 |
+| % Revenue New Products | 20% (stored 0.20) | E11 |
+| Profit Margin New Products | 10% (stored 0.10) | E12 |
+| NPD Cycle Time | 52 weeks | E15 |
+| COGS % | 70% (stored 0.70) | E18 |
+| Direct Material % | 30% (stored 0.30) | E19 |
+| CM Material % | 30% (stored 0.30) | E20 |
+| Inventory Value | $5,000,000 (10% of rev) | E23 |
+| Inventory Carrying Cost | 25% (stored 0.25) | E24 |
+| Expediting Costs | $100,000 (0.2% of rev) | E27 |
+| Scrap & Rework | $100,000 | E28 |
+| Warranty & Service | $100,000 | E29 |
+| Excess & Obsolete | $100,000 | E30 |
+| Dev Team FTEs | 38 (15% of 250) | E34 |
+| Dev Salary | $120,000 | E35 |
+| CAD FTEs | 5 (2% of 250) | E36 |
+| CAD Salary | $120,000 | E37 |
+| Eng Services FTEs | 3 (1% of 250) | E38 |
+| Eng Services Salary | $120,000 | E39 |
+| PDC FTEs | 50 (20% of 250) | E40 |
+| PDC Workweek % | 10% (stored 0.10) | E41 |
+| PDC Salary | $120,000 | E42 |
+| Quality FTEs | 13 (5% of 250) | E43 |
+| Quality Salary | $120,000 | E44 |
+| Compliance FTEs | 5 (2% of 250) | E45 |
+| Compliance Salary | $120,000 | E46 |
+| Sourcing FTEs | 3 (1% of 250) | E47 |
+| Sourcing Salary | $120,000 | E48 |
 
 ### Benefits Calc (all at default improvement %, all included)
 
@@ -388,51 +383,51 @@ Inputs:  D30 × BenCalc D19
 Which Data Input cells affect which Benefits Calc rows:
 
 ```
-D4  (Annual Revenue) ──────┬── Row 2  (TTM)
+E4  (Annual Revenue) ──────┬── Row 2  (TTM)
                            ├── Row 4  (Incremental Margin)
                            ├── Row 5  (Direct Material)
                            ├── Row 7  (CM Material)
                            └── Row 18 (Non-Compliance)
 
-D5  (Total Employees) ────── Used to compute default FTE counts
+E5  (Total Employees) ────── Used to compute default FTE counts
                              (not directly in benefit formulas;
                               FTE counts are entered as separate fields)
 
-D10 (Revenue Growth) ─────── Row 2  (TTM)
-D11 (New Product %) ──────┬── Row 2  (TTM)
+E10 (Revenue Growth) ─────── Row 2  (TTM)
+E11 (New Product %) ──────┬── Row 2  (TTM)
                           └── Row 4  (Incremental Margin)
-D12 (New Product Margin) ─┬── Row 2  (TTM)
+E12 (New Product Margin) ─┬── Row 2  (TTM)
                           └── Row 4  (Incremental Margin)
-D15 (NPD Cycle Time) ─────── Row 2  (TTM)
+E15 (NPD Cycle Time) ─────── Row 2  (TTM)
 
-D18 (COGS %) ─────────────┬── Row 5  (Direct Material)
+E18 (COGS %) ─────────────┬── Row 5  (Direct Material)
                            └── Row 7  (CM Material)
-D19 (Direct Material %) ───── Row 5  (Direct Material)
-D20 (CM Material %) ──────── Row 7  (CM Material)
+E19 (Direct Material %) ───── Row 5  (Direct Material)
+E20 (CM Material %) ──────── Row 7  (CM Material)
 
-D23 (Inventory Value) ────── Row 6  (Inventory Carrying)
-D24 (Carrying Cost %) ────── Row 6  (Inventory Carrying)
+E23 (Inventory Value) ────── Row 6  (Inventory Carrying)
+E24 (Carrying Cost %) ────── Row 6  (Inventory Carrying)
 
-D27 (Expediting Costs) ───── Row 15 (Expediting)
-D28 (Scrap & Rework) ─────── Row 16 (Scrap & Rework)
-D29 (Warranty & Service) ─── Row 17 (Warranty)
-D30 (Excess & Obsolete) ──── Row 19 (EOL Costs)
+E27 (Expediting Costs) ───── Row 15 (Expediting)
+E28 (Scrap & Rework) ─────── Row 16 (Scrap & Rework)
+E29 (Warranty & Service) ─── Row 17 (Warranty)
+E30 (Excess & Obsolete) ──── Row 19 (EOL Costs)
 
-D34 (Dev FTEs) ────────────── Row 8  (Dev Efficiency)
-D35 (Dev Salary) ──────────── Row 8  (Dev Efficiency)
-D36 (CAD FTEs) ────────────── Row 11 (CAD Efficiency)
-D37 (CAD Salary) ──────────── Row 11 (CAD Efficiency)
-D38 (Eng Services FTEs) ───── Row 9  (Eng Services Efficiency)
-D39 (Eng Services Salary) ─── Row 9  (Eng Services Efficiency)
-D40 (PDC FTEs) ────────────── Row 10 (PDC Efficiency)
-D41 (PDC Workweek %) ──────── Row 10 (PDC Efficiency)
-D42 (PDC Salary) ──────────── Row 10 (PDC Efficiency)
-D43 (Quality FTEs) ────────── Row 12 (Quality Efficiency)
-D44 (Quality Salary) ──────── Row 12 (Quality Efficiency)
-D45 (Compliance FTEs) ─────── Row 13 (Compliance Efficiency)
-D46 (Compliance Salary) ───── Row 13 (Compliance Efficiency)
-D47 (Sourcing FTEs) ───────── Row 14 (Sourcing Efficiency)
-D48 (Sourcing Salary) ─────── Row 14 (Sourcing Efficiency)
+E34 (Dev FTEs) ────────────── Row 8  (Dev Efficiency)
+E35 (Dev Salary) ──────────── Row 8  (Dev Efficiency)
+E36 (CAD FTEs) ────────────── Row 11 (CAD Efficiency)
+E37 (CAD Salary) ──────────── Row 11 (CAD Efficiency)
+E38 (Eng Services FTEs) ───── Row 9  (Eng Services Efficiency)
+E39 (Eng Services Salary) ─── Row 9  (Eng Services Efficiency)
+E40 (PDC FTEs) ────────────── Row 10 (PDC Efficiency)
+E41 (PDC Workweek %) ──────── Row 10 (PDC Efficiency)
+E42 (PDC Salary) ──────────── Row 10 (PDC Efficiency)
+E43 (Quality FTEs) ────────── Row 12 (Quality Efficiency)
+E44 (Quality Salary) ──────── Row 12 (Quality Efficiency)
+E45 (Compliance FTEs) ─────── Row 13 (Compliance Efficiency)
+E46 (Compliance Salary) ───── Row 13 (Compliance Efficiency)
+E47 (Sourcing FTEs) ───────── Row 14 (Sourcing Efficiency)
+E48 (Sourcing Salary) ─────── Row 14 (Sourcing Efficiency)
 ```
 
 ---
@@ -467,7 +462,7 @@ If F[row] = "No"  → G[row] = 0
 
 1. User fills out wizard steps (company profile, assumptions, costs, workforce, benefit sliders)
 2. On submit, `saveWizardData()` in Code.gs iterates all fields from `Config.gs`
-3. Data Input fields → written to `D{row}` on the Data Input tab
+3. Data Input fields → written to `E{row}` on the Data Input tab
 4. Benefits Calc fields → improvement % written to `D{row}`, include toggle written to `F{row}`
 5. `SpreadsheetApp.flush()` forces recalculation
 6. Sheet formulas in column G automatically recompute all dollar benefits

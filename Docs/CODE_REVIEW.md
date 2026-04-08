@@ -1,6 +1,6 @@
 # Arena Value Assessment Wizard — Full Code Review
 
-Review date: 2026-04-01  
+Review date: 2026-04-02 (updated)  
 Reviewer: Claude Code (claude-sonnet-4-6)  
 Scope: All source files — Code.gs, Config.gs, SheetAudit.gs, Wizard.html, _script.html, _styles.html, Help.html, appsscript.json, and all Docs/
 
@@ -184,10 +184,13 @@ HTML shell — minimal, ~50 lines. Key structure:
 var WIZARD = {
   currentStep: 1,
   totalSteps: 9,
-  formData: {},      // input values (text, number, currency, slider)
-  includeData: {},   // benefit include toggles
-  config: null,      // WIZ_CONFIG from server
-  currentValues: {}  // values loaded from sheet on open
+  formData: {},         // input values (text, number, currency, slider)
+  includeData: {},      // benefit include toggles
+  currentStateData: {}, // today slider values (pre-Arena state)
+  _netRefreshers: {},   // field.id → refreshNet() closure for net badge updates
+  touchedSteps: {},     // step numbers the user has modified (dirty indicator)
+  config: null,         // WIZ_CONFIG from server
+  currentValues: {}     // values loaded from sheet on open
 };
 ```
 
@@ -222,8 +225,8 @@ Each benefit slider card contains two sliders:
 - **Current State (pre-Arena):** range 0–field.max, stored in `WIZARD.currentStateData[field.id]`. Not written to sheet.
 - **Future State (with Arena):** range field.min–field.max, stored in `WIZARD.formData[field.id]`. Same maturity levels as before.
 - **Delta:** `Math.max(0, future - current)` computed in `submitWizard()` and sent as the payload value for each benefit field. Written to Benefits Calc column D as a decimal.
-- Hard clamp: current slider cannot exceed future slider (enforced on both slider `input` events).
-- On restore (loading from sheet): future state populated from saved delta, current state always resets to 0.
+- No cross-clamping: current and future sliders move independently. `Math.max(0, future - current)` handles cases where today > future gracefully (net = 0).
+- On restore (loading from sheet): future state populated from saved delta, current state always resets to its `currentDefault`.
 - Net badge registry: `WIZARD._netRefreshers[field.id]` holds each field's `refreshNet()` closure; `applyCurrentValues()` calls it after restoring a benefit value to update the net display.
 
 `autoFillStep3Defaults()` — On step 3 entry, fills cost fields from revenue × percentage if empty. Never overwrites user data.
@@ -360,6 +363,42 @@ Two scopes only — minimal footprint. V8 runtime enables modern JS on server si
 
 ---
 
+## Recent Feature Additions (2026-04-02)
+
+### Free Navigation
+
+Users can click any step indicator in the top progress bar to jump directly to that step (via `navigateTo()`). Previously, navigation was Next/Back only. Validation gating prevents skipping required steps without filling them.
+
+### Dirty Step Indicator
+
+An orange dot appears on the step indicator when the user has modified any field within that step. Tracked via `WIZARD.touchedSteps` (a set of step numbers). `markStepTouched(stepNum)` is called by delegated `input`/`change` listeners on each step's panel.
+
+### Contextual Help System
+
+Two levels of contextual help:
+
+1. **Per-step `?` button** — Each step title is wrapped in a `.step-title-row` flex container. A small `?` circle button sits beside the title. Clicking it calls `google.script.run.showHelp(tabId)` which opens the Help dialog and deep-links to the matching tab via a GAS template scriptlet (`<?= initialTab ?>`).
+
+2. **Per-field tooltip popovers** — Fields with a `hint` property get a small grey `?` circle next to their label. Clicking it toggles a `.field-tip-popover` (absolute positioned, 220px wide). `closeAllTips()` is called on document click to dismiss all open popovers. Shared helper `buildFieldTip(hintText, targetEl)` creates the tip button + popover structure.
+
+`HELP_TAB_MAP` maps step numbers to Help.html tab IDs (e.g., step 5 → `'step5'`). `getHelpTab(step)` looks up the mapping.
+
+### Today State Context (Current Maturity Levels)
+
+Each benefit field in Config.gs now has three additional properties for the "Today (without Arena)" slider:
+
+- `currentDefault` — initial slider position (0 for revenue/COGS fields, field.min for productivity/cost recovery)
+- `currentLowAnchor` / `currentHighAnchor` — descriptive left/right labels for the today slider
+- `currentMaturityLevels` — array of 3 `{ pct, label, description }` objects describing the current state at different slider positions
+
+A maturity state box (`.maturity-state`) renders below the today slider, showing a label + description that updates as the user moves the slider. Uses the same `updateMaturityUI()` function via a wrapper object `{ maturityLevels: field.currentMaturityLevels, min: 0, max: field.max }`. No maturity dots are rendered for the today slider (a dummy `dotsEl` object is passed to satisfy the interface).
+
+### Help.html Updates
+
+Help.html now has **10 tabs**: Steps 1–9 plus a Data Flow reference tab. Step 8 is "Legacy TCO" (added), the old step 8 content was renumbered to step 9. All step badges read "Step N of 9". The `showHelp(tab)` function accepts an optional `tab` parameter for deep-linking from the wizard's `?` buttons.
+
+---
+
 ## Known Issues & Discrepancies
 
 ### 1. Documentation is stale (multiple files)
@@ -379,9 +418,9 @@ Two scopes only — minimal footprint. V8 runtime enables modern JS on server si
 
 ### 2. FTE storeAs ambiguity (unresolved from UI_AUDIT.md)
 
-Seven FTE fields (`devTeamFTEs` D34, `cadFTEs` D36, `engServicesFTEs` D38, `pdcFTEs` D40, `qualityFTEs` D43, `complianceFTEs` D45, `sourcingFTEs` D47) are `storeAs: 'number'`. If the live sheet actually stores headcounts (e.g. 50), this is correct. If it stores decimal percentages (0.15), this needs to change to `storeAs: 'decimal'`.
+Seven FTE fields (`devTeamFTEs` E34, `cadFTEs` E36, `engServicesFTEs` E38, `pdcFTEs` E40, `qualityFTEs` E43, `complianceFTEs` E45, `sourcingFTEs` E47) are `storeAs: 'number'`. If the live sheet actually stores headcounts (e.g. 50), this is correct. If it stores decimal percentages (0.15), this needs to change to `storeAs: 'decimal'`.
 
-**Resolution:** Check the live Google Sheet cells D34, D36, D38, D40, D43, D45, D47 in Data Input tab. Values between 0 and 1 = decimal storage → change to `storeAs: 'decimal'`. Values like 10, 25, 50 = headcount → current `storeAs: 'number'` is correct.
+**Resolution:** Check the live Google Sheet cells E34, E36, E38, E40, E43, E45, E47 in Data Input tab. Values between 0 and 1 = decimal storage → change to `storeAs: 'decimal'`. Values like 10, 25, 50 = headcount → current `storeAs: 'number'` is correct.
 
 ### 3. No true atomic write
 

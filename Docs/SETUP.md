@@ -58,7 +58,7 @@ clasp push --watch
 1. Open (or reload) the spreadsheet.
 2. Go to **Extensions > Apps Script** and run `onOpen()` once to initialize the menu.
 3. Return to the spreadsheet — you should see the **Arena Value Wizard** menu in the menu bar.
-4. Click **Launch Wizard** and walk through all 8 steps.
+4. Click **Launch Wizard** and walk through all 9 steps.
 
 ---
 
